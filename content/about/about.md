@@ -4,8 +4,8 @@ date: 2021-08-13T15:06:47-04:00
 lastmod: 2021-08-15
 menu: main
 
-sidebar: "right" # Enable sidebar (on the right side) per page
-widgets: # Enable sidebar widgets in given order per page
+sidebar: "right"
+widgets:
   - "ddg-search"
   - "recent"
   - "social"
