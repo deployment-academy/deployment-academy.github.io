@@ -13,8 +13,8 @@ googleAnalytics = "" # Enable Google Analytics by entering your tracking id
 
 [Params]
   subtitle = "" # Deprecated in favor of .Site.Params.logo.subtitle
-  description = "A tech blog focused on software engineering, devops, cloud security and related" # Site description. Used in meta description
-  copyright = "" # Footer copyright holder, otherwise will use site title
+  description = "A tech blog focused on software engineering and devsecops" # Site description. Used in meta description
+  copyright = "Deployment - A tech blog focused on Software Engineering and DevSecOps" # Footer copyright holder, otherwise will use site title
   opengraph = true # Enable OpenGraph if true
   schema = true # Enable Schema
   twitter_cards = true # Enable Twitter Cards if true
@@ -44,14 +44,14 @@ googleAnalytics = "" # Enable Google Analytics by entering your tracking id
 [Params.logo]
 #   image = "img/placeholder.png" # Logo image. Path relative to "static"
   title = "Deployment" # Logo title, otherwise will use site title
-  subtitle = "A tech blog focused on software engineering, devops, cloud security and related" # Logo subtitle
+  subtitle = "A tech blog focused on Software Engineering and DevSecOps" # Logo subtitle
 
 [Params.sidebar]
   home = "right" # Configure layout for home page
   list = "left"  # Configure layout for list pages
   single = false # Configure layout for single pages
   # Enable widgets in given order
-  widgets = ["ddg-search", "recent", "categories", "taglist", "social"]
+  widgets = ["ddg-search", "recent", "social"]
   # alternatively "ddg-search" can be used, to search via DuckDuckGo
   # widgets = ["ddg-search", "recent", "categories", "taglist", "social", "languages"]
 
@@ -81,3 +81,9 @@ googleAnalytics = "" # Enable Google Analytics by entering your tracking id
 # [[Params.widgets.social.custom]]
 #   title = "My Home Page"
 #   url = "http://example.com"
+
+[frontmatter]
+date = ["date", "publishDate", "lastmod"]
+lastmod = ["lastmod", ":git", "date", "publishDate"]
+publishDate = ["publishDate", "date"]
+expiryDate = ["expiryDate"]
