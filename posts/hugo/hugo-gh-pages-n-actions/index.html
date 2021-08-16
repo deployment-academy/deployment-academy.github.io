@@ -8,21 +8,21 @@
 <meta name=description content>
 <meta property="og:title" content="Create a static website with Hugo, GitHub Pages and Actions (in minutes)">
 <meta property="og:description" content="In this tutorial, we are going to get a static website up and running with Hugo. We will deploy the site using GitHub Pages and make sure new changes are automatically published using GitHub Actions.
-Hugo is a static site generator written in Go that helps you to organize and manage content without the need of server-side rendering, databases, and etc. Hugo is specially interesting if you to want create, maintain and version your content in GitHub using Markdown.">
+Hugo is a static site generator written in Go that helps you to organize and manage content without the need of server-side rendering, databases, and etc. Hugo is specially interesting if you want to create, maintain and version your content in GitHub using Markdown.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="/posts/hugo/hugo-gh-pages-n-actions/"><meta property="article:section" content="posts">
 <meta property="article:published_time" content="2021-08-15T22:55:44-04:00">
-<meta property="article:modified_time" content="2021-08-15T22:55:44-04:00">
+<meta property="article:modified_time" content="2021-08-16T00:00:00+00:00">
 <meta itemprop=name content="Create a static website with Hugo, GitHub Pages and Actions (in minutes)">
 <meta itemprop=description content="In this tutorial, we are going to get a static website up and running with Hugo. We will deploy the site using GitHub Pages and make sure new changes are automatically published using GitHub Actions.
-Hugo is a static site generator written in Go that helps you to organize and manage content without the need of server-side rendering, databases, and etc. Hugo is specially interesting if you to want create, maintain and version your content in GitHub using Markdown."><meta itemprop=datePublished content="2021-08-15T22:55:44-04:00">
-<meta itemprop=dateModified content="2021-08-15T22:55:44-04:00">
-<meta itemprop=wordCount content="684">
-<meta itemprop=keywords content>
+Hugo is a static site generator written in Go that helps you to organize and manage content without the need of server-side rendering, databases, and etc. Hugo is specially interesting if you want to create, maintain and version your content in GitHub using Markdown."><meta itemprop=datePublished content="2021-08-15T22:55:44-04:00">
+<meta itemprop=dateModified content="2021-08-16T00:00:00+00:00">
+<meta itemprop=wordCount content="809">
+<meta itemprop=keywords content="hugo,">
 <meta name=twitter:card content="summary">
 <meta name=twitter:title content="Create a static website with Hugo, GitHub Pages and Actions (in minutes)">
 <meta name=twitter:description content="In this tutorial, we are going to get a static website up and running with Hugo. We will deploy the site using GitHub Pages and make sure new changes are automatically published using GitHub Actions.
-Hugo is a static site generator written in Go that helps you to organize and manage content without the need of server-side rendering, databases, and etc. Hugo is specially interesting if you to want create, maintain and version your content in GitHub using Markdown.">
+Hugo is a static site generator written in Go that helps you to organize and manage content without the need of server-side rendering, databases, and etc. Hugo is specially interesting if you want to create, maintain and version your content in GitHub using Markdown.">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
 <link rel=dns-prefetch href=//fonts.gstatic.com>
@@ -67,14 +67,15 @@ Hugo is a static site generator written in Go that helps you to organize and man
 <svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2.0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class=meta__text>Romulo Santos</span>
 </div>
 <div class="meta__item-datetime meta__item">
-<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-08-15T22:55:44-04:00>2021-08-15</time></div></div>
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-08-15T22:55:44-04:00>2021-08-15</time>
+<time class=meta__text datetime=2021-08-16T00:00:00Z>(Last Modified: 2021-08-16)</time></div></div>
 </header><div class="content post__content clearfix">
 <p>In this tutorial, we are going to get a static website up and running with Hugo.
 We will deploy the site using GitHub Pages and make sure new changes are
 automatically published using GitHub Actions.</p>
 <p>Hugo is a static site generator written in Go that helps you to organize and
 manage content without the need of server-side rendering, databases, and etc.
-Hugo is specially interesting if you to want create, maintain and version your
+Hugo is specially interesting if you want to create, maintain and version your
 content in GitHub using Markdown.</p>
 <p>Check out the Hugo website to learn more about <a href=https://gohugo.io/about/what-is-hugo/>what it is</a>
 and <a href=https://gohugo.io/about/benefits/>the benefits of using a static site generator</a>.</p>
@@ -87,8 +88,9 @@ I prefer a simple download:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># check https://github.com/gohugoio/hugo/releases for the last release</span>
 hugo_version<span style=color:#f92672>=</span>0.87.0
 wget https://github.com/gohugoio/hugo/releases/download/v<span style=color:#e6db74>&#34;</span>$hugo_version<span style=color:#e6db74>&#34;</span>/hugo_<span style=color:#e6db74>&#34;</span>$hugo_version<span style=color:#e6db74>&#34;</span>_macOS-64bit.tar.gz
+tar -xzvf hugo_<span style=color:#e6db74>&#34;</span>$hugo_version<span style=color:#e6db74>&#34;</span>_macOS-64bit.tar.gz hugo
 mv hugo /usr/local/bin
-rm hugo_0.87.0_macOS-64bit.tar.gz
+rm hugo_<span style=color:#e6db74>&#34;</span>$hugo_version<span style=color:#e6db74>&#34;</span>_macOS-64bit.tar.gz
 </code></pre></div><p>Check if everything is ok:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>hugo version
 </code></pre></div><h2 id=build-the-website>Build the website</h2>
@@ -96,7 +98,7 @@ rm hugo_0.87.0_macOS-64bit.tar.gz
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>site_name<span style=color:#f92672>=</span>your-site
 hugo new site <span style=color:#e6db74>&#34;</span>$site_name<span style=color:#e6db74>&#34;</span>
 </code></pre></div><p>Choose a theme in the <a href=https://themes.gohugo.io/>galery of themes</a> and add it
-to your Hugo site:</p>
+to your site:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>theme_name<span style=color:#f92672>=</span>beautifulhugo
 theme_git<span style=color:#f92672>=</span>https://github.com/halogenica/beautifulhugo.git
 
@@ -111,16 +113,19 @@ more details and available settings.</p>
 <p>Start the local server:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>hugo server -D
 </code></pre></div><p>Hugo will initialize a server and watch for changes. You can keep this session
-running as you interact with your site in the browser and open a new terminal.
-Open the page on the web browser: <code>http://localhost:1313/</code></p>
-<p>Add a new content:</p>
+running as you interact with your site in the browser, so open a new session for
+the next commands. Check the site on the web browser: <code>http://localhost:1313</code></p>
+<p>Add a new post:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>hugo new posts/build-a-hugo-site.md
 </code></pre></div><p>Edit this file:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># use your preferred editor</span>
 vim content/posts/build-a-hugo-site.md
-</code></pre></div><p>Add anything you want to this file but make sure you change <code>draft: false</code>.</p>
+</code></pre></div><p>Add anything you want to this file but make sure you change the <code>draft</code> option
+in the <a href=https://gohugo.io/content-management/front-matter/>front matter config</a>
+to <code>draft: false</code>.</p>
 <p>Note that the browser has already been updated with the new content.
-This hot reload is really useful to make the creation process more efficient.
+This hot reload is really useful to make the creation process more interactive
+and efficient.
 You can add more content if you want. In the next session, you will publish this
 site to GitHub Pages.</p>
 <h2 id=publishing-to-github-pages>Publishing to GitHub Pages</h2>
@@ -129,11 +134,11 @@ to know more about it, please check <a href=https://pages.github.com>https://pag
 <p>The Hugo documentation should have all you need to know to <a href=https://gohugo.io/hosting-and-deployment/hosting-on-github/>deploy Hugo to GitHub
 Pages</a>. Here are
 the steps I followed.</p>
-<p>First, create a repository using your github username: <code>&lt;your-username>.github.io</code>.</p>
+<p>First, create a repository using your GitHub username: <code>&lt;your-username>.github.io</code>.</p>
 <p>One option is to generate the static content locally with <code>hugo -D</code> and push the
 content of the <code>public</code> folder to the root of this repository. That would be all
-you need. But don&rsquo;t do that, follow the following steps to enable a publishing
-Git workflow.</p>
+you need. But <strong>don&rsquo;t do that</strong>, follow the following steps to enable a
+publishing Git workflow.</p>
 <p>Push the existing code to GitHub:</p>
 <p>(If you generated the static content make sure you remove the <code>public/</code> folder
 proceeding).</p>
@@ -142,8 +147,8 @@ git commit -m <span style=color:#e6db74>&#34;first commit&#34;</span>
 git branch -M main
 git remote add origin https://github.com/&lt;your-username&gt;/&lt;your-username&gt;.github.io.git
 git push -u origin main
-</code></pre></div><p>Create the GitHub Actions config in a file called <code>.github/workflows/gh-pages.yml</code>
-It&rsquo;s using the <a href=https://github.com/marketplace/actions/hugo-setup>hugo-setup action</a>:</p>
+</code></pre></div><p>Create the <a href=https://docs.github.com/en/actions>GitHub Actions</a> config in the
+file <code>.github/workflows/gh-pages.yml</code>:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>name</span>: <span style=color:#ae81ff>github pages</span>
 <span style=color:#f92672>on</span>:
   <span style=color:#f92672>push</span>:
@@ -171,21 +176,81 @@ It&rsquo;s using the <a href=https://github.com/marketplace/actions/hugo-setup>h
         <span style=color:#f92672>with</span>:
           <span style=color:#f92672>github_token</span>: <span style=color:#ae81ff>${{ secrets.GITHUB_TOKEN }}</span>
           <span style=color:#f92672>publish_dir</span>: <span style=color:#ae81ff>./public</span>
-</code></pre></div><p>Push this change:</p>
+</code></pre></div><p>This config is using the <a href=https://github.com/marketplace/actions/hugo-setup>hugo-setup</a>
+and <a href=https://github.com/marketplace/actions/github-pages-action>github-pages</a>
+actions. Check the docs for more options and details.</p>
+<p>Push this change:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git add .
-git commit -m <span style=color:#e6db74>&#34;add workflow for gh-pages&#34;</span>
+git commit -m <span style=color:#e6db74>&#34;add workflow for hugo publishing and gh-pages&#34;</span>
 git push -u origin main
 </code></pre></div><p>Go to your Pages configuration (<code>https://github.com/&lt;your-username>/&lt;your-username>.github.io/settings/pages</code>)
 and make sure you configure the GitHub Pages to serve content from the
-<code>gh-pages</code> branch. You should be able to access your website through the URL
+<code>gh-pages</code> branch. You should be able to access your website using the URL
 <code>&lt;your-username>.github.io</code>.</p>
+<p>Now, every time you push a new post or change to the <code>main</code> branch, the GitHub
+Action will build your website and publish it.</p>
 <h2 id=optional-add-a-custom-domain>(Optional) Add a custom domain</h2>
 <p>Create a file in <code>static/CNAME</code> with the name of your domain.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>echo -n my-domain.com &gt; static/CNAME
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>echo -n your-domain.com &gt; static/CNAME
 </code></pre></div><p>Push this change as well and check the <a href=https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site>GitHub Pages documentation</a>
 for more details about how to configure your domain. There are a few options
 available.</p>
+<p>If you are using an apex domain (a root level domain), you can add the following
+DNS records to your DNS manager:</p>
+<table>
+<thead>
+<tr>
+<th>Record</th>
+<th>Host Record</th>
+<th>Points To</th>
+<th>TTL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>@</td>
+<td>185.199.108.153</td>
+<td>4 Hours</td>
+</tr>
+<tr>
+<td>A</td>
+<td>@</td>
+<td>185.199.109.153</td>
+<td>4 Hours</td>
+</tr>
+<tr>
+<td>A</td>
+<td>@</td>
+<td>185.199.110.153</td>
+<td>4 Hours</td>
+</tr>
+<tr>
+<td>A</td>
+<td>@</td>
+<td>185.199.111.153</td>
+<td>4 Hours</td>
+</tr>
+<tr>
+<td>CNAME</td>
+<td>www</td>
+<td>your-domain.com</td>
+<td>4 Hours</td>
+</tr>
+</tbody>
+</table>
+<p>In addition to hosting your pages, GitHub will also provision a TLS certificate
+for your domain.</p>
 </div>
+<footer class=post__footer>
+<div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg>
+<ul class=tags__list>
+<li class=tags__item>
+<a class="tags__link btn" href=/tags/hugo/ rel=tag>hugo</a>
+</li>
+</ul>
+</div>
+</footer>
 </article>
 </main>
 </div>
