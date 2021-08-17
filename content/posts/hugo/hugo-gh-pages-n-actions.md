@@ -1,5 +1,6 @@
 ---
 title: "Create a static website with Hugo, GitHub Pages and Actions (in minutes)"
+description: "In this tutorial, we are going to get a static website up and running with Hugo, GitHub Pages and Actions."
 date: 2021-08-15T22:55:44-04:00
 lastmod: 2021-08-16
 draft: false
