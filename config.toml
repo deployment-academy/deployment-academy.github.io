@@ -1,4 +1,4 @@
-baseurl = "/"
+baseurl = "https://deployment.properties"
 title = "Deployment"
 languageCode = "en-us"
 paginate = "10" # Number of posts per page
