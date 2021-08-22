@@ -7,8 +7,9 @@ Source code for [deployment.properties](https://deployment.properties).
 1. Clone this repository
 
     ```shell
-    git clone git@github.com:deployment-academy/deployment-academy.github.io.git; cd deployment-academy.github.io
-    git submodule update --init --force # update theme
+    git clone git@github.com:deployment-academy/deployment-academy.github.io.git
+    cd deployment-academy.github.io
+    git submodule update --init --force # update themes
     ```
 
 1. [Install Hugo](https://gohugo.io/getting-started/installing/)
