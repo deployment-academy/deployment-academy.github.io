@@ -13,7 +13,7 @@ Source code for [deployment.properties](https://deployment.properties).
     ```
 
 1. Edit your post using your favorite editor
-1. Run it to preview your changes locally
+1. Run it locally to preview your changes
 
     ```shell
     hugo server
