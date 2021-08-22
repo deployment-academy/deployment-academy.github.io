@@ -24,9 +24,9 @@ Source code for [deployment.properties](https://deployment.properties).
 The content is published to the live blog on merges to the main branch.
 For more details check [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml).
 
-Preview is made locally following the steps on [Local Development](#local-development)
+Content preview is made locally following the steps on [Local Development](#local-development)
 
 ## Create a Hugo site
 
 If you are interested in how this site was created and looking to create a
-Hugo site, please check [Create a static website with Hugo, GitHub Pages and Actions (in minutes)](https://deployment.properties/posts/hugo/hugo-gh-pages-n-actions/).
+Hugo site, please check the blog post [Create a static website with Hugo, GitHub Pages and Actions (in minutes)](https://deployment.properties/posts/hugo/hugo-gh-pages-n-actions/).
