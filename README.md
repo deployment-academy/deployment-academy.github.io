@@ -4,6 +4,7 @@ Source code for [deployment.properties](https://deployment.properties).
 
 ## Local Development
 
+1. Clone this repository
 1. [Install Hugo](https://gohugo.io/getting-started/installing/)
 1. Add a new post
 
@@ -12,7 +13,7 @@ Source code for [deployment.properties](https://deployment.properties).
     ```
 
 1. Edit your post using your favorite editor
-1. Run it to check your changes locally
+1. Run it to preview your changes locally
 
     ```shell
     hugo server
@@ -20,5 +21,12 @@ Source code for [deployment.properties](https://deployment.properties).
 
 ## Publishing
 
-New content is published on merges to the main branch. For more details check
-[](.github/workflows/gh-pages.yml)
+The content is published to the live blog on merges to the main branch.
+For more details check [.github/workflows/gh-pages.yml](.github/workflows/gh-pages.yml).
+
+Preview is made locally following the steps on [Local Development](#local-development)
+
+## Create a Hugo site
+
+If you are interested in how this site was created and looking to create a
+Hugo site, please check [Create a static website with Hugo, GitHub Pages and Actions (in minutes)](https://deployment.properties/posts/hugo/hugo-gh-pages-n-actions/).
