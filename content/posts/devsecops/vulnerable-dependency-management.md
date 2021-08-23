@@ -21,6 +21,8 @@ tags:
 
 Let's talk about something that most developers and engineering teams don't pay the necessary attention to. Do you have a process to update your application dependencies? How likely is it that your application could be compromised because of a vulnerable dependency?
 
+<!--more-->
+
 > **TL;DR** - In this post, we are going to review a few points and see why you shouldn't be omissive in terms of upgrading your dependencies and that you should strongly consider automating dependency vulnerability checks in your CICD pipeline.
 
 ## Dependency Management Overview
