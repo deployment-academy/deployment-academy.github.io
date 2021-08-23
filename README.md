@@ -37,3 +37,21 @@ Content preview is made locally following the steps on [Local Development](#loca
 
 If you are interested in how this site was created and looking to create a
 Hugo site, please check the blog post [Create a static website with Hugo, GitHub Pages and Actions (in minutes)](https://deployment.properties/posts/hugo/hugo-gh-pages-n-actions/).
+
+## Custom Shortcode
+
+### notice
+
+|Parameter|Description|
+|---------|-----------|
+|type|warning, info, note, tip|
+|id|used as the HTML `div#id` of the element that wraps the notice|
+|title|descriptive text added to the top of the box|
+
+Example
+
+```markdown
+{{< notice type="tip" id="tip-id" title="My title" >}}
+some content
+{{< /notice >}}
+```
