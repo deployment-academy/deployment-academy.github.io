@@ -5,6 +5,7 @@ paginate = "10" # Number of posts per page
 theme = "mainroad"
 disqusShortname = "" # Enable Disqus comments by entering your Disqus shortname
 googleAnalytics = "G-0BJEGTESYY" # Enable Google Analytics by entering your tracking id
+enableEmoji = true
 
 [Author] # Used in authorbox
   name = "Romulo Santos"
@@ -21,7 +22,7 @@ googleAnalytics = "G-0BJEGTESYY" # Enable Google Analytics by entering your trac
   readmore = false # Show "Read more" button in list if true
   authorbox = false # Show authorbox at bottom of pages if true
   toc = false # Enable Table of Contents
-  pager = true # Show pager navigation (prev/next links) at the bottom of pages if true
+  pager = false # Show pager navigation (prev/next links) at the bottom of pages if true
   post_meta = ["author", "date", "categories"] # Order of post meta information
   mainSections = ["posts"] # Specify section pages to show on home page and the "Recent articles" widget
   dateformat = "2006-01-02" # Change the format of dates
