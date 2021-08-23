@@ -10,6 +10,11 @@ widgets:
   - "recent"
   - "social"
 tags:
+  - "devsecops"
+  - "kubernetes"
+  - "aws"
+  - "eks"
+  - "vault"
 ---
 
 In this tutorial, we are going to configure and explore the [HashiCorp Vault AWS Auth method](https://www.vaultproject.io/docs/auth/aws) with [Amazon EKS](https://aws.amazon.com/eks). We will start performing the Vault authentication using the EC2 instances (Kubernetes nodes) identity and later we will use a Kubernetes service account to impersonate an AWS IAM Role and have more fine-grained control at the Pod level.
@@ -23,6 +28,7 @@ Using the Vault AWS Auth method with [IAM Roles for Service Accounts](https://aw
 ## Prerequisites
 
 To execute this tutorial you need:
+
 * An AWS Account
 * Local environment configured with AWS credentials with the required IAM permissions to manage EKS and IAM resources
 * Necessary CLI tools installed (awscli, eksctl and kubectl).
@@ -215,7 +221,6 @@ Forwarding                    https://2a7f0319443a.ngrok.io -> http://localhost:
 
 Perform the Vault login from a pod running in EKS (make sure you use the ngrok address as the Vault address).
 
-
 ```shell
 kubectl run vault -it --rm --restart=Never --image vault -- \
     vault login -address=http://2a7f0319443a.ngrok.io \
@@ -293,7 +298,6 @@ VAULT_AUTH_ROLE_ARN=$(aws iam create-role \
 
 Now let's create and annotate a Kubernetes service account with this IAM Role and validate the caller identity within a pod.
 
-
 ```shell
 kubectl create sa $VAULT_AUTH_K8S_SERVICE_ACCOUNT
 
@@ -369,14 +373,12 @@ If everything is ok, you should see the Vault token as in the output above. Make
 
 ## Optional: IAM Roles for Service Accounts Overview
 
-Instead of using the Node IAM Role, the IAM Roles for Service Accounts feature makes pods first-class citizens in IAM, enabling the AWS identity APIs to recognize Kubernetes pods. This approach uses an OpenID Connect (OIDC) identity provider and Kubernetes service account annotations to allow a Pod to assume an AWS IAM role. 
+Instead of using the Node IAM Role, the IAM Roles for Service Accounts feature makes pods first-class citizens in IAM, enabling the AWS identity APIs to recognize Kubernetes pods. This approach uses an OpenID Connect (OIDC) identity provider and Kubernetes service account annotations to allow a Pod to assume an AWS IAM role.
 
 The flow works as follows, from the docs:
 > OIDC federation allows the user to assume IAM roles with the Secure Token Service (STS), effectively receiving a JSON Web Token (JWT) via an OAuth2 flow that can be used to assume an IAM role with an OIDC provider. In Kubernetes we then use projected service account tokens, which are valid OIDC JWTs, giving each pod a cryptographically-signed token which can be verified by STS against the OIDC provider for establishing identity.
 
-
 To simplify things on our side, a mutating admission controller running in EKS (via a webhook) automatically injects in the pod the necessary environment variables and a volume with a [projected service account token](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection). The admission controller is just a utility, this step can also be made manually.
-
 
 Check the blog post [Introducing fine-grained IAM roles for service accounts](https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts/) and the [AWS IAM Roles for Service Accounts documentation](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html) for more details.
 
@@ -396,5 +398,3 @@ aws iam delete-access-key --user-name $VAULT_AUTH_USER_NAME --access-key-id="$(j
 aws iam delete-user --user-name $VAULT_AUTH_USER_NAME
 aws iam delete-role --role-name $VAULT_AUTH_ROLE_NAME
 ```
-_____
-Thanks for following along and reading through this. If you like this tutorial, you may like other things I share on https://todevornot.com.
