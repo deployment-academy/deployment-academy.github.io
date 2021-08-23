@@ -17,6 +17,8 @@ In this tutorial, we are going to get a static website up and running with Hugo.
 We will deploy the site using GitHub Pages and make sure new changes are
 automatically published using GitHub Actions.
 
+<!--more-->
+
 Hugo is a static site generator written in Go that helps you to organize and
 manage content without the need of server-side rendering, databases, and etc.
 Hugo is specially interesting if you want to create, maintain and version your
