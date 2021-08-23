@@ -380,7 +380,7 @@ To simplify things on our side, a mutating admission controller running in EKS (
 
 Check the blog post [Introducing fine-grained IAM roles for service accounts](https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts/) and the [AWS IAM Roles for Service Accounts documentation](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html) for more details.
 
-## Optional 2: Terraform configuration
+## Optional: Terraform configuration
 
 In this tutorial we used the AWS and Vault CLI's for the configuration. If you are interested in the Terraform approach for the same configuration we did here, please, check [this gist](https://gist.github.com/soeirosantos/1ac8478c917ea47bd092974c9a96c003).
 
