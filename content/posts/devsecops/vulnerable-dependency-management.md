@@ -10,6 +10,13 @@ widgets:
   - "recent"
   - "social"
 tags:
+  - "devsecops"
+  - "application security"
+  - "appsec"
+  - "dependency management"
+  - "vulnerability management"
+  - "software composition analysis"
+  - "sca"
 ---
 
 Let's talk about something that most developers and engineering teams don't pay the necessary attention to. Do you have a process to update your application dependencies? How likely is it that your application could be compromised because of a vulnerable dependency?
