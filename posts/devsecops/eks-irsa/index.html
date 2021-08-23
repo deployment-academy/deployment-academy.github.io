@@ -1,0 +1,401 @@
+<!doctype html><html class=no-js lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title>HashiCorp Vault AWS Auth with Amazon EKS and IAM Roles for Service Accounts - Deployment</title>
+<script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
+<meta name=description content="Configure and explore the HashiCorp Vault AWS Auth method with Amazon EKS">
+<meta property="og:title" content="HashiCorp Vault AWS Auth with Amazon EKS and IAM Roles for Service Accounts">
+<meta property="og:description" content="Configure and explore the HashiCorp Vault AWS Auth method with Amazon EKS">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://deployment.properties/posts/devsecops/eks-irsa/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-05-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-08-22T00:00:00+00:00">
+<meta itemprop=name content="HashiCorp Vault AWS Auth with Amazon EKS and IAM Roles for Service Accounts">
+<meta itemprop=description content="Configure and explore the HashiCorp Vault AWS Auth method with Amazon EKS"><meta itemprop=datePublished content="2021-05-23T00:00:00+00:00">
+<meta itemprop=dateModified content="2021-08-22T00:00:00+00:00">
+<meta itemprop=wordCount content="1979">
+<meta itemprop=keywords content>
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="HashiCorp Vault AWS Auth with Amazon EKS and IAM Roles for Service Accounts">
+<meta name=twitter:description content="Configure and explore the HashiCorp Vault AWS Auth method with Amazon EKS">
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link rel=dns-prefetch href=//fonts.googleapis.com>
+<link rel=dns-prefetch href=//fonts.gstatic.com>
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+<link rel=stylesheet href=/css/style.css>
+<link rel=stylesheet href=/css/custom.css>
+<link rel="shortcut icon" href=/favicon.ico>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0BJEGTESYY"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-0BJEGTESYY',{anonymize_ip:!1})}</script>
+</head>
+<body class=body>
+<div class="container container--outer">
+<header class=header>
+<div class="container header__container">
+<div class=logo>
+<a class=logo__link href=/ title=Deployment rel=home>
+<div class="logo__item logo__text">
+<div class=logo__title>Deployment</div>
+<div class=logo__tagline>A tech blog focused on Software Engineering and DevSecOps</div>
+</div>
+</a>
+</div>
+<nav class=menu>
+<button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>Menu</span>
+</button>
+<ul class=menu__list>
+<li class=menu__item>
+<a class=menu__link href=/about/>
+<span class=menu__text>About</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</header>
+<div class="wrapper flex">
+<div class=primary>
+<main class=main role=main>
+<article class=post>
+<header class=post__header>
+<h1 class=post__title>HashiCorp Vault AWS Auth with Amazon EKS and IAM Roles for Service Accounts</h1>
+<div class="post__meta meta"><div class="meta__item-author meta__item">
+<svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2.0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class=meta__text>Romulo Santos</span>
+</div>
+<div class="meta__item-datetime meta__item">
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-05-23T00:00:00Z>2021-05-23</time>
+<time class=meta__text datetime=2021-08-22T00:00:00Z>(Last Modified: 2021-08-22)</time></div></div>
+</header><div class="content post__content clearfix">
+<p>In this tutorial, we are going to configure and explore the <a href=https://www.vaultproject.io/docs/auth/aws>HashiCorp Vault AWS Auth method</a> with <a href=https://aws.amazon.com/eks>Amazon EKS</a>. We will start performing the Vault authentication using the EC2 instances (Kubernetes nodes) identity and later we will use a Kubernetes service account to impersonate an AWS IAM Role and have more fine-grained control at the Pod level.</p>
+<p>Before you begin, notice that this is a hands-on tutorial that focuses on configuring and playing around with the features. To learn more about HashiCorp Vault, Amazon EKS, or IAM Roles for Service Accounts, please, refer to the documentation linked in the text.</p>
+<h2 id=context>Context</h2>
+<p>Using the Vault AWS Auth method with <a href=https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts/>IAM Roles for Service Accounts</a> allows you to read secrets from Vault using a token served based on a trust relationship with your workload identify (kubernetes namespace and service account) running on EKS. The clear benefit with this approach is that you don&rsquo;t need to deploy static credentials along with your applications such as a token or user password.</p>
+<h2 id=prerequisites>Prerequisites</h2>
+<p>To execute this tutorial you need:</p>
+<ul>
+<li>An AWS Account</li>
+<li>Local environment configured with AWS credentials with the required IAM permissions to manage EKS and IAM resources</li>
+<li>Necessary CLI tools installed (awscli, eksctl and kubectl).</li>
+</ul>
+<p>Check the <a href=https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html#eksctl-prereqs>Getting started with Amazon EKS – eksctl Prerequisites</a> section if you need help.</p>
+<h2 id=create-the-eks-cluster>Create the EKS cluster</h2>
+<p>We will start creating a simple EKS cluster with a managed Linux node group. See the <a href=https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html>Getting started with Amazon EKS – eksctl</a> for more details.</p>
+<p>Declare some variables that we&rsquo;ll use throughout the tutorial.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>CLUSTER_NAME<span style=color:#f92672>=</span>le-cluster
+ACCOUNT_ID<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>aws sts get-caller-identity --query <span style=color:#e6db74>&#34;Account&#34;</span> --output text<span style=color:#66d9ef>)</span>
+</code></pre></div><p>Create the cluster.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>eksctl create cluster --name $CLUSTER_NAME <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --with-oidc --managed
+<span style=color:#75715e># output omitted</span>
+</code></pre></div><p>This is going to take several minutes. When the cluster is ready your <code>kubectl</code> will have access configured to the newly created cluster.</p>
+<p>Check the access to the cluster.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>kubectl get nodes
+<span style=color:#75715e># output omitted</span>
+
+kubectl get po -A
+<span style=color:#75715e># output omitted</span>
+</code></pre></div><p>Check the caller identity of a Pod running in the cluster.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>kubectl run awscli -it --rm --restart<span style=color:#f92672>=</span>Never <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --image amazon/aws-cli sts get-caller-identity
+
+If you don<span style=color:#960050;background-color:#1e0010>&#39;</span>t see a command prompt, try pressing enter.
+<span style=color:#f92672>{</span>
+    <span style=color:#e6db74>&#34;UserId&#34;</span>: <span style=color:#e6db74>&#34;AROA000000425TR6IXYLJ:i-065600000008806af&#34;</span>,
+    <span style=color:#e6db74>&#34;Account&#34;</span>: <span style=color:#e6db74>&#34;123456789012&#34;</span>,
+    <span style=color:#e6db74>&#34;Arn&#34;</span>: <span style=color:#e6db74>&#34;arn:aws:sts::123456789012:assumed-role/eksctl-le-cluster-nodegroup-ng-b0-NodeInstanceRole-146NXG82R7UOU/i-065600000008806af&#34;</span>
+<span style=color:#f92672>}</span>
+pod <span style=color:#e6db74>&#34;awscli&#34;</span> deleted
+</code></pre></div><p>Note that the ARN in the output is the Node IAM Role ARN of the Node Group configuration created in the <code>eksctl create cluster</code> command. By default, all pods running on the Kubernetes node will assume the same role and share the same set of permissions.</p>
+<h2 id=configure-the-vault-aws-auth-method>Configure the Vault AWS Auth method</h2>
+<p>The AWS auth method provides an automated mechanism to retrieve a Vault token for IAM principals and AWS EC2 instances. In other words, a client running on AWS will use the instance identity, usually through the <a href=https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html>metadata service</a>, to communicate with Vault and retrieve a token. Check the <a href=https://www.vaultproject.io/docs/auth/aws>Vault AWS Auth docs</a> for a more detailed explanation of the authentication workflow and different options.</p>
+<p>The first step to configure the AWS authentication method in Vault is to provide AWS credentials to Vault. So, before we start the Vault server, let&rsquo;s create a policy and a user in AWS for Vault.</p>
+<p>Create the AWS policy.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>
+VAULT_AUTH_POLICY_NAME<span style=color:#f92672>=</span>vault-auth-policy
+
+cat <span style=color:#e6db74>&lt;&lt;EOF &gt; $VAULT_AUTH_POLICY_NAME.json
+</span><span style=color:#e6db74>{
+</span><span style=color:#e6db74>    &#34;Version&#34;: &#34;2012-10-17&#34;,
+</span><span style=color:#e6db74>    &#34;Statement&#34;: [
+</span><span style=color:#e6db74>        {
+</span><span style=color:#e6db74>            &#34;Sid&#34;: &#34;&#34;,
+</span><span style=color:#e6db74>            &#34;Effect&#34;: &#34;Allow&#34;,
+</span><span style=color:#e6db74>            &#34;Action&#34;: [
+</span><span style=color:#e6db74>                &#34;iam:GetUser&#34;,
+</span><span style=color:#e6db74>                &#34;iam:GetRole&#34;,
+</span><span style=color:#e6db74>                &#34;iam:GetInstanceProfile&#34;,
+</span><span style=color:#e6db74>                &#34;ec2:DescribeInstances&#34;
+</span><span style=color:#e6db74>            ],
+</span><span style=color:#e6db74>            &#34;Resource&#34;: &#34;*&#34;
+</span><span style=color:#e6db74>        }
+</span><span style=color:#e6db74>    ]
+</span><span style=color:#e6db74>}
+</span><span style=color:#e6db74>EOF</span>
+
+VAULT_AUTH_POLICY_ARN<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>aws iam create-policy <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --policy-name $VAULT_AUTH_POLICY_NAME <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --description <span style=color:#e6db74>&#34;Policy used by the Vault user to check instance identity&#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --policy-document file://$VAULT_AUTH_POLICY_NAME.json | jq -r .Policy.Arn<span style=color:#66d9ef>)</span>
+
+</code></pre></div><p>This policy is a simplified version of the <a href=https://www.vaultproject.io/docs/auth/aws#recommended-vault-iam-policy>recommended Vault IAM policy</a> from the docs.</p>
+<p>Create the AWS user and credentials.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>VAULT_AUTH_USER_NAME<span style=color:#f92672>=</span>vault-auth
+
+aws iam create-user --user-name $VAULT_AUTH_USER_NAME
+
+aws iam attach-user-policy --user-name $VAULT_AUTH_USER_NAME --policy-arn $VAULT_AUTH_POLICY_ARN
+
+aws iam create-access-key --user-name $VAULT_AUTH_USER_NAME &gt; access_key.json
+
+<span style=color:#75715e># output omitted</span>
+
+</code></pre></div><p>Now we are ready to start Vault and configure the auth method.</p>
+<p>For the purpose of this tutorial, we&rsquo;ll run Vault locally in dev mode and make it reachable from AWS using <a href=https://ngrok.com/download>ngrok</a>.</p>
+<p>Open a different terminal session and start the Vault server using Docker. We will keep this session running during the entire tutorial.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>docker run --cap-add<span style=color:#f92672>=</span>IPC_LOCK --rm -it <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    -p 8200:8200 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    -e VAULT_DEV_ROOT_TOKEN_ID<span style=color:#f92672>=</span>mytoken <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>vault
+
+<span style=color:#75715e># output omitted</span>
+</code></pre></div><p>Open another terminal session. Make sure you are in the same folder we started the tutorial since we are going to use the <code>access_key.json</code> file created before. We will use this container to execute the Vault client commands.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>docker run --rm -it <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    -e VAULT_ADDR<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;http://localhost:8200&#39;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    -e VAULT_TOKEN<span style=color:#f92672>=</span>mytoken <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    -e VAULT_AUTH_ACCESS_KEY_ID<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>jq -r .AccessKey.AccessKeyId &lt; access_key.json<span style=color:#66d9ef>)</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    -e VAULT_AUTH_SECRET_ACCESS_KEY<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>jq -r .AccessKey.SecretAccessKey &lt; access_key.json<span style=color:#66d9ef>)</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --net<span style=color:#f92672>=</span>host vault /bin/sh
+    
+<span style=color:#75715e># output omitted</span>
+</code></pre></div><p>The following commands will run from inside the container. Notice in the command above that, for convenience, we are exporting the secret and access key to the container environment. It&rsquo;s just a convenience so we don&rsquo;t need to copy and paste this data.</p>
+<p>Enable and configure the AWS auth method.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>vault auth enable aws
+
+vault write auth/aws/config/client <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    secret_key<span style=color:#f92672>=</span>$VAULT_AUTH_SECRET_ACCESS_KEY <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    access_key<span style=color:#f92672>=</span>$VAULT_AUTH_ACCESS_KEY_ID
+
+<span style=color:#75715e># output omitted</span>
+</code></pre></div><h2 id=optional-authenticate-using-the-node-iam-role>Optional: Authenticate using the Node IAM Role</h2>
+<p>Still from inside the container, we are going to create a Vault role and bind the EC2 data.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>vault write auth/aws/role/dev-role-iam auth_type<span style=color:#f92672>=</span>iam <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    inferred_entity_type<span style=color:#f92672>=</span>ec2_instance <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    inferred_aws_region<span style=color:#f92672>=</span>us-east-1 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    bound_account_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;123456789012&#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    bound_iam_instance_profile_arn<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;arn:aws:iam::123456789012:instance-profile/eks1-*&#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    policies<span style=color:#f92672>=</span>dev <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    max_ttl<span style=color:#f92672>=</span>768h
+</code></pre></div><p>The instance profile ARN provided in the <code>bound_iam_instance_profile_arn</code> field is from the Node IAM Role and identifies the EC2 instances of the Node group. We can verify this instance profile ARN with the following command.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>aws ec2 describe-instances <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --filters Name<span style=color:#f92672>=</span>tag:<span style=color:#e6db74>&#34;eks:cluster-name&#34;</span>,Values<span style=color:#f92672>=</span>$CLUSTER_NAME <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --query <span style=color:#e6db74>&#39;Reservations[0].Instances[0].IamInstanceProfile.Arn&#39;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --output text
+</code></pre></div><p>Note that you need to fill the other values for <code>inferred_aws_region</code> and <code>bound_account_id</code> in the Vault role with your own. Also, note that the Vault policy <code>dev</code> used in the role does not exist in this Vault instance, it&rsquo;s just to illustrate.</p>
+<p>Start ngrok in a different terminal session.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>./ngrok http <span style=color:#ae81ff>8200</span>
+
+Session Status                online
+Session Expires               <span style=color:#ae81ff>1</span> hour, <span style=color:#ae81ff>59</span> minutes
+Version                       2.3.40
+Region                        Mars <span style=color:#f92672>(</span>mars<span style=color:#f92672>)</span>
+Web Interface                 http://127.0.0.1:4040
+Forwarding                    http://2a7f0319443a.ngrok.io -&gt; http://localhost:8200
+Forwarding                    https://2a7f0319443a.ngrok.io -&gt; http://localhost:8200
+</code></pre></div><p>Perform the Vault login from a pod running in EKS (make sure you use the ngrok address as the Vault address).</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>kubectl run vault -it --rm --restart<span style=color:#f92672>=</span>Never --image vault -- <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    vault login -address<span style=color:#f92672>=</span>http://2a7f0319443a.ngrok.io <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    -method<span style=color:#f92672>=</span>aws <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    role<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;dev-role-iam&#34;</span>
+
+<span style=color:#f92672>[</span>...<span style=color:#f92672>]</span>
+Success! You are now authenticated. The token information displayed below
+is already stored in the token helper. You <span style=color:#66d9ef>do</span> NOT need to run <span style=color:#e6db74>&#34;vault login&#34;</span>
+again. Future Vault requests will automatically use this token.
+
+Key                      Value
+---                      -----
+token                    s.A4HmMdld2oOdRdewylaj6qLy
+token_accessor           QaNhxJxywmUasNFMmihdgoBB
+token_duration           768h
+token_renewable          true
+token_policies           <span style=color:#f92672>[</span><span style=color:#e6db74>&#34;default&#34;</span> <span style=color:#e6db74>&#34;dev&#34;</span><span style=color:#f92672>]</span>
+identity_policies        <span style=color:#f92672>[]</span>
+policies                 <span style=color:#f92672>[</span><span style=color:#e6db74>&#34;default&#34;</span> <span style=color:#e6db74>&#34;dev&#34;</span><span style=color:#f92672>]</span>
+token_meta_account_id    <span style=color:#ae81ff>123456789012</span>
+token_meta_auth_type     iam
+token_meta_role_id       231bdbec-7246-6c24-e255-b1065e2eaa74
+pod <span style=color:#e6db74>&#34;vault&#34;</span> deleted
+
+</code></pre></div><p>You should see an output with the Vault token.</p>
+<h2 id=configure-the-aws-iam-roles-for-service-accounts>Configure the AWS IAM Roles for Service Accounts</h2>
+<p>Now let&rsquo;s get to the AWS IAM Roles for Service Accounts configuration. Please, note that I&rsquo;ll configure the AWS IAM resources and k8s service account individually so we can have a better understanding of what is happening behind the scenes. But the eksctl has a command <code>eksctl create iamserviceaccount</code> that simplifies the following steps to a single command.</p>
+<p>Get the OIDC provider identifier for your cluster. This is available because we used the <code>--with-oidc</code> flag when creating the cluster, otherwise we&rsquo;d need to create the OIDC provider and associate to the cluster (<a href=https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html>more about this here</a>).</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>OIDC_PROVIDER<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>aws eks describe-cluster --name $CLUSTER_NAME <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --query <span style=color:#e6db74>&#34;cluster.identity.oidc.issuer&#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --output text | sed -e <span style=color:#e6db74>&#34;s/^https:\/\///&#34;</span><span style=color:#66d9ef>)</span>
+</code></pre></div><p>Create the trust policy and an IAM Role to be used by the Vault authentication.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>VAULT_AUTH_ROLE_NAME<span style=color:#f92672>=</span>vault-auth
+VAULT_AUTH_K8S_SERVICE_ACCOUNT<span style=color:#f92672>=</span>$VAULT_AUTH_ROLE_NAME
+
+cat <span style=color:#e6db74>&lt;&lt;EOF &gt; ${VAULT_AUTH_ROLE_NAME}.trust.json
+</span><span style=color:#e6db74>{
+</span><span style=color:#e6db74>  &#34;Version&#34;: &#34;2012-10-17&#34;,
+</span><span style=color:#e6db74>  &#34;Statement&#34;: [
+</span><span style=color:#e6db74>    {
+</span><span style=color:#e6db74>      &#34;Effect&#34;: &#34;Allow&#34;,
+</span><span style=color:#e6db74>      &#34;Principal&#34;: {
+</span><span style=color:#e6db74>        &#34;Federated&#34;: &#34;arn:aws:iam::${ACCOUNT_ID}:oidc-provider/${OIDC_PROVIDER}&#34;
+</span><span style=color:#e6db74>      },
+</span><span style=color:#e6db74>      &#34;Action&#34;: &#34;sts:AssumeRoleWithWebIdentity&#34;,
+</span><span style=color:#e6db74>      &#34;Condition&#34;: {
+</span><span style=color:#e6db74>        &#34;StringEquals&#34;: {
+</span><span style=color:#e6db74>          &#34;${OIDC_PROVIDER}:sub&#34;: &#34;system:serviceaccount:default:${VAULT_AUTH_K8S_SERVICE_ACCOUNT}&#34;
+</span><span style=color:#e6db74>        }
+</span><span style=color:#e6db74>      }
+</span><span style=color:#e6db74>    }
+</span><span style=color:#e6db74>  ]
+</span><span style=color:#e6db74>}
+</span><span style=color:#e6db74>EOF</span>
+
+VAULT_AUTH_ROLE_ARN<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>aws iam create-role <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --role-name $VAULT_AUTH_ROLE_NAME <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --assume-role-policy-document file://<span style=color:#e6db74>${</span>VAULT_AUTH_ROLE_NAME<span style=color:#e6db74>}</span>.trust.json <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --description <span style=color:#e6db74>&#34;Defines Pod identity for Vault AWS authentication&#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --query Role.Arn <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --output text<span style=color:#66d9ef>)</span>
+</code></pre></div><p>Now let&rsquo;s create and annotate a Kubernetes service account with this IAM Role and validate the caller identity within a pod.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>kubectl create sa $VAULT_AUTH_K8S_SERVICE_ACCOUNT
+
+kubectl annotate sa $VAULT_AUTH_K8S_SERVICE_ACCOUNT eks.amazonaws.com/role-arn<span style=color:#f92672>=</span>$VAULT_AUTH_ROLE_ARN
+
+kubectl run awscli -it --rm --restart<span style=color:#f92672>=</span>Never --serviceaccount $VAULT_AUTH_K8S_SERVICE_ACCOUNT --image amazon/aws-cli sts get-caller-identity
+
+<span style=color:#f92672>{</span>
+    <span style=color:#e6db74>&#34;UserId&#34;</span>: <span style=color:#e6db74>&#34;AROA6HH0000000CRMM46T:botocore-session-1621778135&#34;</span>,
+    <span style=color:#e6db74>&#34;Account&#34;</span>: <span style=color:#e6db74>&#34;123456789012&#34;</span>,
+    <span style=color:#e6db74>&#34;Arn&#34;</span>: <span style=color:#e6db74>&#34;arn:aws:sts::123456789012:assumed-role/vault-auth/botocore-session-1621778135&#34;</span>
+<span style=color:#f92672>}</span>
+pod <span style=color:#e6db74>&#34;awscli&#34;</span> deleted
+</code></pre></div><p>You should see the ARN output of the last command referring to the previously created IAM role for Vault.</p>
+<p>Now, let&rsquo;s get back to our Vault instance running locally and create a Vault role to satisfy this new identity.</p>
+<p>Start a container to perform the Vault client commands. Note that this container is a convenience to use the Vault client, if you have a Vault client installed in your machine you can just point it to the Vault server running in Docker.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>docker run --rm -it <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    -e VAULT_ADDR<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;http://localhost:8200&#39;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    -e VAULT_TOKEN<span style=color:#f92672>=</span>mytoken <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --net<span style=color:#f92672>=</span>host vault /bin/sh
+</code></pre></div><p>Let&rsquo;s create the Vault AWS role. Change the <code>bound_iam_principal_arn</code> below with the Vault IAM Role created before - you can check this out with <code>echo $VAULT_AUTH_ROLE_ARN</code>. Run from inside the container.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>vault write auth/aws/role/dev-role-iam2 auth_type<span style=color:#f92672>=</span>iam <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    bound_iam_principal_arn<span style=color:#f92672>=</span>arn:aws:iam::123456789012:role/vault-auth <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    policies<span style=color:#f92672>=</span>dev <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    max_ttl<span style=color:#f92672>=</span>768h
+</code></pre></div><p>Exit the container.</p>
+<p>Make sure ngrok is still running and the URL is still the same.</p>
+<p>Run a pod to perform the Vault authentication using the new role and the pod identity.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>kubectl run vault -it --rm --restart<span style=color:#f92672>=</span>Never <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --serviceaccount $VAULT_AUTH_K8S_SERVICE_ACCOUNT <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --image vault -- <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    vault login -address<span style=color:#f92672>=</span>http://2a7f0319443a.ngrok.io <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    -method<span style=color:#f92672>=</span>aws <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    role<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;dev-role-iam2&#34;</span>
+    
+If you don<span style=color:#960050;background-color:#1e0010>&#39;</span>t see a command prompt, try pressing enter.
+Success! You are now authenticated. The token information displayed below
+is already stored in the token helper. You <span style=color:#66d9ef>do</span> NOT need to run <span style=color:#e6db74>&#34;vault login&#34;</span>
+again. Future Vault requests will automatically use this token.
+
+Key                      Value
+---                      -----
+token                    s.RSqVT87jxMwPjZOS9gv6N7eg
+token_accessor           gyU6SDHP3YJ6yIDeGESc0loO
+token_duration           768h
+token_renewable          true
+token_policies           <span style=color:#f92672>[</span><span style=color:#e6db74>&#34;default&#34;</span> <span style=color:#e6db74>&#34;dev&#34;</span><span style=color:#f92672>]</span>
+identity_policies        <span style=color:#f92672>[]</span>
+policies                 <span style=color:#f92672>[</span><span style=color:#e6db74>&#34;default&#34;</span> <span style=color:#e6db74>&#34;dev&#34;</span><span style=color:#f92672>]</span>
+token_meta_account_id    <span style=color:#ae81ff>123456789012</span>
+token_meta_auth_type     iam
+token_meta_role_id       f4588750-45cc-19f2-b7d1-1c570979dcc3
+pod <span style=color:#e6db74>&#34;vault&#34;</span> deleted
+</code></pre></div><p>If everything is ok, you should see the Vault token as in the output above. Make changes in the Vault role and note how the login will fail if you provide an invalid principal ARN. You can also experiment with a different non-authorized Kubernetes service account to see what happens.</p>
+<h2 id=optional-iam-roles-for-service-accounts-overview>Optional: IAM Roles for Service Accounts Overview</h2>
+<p>Instead of using the Node IAM Role, the IAM Roles for Service Accounts feature makes pods first-class citizens in IAM, enabling the AWS identity APIs to recognize Kubernetes pods. This approach uses an OpenID Connect (OIDC) identity provider and Kubernetes service account annotations to allow a Pod to assume an AWS IAM role.</p>
+<p>The flow works as follows, from the docs:</p>
+<blockquote>
+<p>OIDC federation allows the user to assume IAM roles with the Secure Token Service (STS), effectively receiving a JSON Web Token (JWT) via an OAuth2 flow that can be used to assume an IAM role with an OIDC provider. In Kubernetes we then use projected service account tokens, which are valid OIDC JWTs, giving each pod a cryptographically-signed token which can be verified by STS against the OIDC provider for establishing identity.</p>
+</blockquote>
+<p>To simplify things on our side, a mutating admission controller running in EKS (via a webhook) automatically injects in the pod the necessary environment variables and a volume with a <a href=https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection>projected service account token</a>. The admission controller is just a utility, this step can also be made manually.</p>
+<p>Check the blog post <a href=https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts/>Introducing fine-grained IAM roles for service accounts</a> and the <a href=https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html>AWS IAM Roles for Service Accounts documentation</a> for more details.</p>
+<h2 id=optional-terraform-configuration>Optional: Terraform configuration</h2>
+<p>In this tutorial we used the AWS and Vault CLI&rsquo;s for the configuration. If you are interested in the Terraform approach for the same configuration we did here, please, check <a href=https://gist.github.com/soeirosantos/1ac8478c917ea47bd092974c9a96c003>this gist</a>.</p>
+<h2 id=clean-up>Clean up</h2>
+<p>To avoid costs with EKS and to remove the IAM resources created in this tutorial, execute the following commands.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>eksctl delete cluster --name $CLUSTER_NAME
+aws iam detach-user-policy --user-name vault-auth --policy-arn $VAULT_AUTH_POLICY_ARN
+aws iam delete-policy --policy-arn $VAULT_AUTH_POLICY_ARN
+aws iam delete-access-key --user-name $VAULT_AUTH_USER_NAME --access-key-id<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#66d9ef>$(</span>jq -r .AccessKey.AccessKeyId &lt; access_key.json<span style=color:#66d9ef>)</span><span style=color:#e6db74>&#34;</span>
+aws iam delete-user --user-name $VAULT_AUTH_USER_NAME
+aws iam delete-role --role-name $VAULT_AUTH_ROLE_NAME
+</code></pre></div><hr>
+<p>Thanks for following along and reading through this. If you like this tutorial, you may like other things I share on <a href=https://todevornot.com>https://todevornot.com</a>.</p>
+</div>
+</article>
+</main>
+</div>
+<aside class=sidebar><div class="widget-search widget">
+<form class=widget-search__form role=search method=get action=https://duckduckgo.com/>
+<label>
+<input class=widget-search__field type=search placeholder=SEARCH… name=q aria-label=SEARCH…>
+</label>
+<input class=widget-search__submit type=submit value=Search>
+<input type=hidden name=sites value=https://deployment.properties>
+</form>
+</div>
+<div class="widget-recent widget">
+<h4 class=widget__title>Recent Posts</h4>
+<div class=widget__content>
+<ul class=widget__list>
+<li class=widget__item><a class=widget__link href=/posts/devsecops/vulnerable-dependency-management/>Vulnerable Dependency Management: The Invisible Enemy</a></li>
+<li class=widget__item><a class=widget__link href=/posts/hugo/hugo-gh-pages-n-actions/>Create a static website with Hugo, GitHub Pages and Actions (in minutes)</a></li>
+<li class=widget__item><a class=widget__link href=/posts/devsecops/eks-irsa/>HashiCorp Vault AWS Auth with Amazon EKS and IAM Roles for Service Accounts</a></li>
+</ul>
+</div>
+</div>
+<div class="widget-social widget">
+<h4 class="widget-social__title widget__title">Social</h4>
+<div class="widget-social__content widget__content">
+<div class="widget-social__item widget__item">
+<a class="widget-social__link widget__link btn" title=Twitter rel="noopener noreferrer" href=https://twitter.com/soeiro_santos target=_blank><svg class="widget-social__link-icon icon icon-twitter" width="24" height="24" viewBox="0 0 384 312"><path d="m384 36.9c-14.1 6.3-29.3 10.5-45.2 12.4 16.3-9.7 28.8-25.2 34.6-43.6-15.2 9-32.1 15.6-50 19.1-14.4-15.2-34.9-24.8-57.5-24.8-43.5.0-78.8 35.3-78.8 78.8.0 6.2.7 12.2 2 17.9-65.5-3.3-123.5-34.6-162.4-82.3C20 26 16.1 39.6 16.1 54c0 27.3 13.9 51.4 35 65.6-12.9-.4-25.1-4-35.7-9.9v1c0 38.2 27.2 70 63.2 77.2-6.6 1.8-13.6 2.8-20.8 2.8-5.1.0-10-.5-14.8-1.4 10 31.3 39.1 54.1 73.6 54.7-27 21.1-60.9 33.7-97.8 33.7-6.4.0-12.6-.4-18.8-1.1C34.9 299 76.3 312 120.8 312c144.9.0 224.1-120 224.1-224.1.0-3.4-.1-6.8-.2-10.2 15.4-11.1 28.7-25 39.3-40.8z"/></svg>
+<span>Twitter</span>
+</a>
+</div>
+<div class="widget-social__item widget__item">
+<a class="widget-social__link widget__link btn" title=LinkedIn rel="noopener noreferrer" href=https://linkedin.com/in/soeirosantos target=_blank><svg class="widget-social__link-icon icon icon-linkedin" width="24" height="24" viewBox="0 0 352 352"><path d="M0 40v272c0 21.9 18.1 40 40 40h272c21.9.0 40-18.1 40-40V40c0-21.9-18.1-40-40-40H40C18.1.0.0 18.1.0 40zm312-8c4.6.0 8 3.4 8 8v272c0 4.6-3.4 8-8 8H40c-4.6.0-8-3.4-8-8V40c0-4.6 3.4-8 8-8H312zM59.5 87c0 15.2 12.3 27.5 27.5 27.5s27.5-12.3 27.5-27.5S102.2 59.5 87 59.5 59.5 71.8 59.5 87zM187 157h-1v-21h-45v152h47v-75c0-19.8 3.9-39 28.5-39 24.2.0 24.5 22.4 24.5 40v74h47v-83.5c0-40.9-8.7-72-56.5-72-23 0-38.2 12.6-44.5 24.5zM64 288h47.5V136H64V288z"/></svg>
+<span>LinkedIn</span>
+</a>
+</div>
+<div class="widget-social__item widget__item">
+<a class="widget-social__link widget__link btn" title=GitHub rel="noopener noreferrer" href=https://github.com/soeirosantos target=_blank><svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0C85.9.0.0 85.8.0 191.7c0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2.0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8.0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7.0.0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4.0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5.0 25.6-.2 46.3-.2 52.6.0 5.1 3.5 11.1 13.2 9.2C329 348.2 384 276.4 384 191.7 384 85.8 298 0 192 0z"/></svg>
+<span>GitHub</span>
+</a>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<footer class=footer>
+<div class="container footer__container flex">
+<div class=footer__copyright>
+&copy; 2021 Deployment - A tech blog focused on Software Engineering and DevSecOps.
+<span class=footer__copyright-credits>Generated with <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> and <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> theme.</span>
+</div>
+</div>
+</footer>
+</div>
+<script async defer src=/js/menu.js></script>
+<script src=/js/custom.js></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+</body>
+</html>
