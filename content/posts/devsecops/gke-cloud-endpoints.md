@@ -1,8 +1,8 @@
 ---
 title: "Google Cloud Endpoints in GKE with Container-native Load Balancing"
-description: "changeme"
+description: "Google Cloud Endpoints in GKE walkthrough"
 date: 2021-03-08
-lastmod: 2021-08-22
+lastmod: 2021-08-23
 draft: false
 sidebar: "right"
 widgets:
@@ -18,7 +18,7 @@ tags:
 ---
 In the source code for this tutorial, we extend the [Getting started with Cloud Endpoints for GKE with ESP](https://cloud.google.com/endpoints/docs/openapi/get-started-kubernetes-engine) documentation guide to provide an example of how to configure HTTPS between the LB and the ESP.
 
-In the step-by-step below, we will configure the ESP to communicate with the LB over HTTP. I'll let you verifying the HTTPS configuration between the ESP and the LB.
+In the step-by-step below, we will configure the ESP to communicate with the LB over HTTP. I'll let you verifying the HTTPS configuration between the ESP and the LB. The purpose of this tutorial is for you to use the existing code in [the GitHub repository](https://github.com/soeirosantos/cloud-endpoints-gke-container-native-lb) to deploy and experiment.
 
 <!--more-->
 
@@ -70,7 +70,8 @@ gcloud compute addresses create esp-echo --global
 Store the IP address in a variable
 
 ```shell
-INGRESS_IP=$(gcloud compute addresses describe esp-echo --global --format json | jq -r .address)
+ingress_ip=$(gcloud compute addresses describe \
+    esp-echo --global --format json | jq -r .address)
 ```
 
 ## Deploy the Cloud Endpoints configuration
@@ -151,26 +152,26 @@ watch "kubectl get ingress esp-echo \
 Use the following commands to observe how the GCP Backend Service and Health Check get configured based on your Ingress, Service and Pod configuration.
 
 ```shell
-BACKEND_SERVICE=$(kubectl get ingress esp-echo \
-  -o jsonpath='{.metadata.annotations.ingress\.kubernetes\.io/backends}' | jq -r keys[0]
+backend_service=$(kubectl get ingress esp-echo \
+    -o jsonpath='{.metadata.annotations.ingress\.kubernetes\.io/backends}' | jq -r keys[0])
 
-gcloud compute backend-services describe $BACKEND_SERVICE --global
+gcloud compute backend-services describe $backend_service --global
 
-gcloud compute health-checks describe $BACKEND_SERVICE --global
+gcloud compute health-checks describe $backend_service --global
 ```
 
 Finally, check your service.
 
 ```shell
-curl -v http://"${INGRESS_IP}"/healthz
+curl -v http://"${ingress_ip}"/healthz
 
 curl --request POST \
    --header "content-type:application/json" \
    --data '{"message":"hello world"}' \
-   "http://${INGRESS_IP}/echo"
+   "http://${ingress_ip}/echo"
 ```
 
-Execute the same steps with the [.kube-https.yaml](https://github.com/soeirosantos/cloud-endpoints-gke-container-native-lb/blob/main/.kube-https.yaml) configuration. Notice that you test from the `INGRESS_IP` still using HTTP. This is because when you configure the ESP container with HTTPS you are using TLS only for traffic from `LB -> ESP`. Configuring TLS for your Ingress is important and something you should definitely do, but it's out of the scope in this tutorial.
+Execute the same steps with the [.kube-https.yaml](https://github.com/soeirosantos/cloud-endpoints-gke-container-native-lb/blob/main/.kube-https.yaml) configuration. Notice that you test from the `ingress_ip` still using HTTP. This is because when you configure the ESP container with HTTPS you are using TLS only for traffic from `LB -> ESP`. Configuring TLS for your Ingress is important and something you should definitely do, but it's out of the scope in this tutorial.
 
 ## Optional - Test different types of Security Definitions
 
