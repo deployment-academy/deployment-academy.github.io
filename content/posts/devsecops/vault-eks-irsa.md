@@ -19,6 +19,8 @@ tags:
 
 In this tutorial, we are going to configure and explore the [HashiCorp Vault AWS Auth method](https://www.vaultproject.io/docs/auth/aws) with [Amazon EKS](https://aws.amazon.com/eks). We will start performing the Vault authentication using the EC2 instances (Kubernetes nodes) identity and later we will use a Kubernetes service account to impersonate an AWS IAM Role and have more fine-grained control at the Pod level.
 
+<!--more-->
+
 Before you begin, notice that this is a hands-on tutorial that focuses on configuring and playing around with the features. To learn more about HashiCorp Vault, Amazon EKS, or IAM Roles for Service Accounts, please, refer to the documentation linked in the text.
 
 ## Context
