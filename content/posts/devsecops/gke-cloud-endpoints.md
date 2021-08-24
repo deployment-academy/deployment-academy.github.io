@@ -18,7 +18,7 @@ tags:
 ---
 In the source code for this tutorial, we extend the [Getting started with Cloud Endpoints for GKE with ESP](https://cloud.google.com/endpoints/docs/openapi/get-started-kubernetes-engine) documentation guide to provide an example of how to configure HTTPS between the LB and the ESP.
 
-In the step-by-step below, we will configure the ESP to communicate with the LB over HTTP. I'll let you verifying the HTTPS configuration between the ESP and the LB. The purpose of this tutorial is for you to use the existing code in [the GitHub repository](https://github.com/soeirosantos/cloud-endpoints-gke-container-native-lb) to deploy and experiment.
+In the step-by-step below, we will configure the ESP to communicate with the LB over HTTP. I'll let you verify the HTTPS configuration between the ESP and the LB. The purpose of this tutorial is for you to use the existing code in [the GitHub repository](https://github.com/soeirosantos/cloud-endpoints-gke-container-native-lb) to make changes and experiment.
 
 <!--more-->
 
@@ -34,12 +34,12 @@ The source code used in the [repo for this tutorial](https://github.com/soeirosa
 
 ## Prepare the environment
 
-Export environment variables with your GCP Project ID, GCP Region and name of the GKE cluster to be created.
+Create variables with your GCP Project ID, GCP Region and name of the GKE cluster to be created.
 
 ```shell
-export gcp_project=your_project_id
-export gcp_region=us-central1
-export gke_cluster=le-cluster
+gcp_project=your_project_id
+gcp_region=us-central1
+gke_cluster=le-cluster
 ```
 
 ```shell
@@ -50,12 +50,12 @@ Create the GKE cluster.
 
 ```shell
 gcloud beta container clusters create $gke_cluster \
-  --release-channel regular \
+  --release-channel stable \
   --enable-ip-alias \
   --region $gcp_region
 ```
 
-Configure your kubectl to point to the newly created cluster.
+After the cluster is created, your `kubeconfig` is already pointing to the new cluster. If you change contexts and need to re-connect, use:
 
 ```shell
 gcloud container clusters get-credentials $gke_cluster --region $gcp_region
@@ -67,7 +67,7 @@ Create an External IP that will be used in the Ingress later.
 gcloud compute addresses create esp-echo --global
 ```
 
-Store the IP address in a variable
+Store the IP address in a variable.
 
 ```shell
 ingress_ip=$(gcloud compute addresses describe \
@@ -134,7 +134,7 @@ Deploy the Kubernetes config.
 kubectl apply -f .kube-http.yaml
 ```
 
-Check if the pod was properly initialized
+Check if the pod was properly initialized.
 
 ```shell
 kubectl get po
@@ -171,7 +171,7 @@ curl --request POST \
    "http://${ingress_ip}/echo"
 ```
 
-Execute the same steps with the [.kube-https.yaml](https://github.com/soeirosantos/cloud-endpoints-gke-container-native-lb/blob/main/.kube-https.yaml) configuration. Notice that you test from the `ingress_ip` still using HTTP. This is because when you configure the ESP container with HTTPS you are using TLS only for traffic from `LB -> ESP`. Configuring TLS for your Ingress is important and something you should definitely do, but it's out of the scope in this tutorial.
+Execute the same steps with the [.kube-https.yaml](https://github.com/soeirosantos/cloud-endpoints-gke-container-native-lb/blob/main/.kube-https.yaml) configuration. Notice that you will test from the `ingress_ip` still using HTTP. This is because when you configure the ESP container with HTTPS you are using TLS only for traffic from `LB -> ESP`. Configuring TLS for your Ingress is important and something you should definitely do, but it's out of the scope in this tutorial.
 
 ## Optional - Test different types of Security Definitions
 
