@@ -18,9 +18,9 @@ tags:
 ---
 In the source code for this tutorial, we extend the [Getting started with Cloud Endpoints for GKE with ESP](https://cloud.google.com/endpoints/docs/openapi/get-started-kubernetes-engine) documentation guide to provide an example of how to configure HTTPS between the LB and the ESP.
 
-In the step-by-step below, we will configure the ESP to communicate with the LB over HTTP. I'll let you verify the HTTPS configuration between the ESP and the LB. The purpose of this tutorial is for you to use the existing code in [the GitHub repository](https://github.com/soeirosantos/cloud-endpoints-gke-container-native-lb) to make changes and experiment.
-
 <!--more-->
+
+In the step-by-step below, we will configure the ESP to communicate with the LB over HTTP. I'll let you verify the HTTPS configuration between the ESP and the LB. The purpose of this tutorial is for you to use the existing code in [the GitHub repository](https://github.com/soeirosantos/cloud-endpoints-gke-container-native-lb) to make changes and experiment.
 
 Start cloning the source code.
 
