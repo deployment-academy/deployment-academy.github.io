@@ -2,7 +2,7 @@
 title: "Vulnerable Dependency Management: The Invisible Enemy"
 description: "Security considerations about dependency management."
 date: 2021-08-22T12:52:20-04:00
-lastmod: 2021-08-22T12:52:20-04:00
+lastmod: 2021-08-25T12:56:20-04:00
 draft: false
 sidebar: "right"
 widgets:
@@ -23,7 +23,7 @@ Let's talk about something that most developers and engineering teams don't pay 
 
 <!--more-->
 
-> **TL;DR** - In this post, we are going to review a few points and see why you shouldn't be omissive in terms of upgrading your dependencies and that you should strongly consider automating dependency vulnerability checks in your CICD pipeline.
+> **TL;DR** - In this post, we are going to review a few points and see why you shouldn't consider an ad-hoc posture in terms of upgrading your dependencies and that you should strongly consider automating dependency vulnerability checks in your CICD pipeline.
 
 ## Dependency Management Overview
 
@@ -45,7 +45,7 @@ To properly understand how vulnerable dependencies get and last into the codebas
 
 These are some common approaches we can see in terms of dependency upgrades:
 
-**Omissive** - The most common (and what I would call the default approach) is to upgrade a dependency when you need a new feature or not upgrade at all otherwise. Besides the obvious issue of using old and often deprecated and not supported features, one of the main problems with this approach is that the longer you take to upgrade a dependency, the more extensive the effort will be. Evaluate the changelog and the impact of an upgrade is more complicated when there is a significant drift between versions. Of course, this isn't good from a security perspective as well. Besides keeping vulnerable code in your codebase, security patches may not be backported to older versions and the time and effort to patch a critical vulnerability may not meet the business expectations.
+**Ad-hoc** - The most common (and what I would call the default approach) is to upgrade a dependency when you need a new feature or not upgrade at all otherwise. Besides the obvious issue of using old and often deprecated and not supported features, one of the main problems with this approach is that the longer you take to upgrade a dependency, the more extensive the effort will be. Evaluate the changelog and the impact of an upgrade is more complicated when there is a significant drift between versions. Of course, this isn't good from a security perspective as well. Besides keeping vulnerable code in your codebase, security patches may not be backported to older versions and the time and effort to patch a critical vulnerability may not meet the business expectations.
 
 **Latest version** - Staying up to date with the latest version of your dependencies is usually the recommended approach. Being up to date with the latest version of libraries will keep you up to date with new features, bug fixes and security patches. But it also brings a risk that cannot be ignored. You might be impacted by new bugs or vulnerabilities flaws introduced in the third-party library. Depending on the requirements and criticality of your application, it might be a good idea to keep a more conservative cadence of updates - mainly for core frameworks. To follow this approach, it's ideal to have an automated CICD pipeline and a mature continuous delivery process to support frequent rollouts and quick rollbacks. Proper code coverage and automated tests will help you to validate upgrades and changes.
 
@@ -55,7 +55,7 @@ These are some common approaches we can see in terms of dependency upgrades:
 
 It's also not necessary to pick one of these approaches. You might come up with a mixed approach where you would be always on the latest version for utility libraries and follow the dependency release cycle for more critical components.
 
-While being omissive is not an advised posture, **choosing the best approach to manage your dependencies should consider your application characteristics and threat model**.
+While an ad-hoc posture is not advised, **choosing the best approach to manage your dependencies should consider your application characteristics and threat model**.
 
 ## Tools Overview
 
@@ -78,4 +78,4 @@ https://www.linuxfoundation.org/wp-content/uploads/An-Open-Guide-To-Evaluating-S
 
 ## Conclusion
 
-Most of your application is composed of third-party open-source libraries. Taking care of this code is as important as taking care of your own code. An omissive dependency management posture can lead you to a high-risk and vulnerable position. You should act proactively to upgrade your dependencies and bake vulnerability discovery into your development life cycle, preferably in the CICD pipeline, to anticipate remediation.
+Most of your application is composed of third-party open-source libraries. Taking care of this code is as important as taking care of your own code. An ad-hoc or negligent dependency management posture can lead you to a high-risk and vulnerable position. You should act proactively to upgrade your dependencies and bake vulnerability discovery into your development life cycle, preferably in the CICD pipeline, to anticipate remediation.
