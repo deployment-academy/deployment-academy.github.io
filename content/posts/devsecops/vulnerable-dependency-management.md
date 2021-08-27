@@ -79,3 +79,9 @@ https://www.linuxfoundation.org/wp-content/uploads/An-Open-Guide-To-Evaluating-S
 ## Conclusion
 
 Most of your application is composed of third-party open-source libraries. Taking care of this code is as important as taking care of your own code. An ad-hoc or negligent dependency management posture can lead you to a high-risk and vulnerable position. You should act proactively to upgrade your dependencies and bake vulnerability discovery into your development life cycle, preferably in the CICD pipeline, to anticipate remediation.
+
+## Feedback
+
+Have comments or feedback? Feel free to share in the thread below:
+
+{{< tweet 1431023458734034944 >}}
