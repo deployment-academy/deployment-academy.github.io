@@ -6,6 +6,7 @@ theme = "mainroad"
 disqusShortname = "" # Enable Disqus comments by entering your Disqus shortname
 googleAnalytics = "G-0BJEGTESYY" # Enable Google Analytics by entering your tracking id
 enableEmoji = true
+enableGitInfo = true
 
 [Author] # Used in authorbox
   name = "Romulo Santos"
@@ -26,7 +27,7 @@ enableEmoji = true
   post_meta = ["author", "date", "categories"] # Order of post meta information
   mainSections = ["posts"] # Specify section pages to show on home page and the "Recent articles" widget
   dateformat = "2006-01-02" # Change the format of dates
-  mathjax = true # Enable MathJax
+  mathjax = false # Enable MathJax
   mathjaxPath = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js" # Specify MathJax path
   mathjaxConfig = "TeX-AMS-MML_HTMLorMML" # Specify MathJax config
   googleFontsLink = "https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700" # Load Google Fonts
@@ -69,8 +70,8 @@ enableEmoji = true
 #   email = "example@example.com"
 #   bitbucket = "username"
 #   gitlab = "username"
+#   linkedin = "soeirosantos"
   twitter = "soeiro_santos"
-  linkedin = "soeirosantos"
   github = "soeirosantos"
 
 # Custom social links
