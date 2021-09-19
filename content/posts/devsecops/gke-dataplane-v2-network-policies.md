@@ -1,6 +1,6 @@
 ---
 title: "GKE Dataplane V2 and Network Policies in Practice"
-description: "changeme"
+description: "In this tutorial, we are going to play with the Google Kubernetes Engine Dataplane V2 and check how we can use it along with Kubernetes Network Policies to limit traffic to Pods and to obtain real-time visibility on cluster network activity."
 date: 2021-09-18T13:48:06-04:00
 lastmod: 2021-09-18T13:48:06-04:00
 draft: false
