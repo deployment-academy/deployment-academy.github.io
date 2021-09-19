@@ -19,12 +19,12 @@ tags:
   - "network policies"
 ---
 
-In this tutorial, we are going to play with the [Google Kubernetes Engine Dataplane V2](https://cloud.google.com/kubernetes-engine/docs/concepts/dataplane-v2) and check how we can use it along with [Kubernetes Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/) to limit traffic to Pods and to obtain real-time visibility on network activity.
+In this tutorial, we are going to play with the [Google Kubernetes Engine Dataplane V2](https://cloud.google.com/kubernetes-engine/docs/concepts/dataplane-v2) and check how we can use it along with [Kubernetes Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/) to limit traffic to Pods and to obtain real-time visibility on cluster network activity.
 
-Dataplane V2 is a recent feature in GKE whith GA starting on version 1.20.6-gke.700, as of May 10, 2021 - [see this feature announcement for more details](https://cloud.google.com/blog/products/containers-kubernetes/bringing-ebpf-and-cilium-to-google-kubernetes-engine). Dataplane V2 uses [eBPF](https://ebpf.io/) and [Cilium](https://cilium.io/) to performantly process network packets in-kernel using Kubernetes-specific metadata without relying on the kube-proxy and iptables for service routing. Dataplane V2 brings some interesting features for cluster operations and security, such as:
+Dataplane V2 is a recent feature in GKE, with GA starting on version 1.20.6-gke.700 as of May 10, 2021 ([see this announcement for more details](https://cloud.google.com/blog/products/containers-kubernetes/bringing-ebpf-and-cilium-to-google-kubernetes-engine)). It uses [Cilium](https://cilium.io/) to process network packets in-kernel using Kubernetes-specific metadata without relying on the kube-proxy and iptables for service routing, resulting in performance improvements. Dataplane V2 brings some exciting features for cluster operations and security, such as:
 
-- Built-in Network Policies enforcement without the need of Calico
-- Real-time visibility, enabling cluster networking troubleshooting, auditing and alerting
+- Built-in Network Policies enforcement without the need of Calico and;
+- Real-time visibility, enabling cluster networking troubleshooting, auditing, and alerting.
 
 <!--more-->
 
@@ -32,7 +32,7 @@ See the [Dataplane V2 documentation](https://cloud.google.com/kubernetes-engine/
 
 ## Pre-requisites
 
-To follow this tutorial you need a [Google Cloud project created](https://console.cloud.google.com/cloud-resource-manager?pli=1) with [billing enabled](https://cloud.google.com/billing/docs/how-to/modify-project).
+To follow this tutorial, you need a [Google Cloud project created](https://console.cloud.google.com/cloud-resource-manager?pli=1) with [billing enabled](https://cloud.google.com/billing/docs/how-to/modify-project).
 
 Also, make sure you have the most recent version of the `gcloud` CLI installed. See [this doc for installation instructions](https://cloud.google.com/sdk/gcloud/#downloading_the_gcloud_command-line_tool). If you already have `gcloud` installed, you can ensure it's up to date by running `gcloud components update`.
 
@@ -69,7 +69,7 @@ The current default version in the `regular` channel already enables the use of 
 gcloud container get-server-config --format "yaml(channels)" --region $cluster_region
 ```
 
-After the cluster is created your `kube-config` will be already be pointing to the newly created cluster. If you need to reconnect to it, you can use the following command:
+After the cluster is created your `kube-config` will be already pointing to the newly created cluster. If you need to reconnect to it, you can use the following command:
 
 ```shell
 # optional command to re-configure the kube-config, no need to run
@@ -78,7 +78,7 @@ gcloud container clusters get-credentials $cluster_name --region $cluster_region
 
 ## Deploy a Demo Application
 
-To check the Dataplane V2 feature, we want to use a non-trivial scenario. For this, we will deploy the [Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo) - a cloud-native microservices demo application used to demonstrate Kubernetes/GKE features.
+To check the Dataplane V2 feature, we want to use a non-trivial scenario. For this, we will deploy a [cloud-native microservices demo application](https://github.com/GoogleCloudPlatform/microservices-demo) commonly used to demonstrate Kubernetes/GKE features.
 
 Clone the GitHub repository:
 
@@ -119,11 +119,13 @@ NAME                TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)       
 frontend-external   LoadBalancer   10.60.3.181   34.139.243.117   80:30595/TCP   2m1s
 ```
 
-> **Optional:** Access the application from the browser and add some products to the cart.
+{{< notice type="tip" id="optional-play-1" title="Optional: Play around" >}}
+Optionally, access the application from the browser using the external IP and add some products to the cart.
+{{< /notice >}}
 
 ## Undesired Network Access
 
-This microservice application has quite a few components and, among them, we can see that the `CartService` communicates with the `Cache` (a Redis instance) to store the product items in the user's shopping cart. See the [architecutre diagram](https://github.com/GoogleCloudPlatform/microservices-demo#architecture) for details on how the components are related to each other.
+This microservice application has quite a few components and, among them, we can see that the `CartService` communicates with the `Cache` (implemented by Redis) to store the product items in the user's shopping cart. See the [architecutre diagram](https://github.com/GoogleCloudPlatform/microservices-demo#architecture) for details on how the components are related to each other.
 
 List the Kubernetes services in the cluster to identify the Redis service:
 
@@ -145,7 +147,7 @@ redis-cart              ClusterIP      10.60.1.152    <none>           6379/TCP 
 shippingservice         ClusterIP      10.60.4.213    <none>           50051/TCP      6m
 ```
 
-You can see the `redis-cart` `ClusterIP` service configured on port `6379`. You can verify that this service is fronting the `redis-cart` Pod by checking the label selector:
+You can see the `redis-cart` `ClusterIP` service configured on port `6379`. You can verify that this service is fronting the `redis-cart` Pod by describing and checking the `selector: app=redis-cart`:
 
 ```shell
 kubectl describe svc redis-cart
@@ -189,7 +191,7 @@ root@rogue-1:/data# redis-cli -h redis-cart ping
 PONG
 ```
 
-With this we can confirm conectivity to the Redis database. A malicious actor can use different commands to access data or disrupt the service. Also keep in mind that this behavior can be explored across all components of the application. We are using the Redis database just as an example.
+With this, we can confirm connectivity to the Redis database. A malicious actor can use different commands to access data or disrupt the service. Also, keep in mind that a malicious actor can explore this behavior across all application components. We are using the Redis database just as an example.
 
 ## Kubernetes Network Policies
 
@@ -215,7 +217,7 @@ spec:
 EOF
 ```
 
-The network policy is self-explanatory and you can see that we are using label selectors to match the Pods where we want the policy to be applied to and the pods where we want to enable ingress.
+The network policy is self-explanatory and you can see that we are using label selectors to match the Pods where we want the policy to be applied to and the pods where we want to enable ingress from.
 
 Launch the rogue container again and try to execute the `ping` command and notice that it hangs:
 
@@ -226,11 +228,13 @@ root@rogue-1:/data# redis-cli -h redis-cart ping
 
 Use `CTRL+C` to stop.
 
-This feature is already helping to improve our security posture. Still, depending on the level of access that a malicious actor has gotten, they could notice that a network policy is in play and try a few tricks to bypass it.
+This feature is already helping to improve our security posture. However, depending on the level of access a malicious actor has gotten, they could notice that a network policy is in play and try a few tricks to bypass it.
 
-> **Optional:** Access the application from the browser and add some products to the cart and check that the `CartService -> Cache` connectivity still works as expected.
+{{< notice type="tip" id="optional-play-2" title="Optional: Play around again" >}}
+Access the application from the browser and add some products to the cart and check that the `CartService -> Cache` connectivity still works as expected.
+{{< /notice >}}
 
-So, besides preventing undesired access, we also want to log this activity. This log allows us to audit and alert on suspicious events.
+We don't want a malicious user silently playing around in our cluster. So, besides preventing undesired access, we also want to log this activity. This log allows us to audit and alert on suspicious events.
 
 ## Network Policy Logging
 
@@ -254,7 +258,7 @@ spec:
       log: false
 ```
 
-Use this yaml configuration to change the default network logging configuration and enable logging for denied connections:
+Use this yaml to change the default network logging configuration and enable logging for denied connections:
 
 ```shell
 kubectl apply -f- << EOF
@@ -273,7 +277,7 @@ spec:
 EOF
 ```
 
-You should expect to see a warning after applying this change, it's ok.
+(You should expect to see a warning after applying this change, it's ok.)
 
 Check the [Network Policy Logging documentation](https://cloud.google.com/kubernetes-engine/docs/how-to/network-policy-logging) for a complete description of the `NetworkLogging` specification and configuration options.
 
@@ -293,7 +297,7 @@ And check the logs:
 gcloud logging read --project $gcp_project 'resource.type="k8s_node" resource.labels.location=us-east1 resource.labels.cluster_name=<your-cluster-name> logName="projects/<your-project-name>/logs/policy-action" jsonPayload.dest.pod_name=~"redis-cart" jsonPayload.disposition="deny"'
 ```
 
-You will see the logs entries coming through with details about the events. Check the documentation for the [Log Format definition](https://cloud.google.com/kubernetes-engine/docs/how-to/network-policy-logging#log_format).
+You will see the log entries coming through with details about the events. Check the documentation for the [Log Format definition](https://cloud.google.com/kubernetes-engine/docs/how-to/network-policy-logging#log_format).
 
 {{< notice type="note" id="cloud-logging" title="A note on Google Cloud Logging" >}}
 You are able to check the logs with the previous command because [Cloud Logging](https://cloud.google.com/logging/docs) is enabled by default in new clusters, and network policy logs are automatically shipped to Cloud Logging. See more about how to [configure Cloud Operations for GKE](https://cloud.google.com/stackdriver/docs/solutions/gke/installing).
@@ -305,7 +309,7 @@ Keep in mind that network policy logs generated on each cluster are available at
 
 ## Optional: Delegating Network Policy Logging Configuration
 
-Instead of enabling logging for all denied connections as we did with our previous `NetworkLogging` configuration, you can delegate it using the annotation `policy.network.gke.io/enable-deny-logging: "true"`.
+Instead of enabling logging for all denied connections as we did with our previous `NetworkLogging` configuration, you can delegate it by using the annotation `policy.network.gke.io/enable-deny-logging: "true"`.
 
 Update the `NetworkLogging` object:
 
