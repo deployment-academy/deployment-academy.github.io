@@ -1,6 +1,6 @@
 <!doctype html><html class=no-js lang=en>
 <head>
-<meta name=generator content="Hugo 0.87.0">
+<meta name=generator content="Hugo 0.88.1">
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
 <meta http-equiv=x-ua-compatible content="IE=edge">
@@ -57,6 +57,24 @@
 <div class=primary>
 <main class="main list" role=main>
 <article class="list__item post">
+<header class=list__header>
+<h2 class="list__title post__title">
+<a href=/posts/devsecops/gke-dataplane-v2-network-policies/ rel=bookmark>
+GKE Dataplane V2 and Network Policies in Practice
+</a>
+</h2>
+<div class="list__meta meta"><div class="meta__item-author meta__item">
+<svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2.0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class=meta__text>Romulo Santos</span>
+</div>
+<div class="meta__item-datetime meta__item">
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-09-18T13:48:06-04:00>2021-09-18</time>
+<time class=meta__text datetime=2021-09-18T20:36:51-04:00>(Last Modified: 2021-09-18)</time></div></div>
+</header>
+<div class="content list__excerpt post__content clearfix">
+In this tutorial, we are going to play with the Google Kubernetes Engine Dataplane V2 and check how we can use it along with Kubernetes Network Policies to limit traffic to Pods and to obtain real-time visibility on network activity.
+Dataplane V2 is a recent feature in GKE whith GA starting on version 1.20.6-gke.700, as of May 10, 2021 - see this feature announcement for more details. Dataplane V2 uses eBPF and Cilium to performantly process network packets in-kernel using Kubernetes-specific metadata without relying on the kube-proxy and iptables for service routing.
+</div>
+</article><article class="list__item post">
 <header class=list__header>
 <h2 class="list__title post__title">
 <a href=/posts/devsecops/vulnerable-dependency-management/ rel=bookmark>
@@ -160,6 +178,7 @@ Workload Identity in Practice
 <h4 class=widget__title>Recent Posts</h4>
 <div class=widget__content>
 <ul class=widget__list>
+<li class=widget__item><a class=widget__link href=/posts/devsecops/gke-dataplane-v2-network-policies/>GKE Dataplane V2 and Network Policies in Practice</a></li>
 <li class=widget__item><a class=widget__link href=/posts/devsecops/vulnerable-dependency-management/>Vulnerable Dependency Management: The Invisible Enemy</a></li>
 <li class=widget__item><a class=widget__link href=/posts/hugo/hugo-gh-pages-n-actions/>Create a static website with Hugo, GitHub Pages and Actions (in minutes)</a></li>
 <li class=widget__item><a class=widget__link href=/posts/devsecops/vault-eks-irsa/>HashiCorp Vault AWS Auth with Amazon EKS and IAM Roles for Service Accounts</a></li>
