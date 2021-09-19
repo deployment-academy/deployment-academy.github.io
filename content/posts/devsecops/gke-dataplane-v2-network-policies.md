@@ -26,6 +26,8 @@ Dataplane V2 is a recent feature in GKE whith GA starting on version 1.20.6-gke.
 - Built-in Network Policies enforcement without the need of Calico
 - Real-time visibility, enabling cluster networking troubleshooting, auditing and alerting
 
+<!--more-->
+
 See the [Dataplane V2 documentation](https://cloud.google.com/kubernetes-engine/docs/concepts/dataplane-v2) for more details.
 
 ## Pre-requisites
