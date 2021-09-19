@@ -21,7 +21,7 @@ tags:
 
 In this tutorial, we are going to play with the [Google Kubernetes Engine Dataplane V2](https://cloud.google.com/kubernetes-engine/docs/concepts/dataplane-v2) and check how we can use it along with [Kubernetes Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/) to limit traffic to Pods and to obtain real-time visibility on cluster network activity.
 
-Dataplane V2 is a recent feature in GKE, with GA starting on version 1.20.6-gke.700 as of May 10, 2021 ([see this announcement for more details](https://cloud.google.com/blog/products/containers-kubernetes/bringing-ebpf-and-cilium-to-google-kubernetes-engine)). It uses [Cilium](https://cilium.io/) to process network packets in-kernel using Kubernetes-specific metadata without relying on the kube-proxy and iptables for service routing, resulting in performance improvements. Dataplane V2 brings some exciting features for cluster operations and security, such as:
+Dataplane V2 is a [recent feature in GKE](https://cloud.google.com/blog/products/containers-kubernetes/bringing-ebpf-and-cilium-to-google-kubernetes-engine), with GA starting on version 1.20.6-gke.700 as of May 10, 2021. It uses [Cilium](https://cilium.io/) to process network packets in-kernel using Kubernetes-specific metadata without relying on the kube-proxy and iptables for service routing, resulting in performance improvements. Dataplane V2 brings some exciting features for cluster operations and security, such as:
 
 - Built-in Network Policies enforcement without the need of Calico and;
 - Real-time visibility, enabling cluster networking troubleshooting, auditing, and alerting.
