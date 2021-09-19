@@ -69,15 +69,18 @@ GKE Dataplane V2 and Network Policies in Practice
 </div>
 <div class="meta__item-datetime meta__item">
 <svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-09-18T13:48:06-04:00>2021-09-18</time>
-<time class=meta__text datetime=2021-09-18T20:45:01-04:00>(Last Modified: 2021-09-18)</time></div></div>
+<time class=meta__text datetime=2021-09-19T14:39:25-04:00>(Last Modified: 2021-09-19)</time></div></div>
 </header>
 <div class="content list__excerpt post__content clearfix">
-<p>In this tutorial, we are going to play with the <a href=https://cloud.google.com/kubernetes-engine/docs/concepts/dataplane-v2>Google Kubernetes Engine Dataplane V2</a> and check how we can use it along with <a href=https://kubernetes.io/docs/concepts/services-networking/network-policies/>Kubernetes Network Policies</a> to limit traffic to Pods and to obtain real-time visibility on network activity.</p>
-<p>Dataplane V2 is a recent feature in GKE whith GA starting on version 1.20.6-gke.700, as of May 10, 2021 - <a href=https://cloud.google.com/blog/products/containers-kubernetes/bringing-ebpf-and-cilium-to-google-kubernetes-engine>see this feature announcement for more details</a>. Dataplane V2 uses <a href=https://ebpf.io/>eBPF</a> and <a href=https://cilium.io/>Cilium</a> to performantly process network packets in-kernel using Kubernetes-specific metadata without relying on the kube-proxy and iptables for service routing. Dataplane V2 brings some interesting features for cluster operations and security, such as:</p>
+<p>In this tutorial, we are going to play with the <a href=https://cloud.google.com/kubernetes-engine/docs/concepts/dataplane-v2>Google Kubernetes Engine Dataplane V2</a> and check how we can use it along with <a href=https://kubernetes.io/docs/concepts/services-networking/network-policies/>Kubernetes Network Policies</a> to limit traffic to Pods and to obtain real-time visibility on cluster network activity.</p>
+<p>Dataplane V2 is a recent feature in GKE, with GA starting on version 1.20.6-gke.700 as of May 10, 2021 (<a href=https://cloud.google.com/blog/products/containers-kubernetes/bringing-ebpf-and-cilium-to-google-kubernetes-engine>see this announcement for more details</a>). It uses <a href=https://cilium.io/>Cilium</a> to process network packets in-kernel using Kubernetes-specific metadata without relying on the kube-proxy and iptables for service routing, resulting in performance improvements. Dataplane V2 brings some exciting features for cluster operations and security, such as:</p>
 <ul>
-<li>Built-in Network Policies enforcement without the need of Calico</li>
-<li>Real-time visibility, enabling cluster networking troubleshooting, auditing and alerting</li>
+<li>Built-in Network Policies enforcement without the need of Calico and;</li>
+<li>Real-time visibility, enabling cluster networking troubleshooting, auditing, and alerting.</li>
 </ul>
+</div>
+<div class="list__footer clearfix">
+<a class="list__footer-readmore btn" href=/posts/devsecops/gke-dataplane-v2-network-policies/>Read more…</a>
 </div>
 </article><article class="list__item post">
 <header class=list__header>
@@ -96,6 +99,9 @@ Google Cloud Endpoints in GKE with Container-native Load Balancing
 <div class="content list__excerpt post__content clearfix">
 <p>In the source code for this tutorial, we extend the <a href=https://cloud.google.com/endpoints/docs/openapi/get-started-kubernetes-engine>Getting started with Cloud Endpoints for GKE with ESP</a> documentation guide to provide an example of how to configure HTTPS between the LB and the ESP.</p>
 </div>
+<div class="list__footer clearfix">
+<a class="list__footer-readmore btn" href=/posts/devsecops/gke-cloud-endpoints/>Read more…</a>
+</div>
 </article><article class="list__item post">
 <header class=list__header>
 <h2 class="list__title post__title">
@@ -113,6 +119,9 @@ Workload Identity in Practice
 <div class="content list__excerpt post__content clearfix">
 <p>In this tutorial, we&rsquo;re going to go through the <a href=https://cloud.google.com/blog/products/containers-kubernetes/introducing-workload-identity-better-authentication-for-your-gke-applications>Workload Identity</a> feature and see how it helps to improve the way we manage access to Google Services and APIs from applications running in <a href=https://cloud.google.com/kubernetes-engine>Google Kubernetes Engine (GKE)</a>.</p>
 <p>Workload Identity is the recommended way to access Google Cloud APIs from within GKE due to its improved security properties and manageability. With Workload Identity you can control access to APIs using <a href=https://cloud.google.com/iam/docs/service-accounts>Google service accounts</a> and <a href=https://cloud.google.com/iam/docs/understanding-roles>IAM roles</a> without deploying static service account JSON keys to Pods and without relying on the node&rsquo;s service account.</p>
+</div>
+<div class="list__footer clearfix">
+<a class="list__footer-readmore btn" href=/posts/devsecops/workload-identity-getting-started/>Read more…</a>
 </div>
 </article>
 </main>
