@@ -60,6 +60,27 @@
 </header><article class="list__item post">
 <header class=list__header>
 <h2 class="list__title post__title">
+<a href=/posts/devsecops/eks-cilium-network-policies/ rel=bookmark>
+Using Network Policies in EKS with Cilium
+</a>
+</h2>
+<div class="list__meta meta"><div class="meta__item-author meta__item">
+<svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2.0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class=meta__text>Romulo Santos</span>
+</div>
+<div class="meta__item-datetime meta__item">
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-09-26T14:15:28-04:00>2021-09-26</time>
+<time class=meta__text datetime=2021-09-26T23:21:44-04:00>(Last Modified: 2021-09-26)</time></div></div>
+</header>
+<div class="content list__excerpt post__content clearfix">
+<p>In this tutorial, we will deploy <a href=https://cilium.io/>Cilium</a> to an <a href=https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html>Amazon EKS</a> Kubernetes cluster and limit traffic to Pods using <a href=https://kubernetes.io/docs/concepts/services-networking/network-policies/>Network Policies</a>. Network Policies are not available in Kubernetes out-of-the-box. To leverage Network Policies, you must use a <a href=https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/>network plugin</a> that implements such a feature - here is where Cilium comes into play.</p>
+<p>It&rsquo;s worth noting that while this is our scope for this tutorial, Cilium is not limited to Network Policies and not even limited to Kubernetes. Check the <a href=https://docs.cilium.io/en/stable/intro/>Introduction to Cilium</a> to learn more about it and the <a href=https://docs.cilium.io/en/stable/concepts/kubernetes/intro/>Kubernetes Integration doc</a> about how Cilium works with Kubernetes.</p>
+</div>
+<div class="list__footer clearfix">
+<a class="list__footer-readmore btn" href=/posts/devsecops/eks-cilium-network-policies/>Read more…</a>
+</div>
+</article><article class="list__item post">
+<header class=list__header>
+<h2 class="list__title post__title">
 <a href=/posts/devsecops/gke-dataplane-v2-network-policies/ rel=bookmark>
 GKE Dataplane V2 and Network Policies in Practice
 </a>
@@ -69,7 +90,7 @@ GKE Dataplane V2 and Network Policies in Practice
 </div>
 <div class="meta__item-datetime meta__item">
 <svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-09-18T13:48:06-04:00>2021-09-18</time>
-<time class=meta__text datetime=2021-09-19T18:45:15-04:00>(Last Modified: 2021-09-19)</time></div></div>
+<time class=meta__text datetime=2021-09-26T23:21:44-04:00>(Last Modified: 2021-09-26)</time></div></div>
 </header>
 <div class="content list__excerpt post__content clearfix">
 <p>In this tutorial, we are going to play with the <a href=https://cloud.google.com/kubernetes-engine/docs/concepts/dataplane-v2>Google Kubernetes Engine Dataplane V2</a> and check how we can use it along with <a href=https://kubernetes.io/docs/concepts/services-networking/network-policies/>Kubernetes Network Policies</a> to limit traffic to Pods and to obtain real-time visibility on cluster network activity.</p>
@@ -159,6 +180,7 @@ Workload Identity in Practice
 <h4 class=widget__title>Recent Posts</h4>
 <div class=widget__content>
 <ul class=widget__list>
+<li class=widget__item><a class=widget__link href=/posts/devsecops/eks-cilium-network-policies/>Using Network Policies in EKS with Cilium</a></li>
 <li class=widget__item><a class=widget__link href=/posts/devsecops/gke-dataplane-v2-network-policies/>GKE Dataplane V2 and Network Policies in Practice</a></li>
 <li class=widget__item><a class=widget__link href=/posts/devsecops/vulnerable-dependency-management/>Vulnerable Dependency Management: The Invisible Enemy</a></li>
 <li class=widget__item><a class=widget__link href=/posts/hugo/hugo-gh-pages-n-actions/>Create a static website with Hugo, GitHub Pages and Actions (in minutes)</a></li>
