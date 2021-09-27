@@ -18,7 +18,9 @@ tags:
   - "cilium"
 ---
 
-In this tutorial, we will deploy [Cilium](https://cilium.io/) to an [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) Kubernetes cluster and limit traffic to Pods using [Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/). Network Policies are not available in Kubernetes out-of-the-box. To leverage Network Policies, you must use a [network plugin](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/) that implements such a feature - here is where Cilium comes into play.
+In this tutorial, we will deploy [Cilium](https://cilium.io/) to an [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) Kubernetes cluster and limit traffic to Pods using [Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/).
+
+Network Policies are not available in Kubernetes out-of-the-box. To leverage Network Policies, you must use a [network plugin](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/) that implements such a feature - here is where Cilium comes into play.
 
 It's worth noting that while this is our scope for this tutorial, Cilium is not limited to Network Policies and not even limited to Kubernetes. Check the [Introduction to Cilium](https://docs.cilium.io/en/stable/intro/) to learn more about it and the [Kubernetes Integration doc](https://docs.cilium.io/en/stable/concepts/kubernetes/intro/) about how Cilium works with Kubernetes.
 
