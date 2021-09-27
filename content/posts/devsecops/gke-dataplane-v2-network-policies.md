@@ -17,6 +17,7 @@ tags:
   - "gke"
   - "dataplane v2"
   - "network policies"
+  - "cilium"
 ---
 
 In this tutorial, we are going to play with the [Google Kubernetes Engine Dataplane V2](https://cloud.google.com/kubernetes-engine/docs/concepts/dataplane-v2) and check how we can use it along with [Kubernetes Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/) to limit traffic to Pods and to obtain real-time visibility on cluster network activity.
@@ -30,7 +31,7 @@ Dataplane V2 is a [recent feature in GKE](https://cloud.google.com/blog/products
 
 See the [Dataplane V2 documentation](https://cloud.google.com/kubernetes-engine/docs/concepts/dataplane-v2) for more details.
 
-## Pre-requisites
+## Prerequisites
 
 To follow this tutorial, you need a [Google Cloud project created](https://console.cloud.google.com/cloud-resource-manager?pli=1) with [billing enabled](https://cloud.google.com/billing/docs/how-to/modify-project).
 
