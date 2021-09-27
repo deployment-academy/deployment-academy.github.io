@@ -22,7 +22,7 @@ In this tutorial, we will deploy [Cilium](https://cilium.io/) to an [Amazon EKS]
 
 Network Policies are not available in Kubernetes out-of-the-box. To leverage Network Policies, you must use a [network plugin](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/) that implements such a feature - here is where Cilium comes into play.
 
-It's worth noting that while this is our scope for this tutorial, Cilium is not limited to Network Policies and not even limited to Kubernetes. Check the [Introduction to Cilium](https://docs.cilium.io/en/stable/intro/) to learn more about it and the [Kubernetes Integration doc](https://docs.cilium.io/en/stable/concepts/kubernetes/intro/) about how Cilium works with Kubernetes.
+It's worth noting that while this is the scope of this tutorial, Cilium is not limited to Network Policies and not even limited to Kubernetes. Check the [Introduction to Cilium](https://docs.cilium.io/en/stable/intro/) to learn more about it and the [Kubernetes Integration doc](https://docs.cilium.io/en/stable/concepts/kubernetes/intro/) about how Cilium works with Kubernetes.
 
 <!--more-->
 
