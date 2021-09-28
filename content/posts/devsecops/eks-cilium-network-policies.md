@@ -1,6 +1,6 @@
 ---
 title: "Using Network Policies in EKS with Cilium"
-description: "In this tutorial, we will deploy Cilium to an Amazon EKS cluster and limit traffic to Pods using Network Policies."
+description: "In this tutorial, we will deploy Cilium to an Amazon EKS cluster and limit traffic to Pods using Kubernetes Network Policies."
 date: 2021-09-26T14:15:28-04:00
 lastmod: 2021-09-26T14:15:28-04:00
 draft: false
@@ -18,7 +18,7 @@ tags:
   - "cilium"
 ---
 
-In this tutorial, we will deploy [Cilium](https://cilium.io/) to an [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) cluster and limit traffic to Pods using [Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/).
+In this tutorial, we will deploy [Cilium](https://cilium.io/) to an [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) cluster and limit traffic to Pods using Kubernetes [Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/).
 
 Network Policies are not available in Kubernetes out-of-the-box. To leverage Network Policies, you must use a [network plugin](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/) that implements such a feature - here is where Cilium comes into play.
 
