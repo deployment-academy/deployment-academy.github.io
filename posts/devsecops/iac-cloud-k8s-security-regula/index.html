@@ -1,0 +1,297 @@
+<!doctype html><html class=no-js lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title>IaC Security and Compliance with Regula - Deployment</title>
+<script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
+<meta name=description content="In this tutorial, we will review the Regula policy engine and see how to check infrastructure security and compliance rules even before it’s deployed.">
+<meta property="og:title" content="IaC Security and Compliance with Regula">
+<meta property="og:description" content="In this tutorial, we will review the Regula policy engine and see how to check infrastructure security and compliance rules even before it’s deployed.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://deployment.properties/posts/devsecops/iac-cloud-k8s-security-regula/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2021-10-16T23:37:41-04:00">
+<meta property="article:modified_time" content="2021-10-18T00:54:43-04:00">
+<meta itemprop=name content="IaC Security and Compliance with Regula">
+<meta itemprop=description content="In this tutorial, we will review the Regula policy engine and see how to check infrastructure security and compliance rules even before it’s deployed."><meta itemprop=datePublished content="2021-10-16T23:37:41-04:00">
+<meta itemprop=dateModified content="2021-10-18T00:54:43-04:00">
+<meta itemprop=wordCount content="1057">
+<meta itemprop=keywords content="devsecops,kubernetes,aws,iac,opa,rego,">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="IaC Security and Compliance with Regula">
+<meta name=twitter:description content="In this tutorial, we will review the Regula policy engine and see how to check infrastructure security and compliance rules even before it’s deployed.">
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link rel=dns-prefetch href=//fonts.googleapis.com>
+<link rel=dns-prefetch href=//fonts.gstatic.com>
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+<link rel=stylesheet href=/css/style.css>
+<link rel=stylesheet href=/css/custom.css>
+<link rel="shortcut icon" href=/favicon.ico>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0BJEGTESYY"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-0BJEGTESYY',{anonymize_ip:!1})}</script>
+</head>
+<body class=body>
+<div class="container container--outer">
+<header class=header>
+<div class="container header__container">
+<div class=logo>
+<a class=logo__link href=/ title=Deployment rel=home>
+<div class="logo__item logo__text">
+<div class=logo__title>Deployment</div>
+<div class=logo__tagline>A tech blog focused on Software Engineering and DevSecOps</div>
+</div>
+</a>
+</div>
+<nav class=menu>
+<button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>Menu</span>
+</button>
+<ul class=menu__list>
+<li class=menu__item>
+<a class=menu__link href=/about/>
+<span class=menu__text>About</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</header>
+<div class="wrapper flex">
+<div class=primary>
+<main class=main role=main>
+<article class=post>
+<header class=post__header>
+<h1 class=post__title>IaC Security and Compliance with Regula</h1>
+<div class="post__meta meta"><div class="meta__item-author meta__item">
+<svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2.0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class=meta__text>Romulo Santos</span>
+</div>
+<div class="meta__item-datetime meta__item">
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-10-16T23:37:41-04:00>2021-10-16</time>
+<time class=meta__text datetime=2021-10-18T00:54:43-04:00>(Last Modified: 2021-10-18)</time></div></div>
+</header><div class="content post__content clearfix">
+<p>Infrastructure as Code (IaC) is an essential piece of the modern software development landscape. IaC tools allow teams to define their infrastructure in a reproducible-automated fashion, increasing speed and consistency while preventing errors, misconfiguration, and configuration drifts. IaC also plays an important role in security. It gives visibility over the whole infrastructure, including its security aspects and components, even before they have been deployed. Development and/or security and operations teams can define sensible security defaults and a security baseline enforcing best practices that are automated and applied via the CICD pipeline, where changes can be reviewed and approved following the separation of duties principle.</p>
+<p>Following this idea of anticipating security checks in the CICD pipeline, we can then define policies that automatically run against our infrastructure code and check for compliance rules as a step of the pipeline. In this tutorial, we will review the <a href=https://regula.dev/index.html>Regula</a> policy engine and see how to check infrastructure security even before it’s deployed.</p>
+<p>Regula is a tool that evaluates infrastructure as code files for potential Cloud security and compliance violations. It includes a <a href=https://regula.dev/rules.html>list of pre-defined rules</a> for AWS, Azure, Google Cloud, and Kubernetes based on their respective CIS benchmarks. Regula also allows you to <a href=https://regula.dev/development/writing-rules.html>define custom rules</a> written in <a href=https://www.openpolicyagent.org/docs/latest/policy-language/>Rego</a>, OPA’s native query language.</p>
+<h2 id=download-regula>Download Regula</h2>
+<p>Here we are going to download and get Regula ready for use following the most straightforward approach. Follow the <a href=https://regula.dev/getting-started.html#installation>installation guide</a> for a complete list of methods for different platforms.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>version<span style=color:#f92672>=</span>1.6.0
+platform<span style=color:#f92672>=</span>macOS_x86_64
+curl -L https://github.com/fugue/regula/releases/download/v1.6.0/regula_<span style=color:#e6db74>${</span>version<span style=color:#e6db74>}</span>_<span style=color:#e6db74>${</span>platform<span style=color:#e6db74>}</span>.tar.gz -o regula.tar.gz ; tar xzvf $_
+</code></pre></div><p>Change the <code>version</code> and <code>platform</code> accordingly to your needs.</p>
+<p>Check it.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>./regula version
+v1.6.0, build e2ae463, built with OPA v0.28.0
+</code></pre></div><h2 id=verify-terraform-security-and-compliance-violations>Verify Terraform Security and Compliance Violations</h2>
+<p>For this tutorial, we are going to use code examples from the <a href=https://github.com/microservices-demo/microservices-demo>microservices-demo</a> repository. Let&rsquo;s start downloading some Terraform configuration.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>mkdir terraform
+
+demo_base_folder<span style=color:#f92672>=</span>https://raw.githubusercontent.com/microservices-demo/microservices-demo/master/deploy/kubernetes
+
+<span style=color:#66d9ef>for</span> f in main.tf variables.tf outputs.tf; <span style=color:#66d9ef>do</span>
+  curl -L $demo_base_folder/terraform/$f -o ./terraform/$f
+<span style=color:#66d9ef>done</span>
+</code></pre></div>
+<style type=text/css>.notice{padding:18px;line-height:24px;margin-bottom:24px;border-radius:4px;color:#444;background:#e7f2fa;text-align:left}.notice p:last-child{margin-bottom:0}.notice-title{margin:-18px -18px 12px;padding:4px 18px;border-radius:4px 4px 0 0;font-weight:700;color:#fff;background:#6ab0de;text-align:left}.notice.warning .notice-title{background:rgba(217,83,79,.9)}.notice.warning{background:#fae2e2}.notice.info .notice-title{background:#f0b37e}.notice.info{background:#fff2db}.notice.note .notice-title{background:#6ab0de}.notice.note{background:#e7f2fa}.notice.tip .notice-title{background:rgba(92,184,92,.8)}.notice.tip{background:#e6f9e6}.icon-notice{display:inline-flex;align-self:center;margin-right:8px}.icon-notice img,.icon-notice svg{height:1em;width:1em;fill:currentColor}.icon-notice img,.icon-notice.baseline svg{top:.125em;position:relative}</style>
+<div><svg width="0" height="0" display="none" xmlns="http://www.w3.org/2000/svg"><symbol id="tip-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379.0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628.0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628.0l-22.627 22.627c-6.248 6.248-6.248 16.379.0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"/></symbol><symbol id="note-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405.0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346 7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373.0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884.0-12.356 5.78-11.981 12.654z"/></symbol><symbol id="warning-notice" viewBox="0 0 576 512" preserveAspectRatio="xMidYMid meet"><path d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937.0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154.0l239.94 416.028zM288 354c-25.405.0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346 7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373.0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884.0-12.356 5.78-11.981 12.654z"/></symbol><symbol id="info-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196.0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627.0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627.0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627.0 12 5.373 12 12v1e2h12c6.627.0 12 5.373 12 12v24z"/></symbol></svg></div><div class="notice tip" id=use-your-config>
+<p class="first notice-title"><span class="icon-notice baseline"><svg><use href="#tip-notice"/></svg></span>Use your own infrastructure as code</p><p>Feel free to use your infrastructure as code to perform these tests.</p></div>
+<p>Now let&rsquo;s run Regula. For the simplest version of the <code>regula run</code> command, we have to provide the root location of the configuration files.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>./regula run ./terraform
+
+<span style=color:#75715e># ommiting results</span>
+
+FG_R00377: VPC security group rules should not permit ingress from <span style=color:#e6db74>&#39;0.0.0.0/0&#39;</span> except to ports <span style=color:#ae81ff>80</span> and <span style=color:#ae81ff>443</span> <span style=color:#f92672>[</span>Medium<span style=color:#f92672>]</span>
+
+  <span style=color:#f92672>[</span>1<span style=color:#f92672>]</span>: aws_security_group.k8s-security-group
+       in terraform/main.tf:5:1
+
+Found <span style=color:#ae81ff>10</span> problems.
+</code></pre></div><p>The output of the run command is human-friendly, listing all the non-compliant rules along with their descriptions, location, and severity.</p>
+<p>Also, note that the command returns
+a non-zero exit code <code>echo $?</code> given the minimum severity set as default (<code>unknown</code>, the lowest severity used for rules without a severity specified).</p>
+<p>You can change the minimum severity to return a non-zero exit code using the <code>-s, --severity</code> flag.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>./regula run --severity critical terraform
+<span style=color:#75715e># ommiting results</span>
+echo $?
+<span style=color:#ae81ff>0</span>
+</code></pre></div><p>The possible values are <code>informational</code>, <code>low</code>, <code>medium</code>, <code>high</code>, <code>critical</code> and <code>off</code> (never exit with a non-zero exit code).</p>
+<p>Being able to check the output is useful. Still, we often want to send this result to a place where we can better visualize this data and/or monitor compliance rules across different code repositories. For this, you can use the <code>-f, --format</code> to output the result as json and send it to your preferred place for consumption.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>./regula run --format json terraform
+</code></pre></div><h3 id=optional-send-the-results-to-sqs>Optional: Send the results to SQS</h3>
+<p>You need to have AWS credentials with the proper permissions configured in your local environment to follow this step.</p>
+<p>Create an SQS Queue.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>iac_compliance_queue<span style=color:#f92672>=</span>iac_compliance 
+iac_compliance_queue_url<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>aws sqs create-queue --queue-name $iac_compliance_queue --query QueueUrl --output text<span style=color:#66d9ef>)</span>
+</code></pre></div><p>Send the results to SQS.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>./regula run --format json terraform | aws sqs send-message --queue-url $iac_compliance_queue_url --message-body file:///dev/stdin
+</code></pre></div><p>From here, you can consume this message and send this data for aggregation, monitoring or alerting in other tools.</p>
+<p>Check and clean up.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># if you want to check the message created</span>
+aws sqs receive-message --queue-url $iac_compliance_queue_url | jq -r <span style=color:#e6db74>&#39;.Messages[] | .Body&#39;</span>
+
+<span style=color:#75715e># remove the queue to clean up</span>
+aws sqs delete-queue --queue-url $iac_compliance_queue_url
+</code></pre></div><p>In time, note that the maximum message size in SQS is 256 KB. If you have a large codebase to be scanned, you need a different approach, such as sending the results to S3 and a notification to SQS.</p>
+<h2 id=kubernetes-security-and-compliance-violations>Kubernetes Security and Compliance Violations</h2>
+<p>As per the date of this writing, a <a href=https://www.fugue.co/press/releases/fugue-adds-kubernetes-security-checks-to-its-saas-platform-and-open-source-regula-project>recent feature added to Regula</a> is the support for Kubernetes.</p>
+<p>Let&rsquo;s see how it works.</p>
+<p>Download an example from the microservices-demo repo as we did for Terraform.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>mkdir k8s
+
+curl -L $demo_base_folder/complete-demo.yaml -o ./k8s/complete-demo.yaml
+</code></pre></div><p>Run Regula.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>./regula run -t k8s ./k8s
+
+<span style=color:#75715e># ommiting results</span>
+
+FG_R00496: Pods and containers should apply a security context <span style=color:#f92672>[</span>Medium<span style=color:#f92672>]</span>
+
+  <span style=color:#f92672>[</span>1<span style=color:#f92672>]</span>: Deployment.sock-shop.catalogue-db
+       in k8s/complete-demo.yaml:205:1
+
+  <span style=color:#f92672>[</span>2<span style=color:#f92672>]</span>: Deployment.sock-shop.queue-master
+       in k8s/complete-demo.yaml:516:1
+
+  <span style=color:#f92672>[</span>3<span style=color:#f92672>]</span>: Deployment.sock-shop.rabbitmq
+       in k8s/complete-demo.yaml:568:1
+
+Found <span style=color:#ae81ff>55</span> problems.
+</code></pre></div><p>This time we are providing the <code>-t, --input-type</code> flag for Kubernetes.</p>
+<h2 id=kubernetes-custom-policy>Kubernetes Custom Policy</h2>
+<p>One of the main Regula features, in my opinion, is the ability to write your policies using Rego.</p>
+<p>Let&rsquo;s create a custom Rego policy to check whether a Kubernetes Pod has set the <a href=https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>containers' resources</a> requests and limits for cpu and memory.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>mkdir k8s/custom
+
+cat <span style=color:#e6db74>&lt;&lt; EOF &gt; k8s/custom/containers_resources.rego
+</span><span style=color:#e6db74>package rules.k8s_containers_resources
+</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>import data.fugue
+</span><span style=color:#e6db74>import data.k8s
+</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>__rego__metadoc__ := {
+</span><span style=color:#e6db74>	&#34;id&#34;: &#34;CUSTOM_R00001&#34;,
+</span><span style=color:#e6db74>	&#34;title&#34;: &#34;Pods should specify containers compute resources (cpu and memory) requests and limits&#34;,
+</span><span style=color:#e6db74>	&#34;description&#34;: &#34;Pods should specify containers compute resources (cpu and memory) requests and limits. Specifying containers resources requests and limits is considered a best practice.&#34;,
+</span><span style=color:#e6db74>	&#34;custom&#34;: {
+</span><span style=color:#e6db74>		&#34;severity&#34;: &#34;Low&#34;
+</span><span style=color:#e6db74>	}
+</span><span style=color:#e6db74>}
+</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>input_type = &#34;k8s&#34;
+</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>resource_type = &#34;MULTIPLE&#34;
+</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>container_resources_set(template) {
+</span><span style=color:#e6db74>	container = template.spec.containers[_]
+</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>	container.resources.limits.cpu != null
+</span><span style=color:#e6db74>	container.resources.limits.memory != null
+</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>	container.resources.requests.cpu != null
+</span><span style=color:#e6db74>	container.resources.requests.memory != null
+</span><span style=color:#e6db74>}
+</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>policy[p] {
+</span><span style=color:#e6db74>	obj := k8s.resources_with_pod_templates[_]
+</span><span style=color:#e6db74>	count(obj.pod_template.spec.containers) &gt; 0
+</span><span style=color:#e6db74>	container_resources_set(obj.pod_template)
+</span><span style=color:#e6db74>	p := fugue.allow_resource(obj.resource)
+</span><span style=color:#e6db74>}
+</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>policy[p] {
+</span><span style=color:#e6db74>	obj := k8s.resources_with_pod_templates[_]
+</span><span style=color:#e6db74>	count(obj.pod_template.spec.containers) &gt; 0
+</span><span style=color:#e6db74>	not container_resources_set(obj.pod_template)
+</span><span style=color:#e6db74>	p := fugue.deny_resource(obj.resource)
+</span><span style=color:#e6db74>}
+</span><span style=color:#e6db74>EOF</span>
+</code></pre></div><p>Now we can check the custom policy.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>./regula run -t k8s --include ./k8s/custom --user-only ./k8s/complete-demo.yaml
+
+CUSTOM_R00001: Pods should specify containers compute resources <span style=color:#f92672>(</span>cpu and memory<span style=color:#f92672>)</span> requests and limits <span style=color:#f92672>[</span>Low<span style=color:#f92672>]</span>
+
+<span style=color:#75715e># ommiting results</span>
+
+Found <span style=color:#ae81ff>6</span> problems.
+</code></pre></div><p>In this command, we include the custom policy with <code>-i, --include</code> and disable the default rules with <code>-u, --user-only</code> to make it easier to visualize the output of our custom rule.</p>
+<p>Check the <a href=https://www.openpolicyagent.org/docs/latest/policy-language/>Open Policy Agent documentation</a> to learn more about Rego and the Regula documentation to learn more about how to <a href=https://regula.dev/development/writing-rules.html>write custom rules</a>.</p>
+</div>
+<footer class=post__footer>
+<div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg>
+<ul class=tags__list>
+<li class=tags__item>
+<a class="tags__link btn" href=/tags/devsecops/ rel=tag>devsecops</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/tags/kubernetes/ rel=tag>kubernetes</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/tags/aws/ rel=tag>aws</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/tags/iac/ rel=tag>iac</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/tags/opa/ rel=tag>opa</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/tags/rego/ rel=tag>rego</a>
+</li>
+</ul>
+</div>
+</footer>
+</article>
+</main>
+</div>
+<aside class=sidebar><div class="widget-search widget">
+<form class=widget-search__form role=search method=get action=https://duckduckgo.com/>
+<label>
+<input class=widget-search__field type=search placeholder=SEARCH… name=q aria-label=SEARCH…>
+</label>
+<input class=widget-search__submit type=submit value=Search>
+<input type=hidden name=sites value=https://deployment.properties>
+</form>
+</div>
+<div class="widget-recent widget">
+<h4 class=widget__title>Recent Posts</h4>
+<div class=widget__content>
+<ul class=widget__list>
+<li class=widget__item><a class=widget__link href=/posts/devsecops/iac-cloud-k8s-security-regula/>IaC Security and Compliance with Regula</a></li>
+<li class=widget__item><a class=widget__link href=/posts/devsecops/eks-cilium-network-policies/>Using Network Policies in EKS with Cilium</a></li>
+<li class=widget__item><a class=widget__link href=/posts/devsecops/gke-dataplane-v2-network-policies/>GKE Dataplane V2 and Network Policies in Practice</a></li>
+<li class=widget__item><a class=widget__link href=/posts/devsecops/vulnerable-dependency-management/>Vulnerable Dependency Management: The Invisible Enemy</a></li>
+<li class=widget__item><a class=widget__link href=/posts/hugo/hugo-gh-pages-n-actions/>Create a static website with Hugo, GitHub Pages and Actions (in minutes)</a></li>
+<li class=widget__item><a class=widget__link href=/posts/devsecops/vault-eks-irsa/>HashiCorp Vault AWS Auth with Amazon EKS and IAM Roles for Service Accounts</a></li>
+<li class=widget__item><a class=widget__link href=/posts/devsecops/gke-cloud-endpoints/>Google Cloud Endpoints in GKE with Container-native Load Balancing</a></li>
+<li class=widget__item><a class=widget__link href=/posts/devsecops/workload-identity-getting-started/>Workload Identity in Practice</a></li>
+</ul>
+</div>
+</div>
+<div class="widget-social widget">
+<h4 class="widget-social__title widget__title">Social</h4>
+<div class="widget-social__content widget__content">
+<div class="widget-social__item widget__item">
+<a class="widget-social__link widget__link btn" title=Twitter rel="noopener noreferrer" href=https://twitter.com/soeiro_santos target=_blank><svg class="widget-social__link-icon icon icon-twitter" width="24" height="24" viewBox="0 0 384 312"><path d="m384 36.9c-14.1 6.3-29.3 10.5-45.2 12.4 16.3-9.7 28.8-25.2 34.6-43.6-15.2 9-32.1 15.6-50 19.1-14.4-15.2-34.9-24.8-57.5-24.8-43.5.0-78.8 35.3-78.8 78.8.0 6.2.7 12.2 2 17.9-65.5-3.3-123.5-34.6-162.4-82.3C20 26 16.1 39.6 16.1 54c0 27.3 13.9 51.4 35 65.6-12.9-.4-25.1-4-35.7-9.9v1c0 38.2 27.2 70 63.2 77.2-6.6 1.8-13.6 2.8-20.8 2.8-5.1.0-10-.5-14.8-1.4 10 31.3 39.1 54.1 73.6 54.7-27 21.1-60.9 33.7-97.8 33.7-6.4.0-12.6-.4-18.8-1.1C34.9 299 76.3 312 120.8 312c144.9.0 224.1-120 224.1-224.1.0-3.4-.1-6.8-.2-10.2 15.4-11.1 28.7-25 39.3-40.8z"/></svg>
+<span>Twitter</span>
+</a>
+</div>
+<div class="widget-social__item widget__item">
+<a class="widget-social__link widget__link btn" title=GitHub rel="noopener noreferrer" href=https://github.com/soeirosantos target=_blank><svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0C85.9.0.0 85.8.0 191.7c0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2.0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8.0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7.0.0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4.0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5.0 25.6-.2 46.3-.2 52.6.0 5.1 3.5 11.1 13.2 9.2C329 348.2 384 276.4 384 191.7 384 85.8 298 0 192 0z"/></svg>
+<span>GitHub</span>
+</a>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<footer class=footer>
+<div class="container footer__container flex">
+<div class=footer__copyright>
+&copy; 2021 Deployment - A tech blog focused on Software Engineering and DevSecOps.
+<span class=footer__copyright-credits>Generated with <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> and <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> theme.</span>
+</div>
+</div>
+</footer>
+</div>
+<script async defer src=/js/menu.js></script>
+<script src=/js/custom.js></script></body>
+</html>
