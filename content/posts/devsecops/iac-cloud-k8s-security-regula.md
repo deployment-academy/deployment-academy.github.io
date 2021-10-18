@@ -18,13 +18,15 @@ tags:
   - "rego"
 ---
 
-Infrastructure as Code (IaC) is an essential piece of the modern software development landscape. IaC tools allow teams to define their infrastructure in a reproducible-automated fashion, increasing speed and consistency while preventing errors, misconfiguration, and configuration drifts. IaC also plays an important role in security. It gives visibility over the whole infrastructure, including its security aspects and components, even before they have been deployed. Development and/or security and operations teams can define sensible security defaults and a security baseline enforcing best practices that are automated and applied via the CICD pipeline, where changes can be reviewed and approved following the separation of duties principle.
+Infrastructure as Code (IaC) is an essential piece of the modern software development landscape. IaC tools allow teams to define their infrastructure in a reproducible-automated fashion, increasing speed and consistency while preventing errors, misconfiguration, and configuration drifts.
+
+IaC also plays an important role in security. It gives visibility over the whole infrastructure, including its security aspects and components, even before they have been deployed. Development and/or security and operations teams can define sensible security defaults and a security baseline enforcing best practices that are automated and applied via the CICD pipeline, where changes can be reviewed and approved following the separation of duties principle.
 
 <!--more-->
 
-Following this idea of anticipating security checks in the CICD pipeline, we can then define policies that automatically run against our infrastructure code and check for compliance rules as a step of the pipeline. In this tutorial, we will review the [Regula](https://regula.dev/index.html) policy engine and see how to check infrastructure security even before it’s deployed.
+Following this idea of anticipating security checks in the CICD pipeline, we can then define policies that automatically run against our infrastructure code and check for compliance rules as a step of the pipeline. In this tutorial, we will review the [Regula](https://regula.dev/index.html) policy engine, a tool that evaluates infrastructure as code files for potential Cloud security and compliance violations.
 
-Regula is a tool that evaluates infrastructure as code files for potential Cloud security and compliance violations. It includes a [list of pre-defined rules](https://regula.dev/rules.html) for AWS, Azure, Google Cloud, and Kubernetes based on their respective CIS benchmarks. Regula also allows you to [define custom rules](https://regula.dev/development/writing-rules.html) written in [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/), OPA’s native query language.
+Regula includes a [list of pre-defined rules](https://regula.dev/rules.html) for AWS, Azure, Google Cloud, and Kubernetes based on their respective CIS benchmarks. Regula also allows you to [define custom rules](https://regula.dev/development/writing-rules.html) written in [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/), OPA’s native query language.
 
 ## Download Regula
 
