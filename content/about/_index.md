@@ -9,8 +9,8 @@ widgets:
   - "recent"
   - "social"
 ---
-Deployment is a tech blog about Software Engineering with focus on DevSecOps.
+Deployment is a tech blog focused on Software Engineering and DevSecOps.
 
-You should expect to see here content about things I'm using or researching to solve real problems. I also like to write about foundational and introductory-level concepts.
+You should expect to see here content related to things I'm currently using or researching to solve real problems. You may also find foundational and introductory-level content, which I have been hoping to find more time to produce.
 
 The best way to contact me and/or provide feedback is via [Twitter](https://twitter.com/soeiro_santos).

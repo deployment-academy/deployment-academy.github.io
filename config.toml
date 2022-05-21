@@ -14,7 +14,6 @@ enableGitInfo = true
   avatar = ""
 
 [Params]
-  subtitle = "" # Deprecated in favor of .Site.Params.logo.subtitle
   description = "A tech blog focused on software engineering and devsecops" # Site description. Used in meta description
   copyright = "Deployment - A tech blog focused on Software Engineering and DevSecOps" # Footer copyright holder, otherwise will use site title
   opengraph = true # Enable OpenGraph if true
@@ -37,49 +36,21 @@ enableGitInfo = true
 
 [Params.style.vars]
   highlightColor = "#e22d30" # Override highlight color
-
-  # Override font-family sets. Secondary font-family set responsible for pre, code, kbd, and samp tags font
-  # Take care of different quotes OR escaping symbols in these params if necessary
   fontFamilyPrimary = "'Open Sans', Helvetica, Arial, sans-serif"
   fontFamilySecondary = "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
 
 [Params.logo]
 #   image = "img/placeholder.png" # Logo image. Path relative to "static"
-  title = "Deployment" # Logo title, otherwise will use site title
+  title = "Deployment"
   subtitle = "A tech blog focused on Software Engineering and DevSecOps" # Logo subtitle
 
 [Params.sidebar]
   home = "right" # Configure layout for home page
   list = "left"  # Configure layout for list pages
   single = false # Configure layout for single pages
-  # Enable widgets in given order
-  widgets = ["ddg-search", "recent", "social"]
-  # alternatively "ddg-search" can be used, to search via DuckDuckGo
-  # widgets = ["ddg-search", "recent", "categories", "taglist", "social", "languages"]
-
-# [Params.widgets]
-#   recent_num = 5 # Set the number of articles in the "Recent articles" widget
-#   categories_counter = false # Enable counter for each category in "Categories" widget
-#   tags_counter = false # Enable counter for each tag in "Tags" widget
+  widgets = ["ddg-search", "recent", "social"] # other widgets: categories, taglist
 
 [Params.widgets.social]
-  # Enable parts of social widget
-#   facebook = "username"
-#   instagram = "username"
-#   telegram = "username"
-#   email = "example@example.com"
-#   bitbucket = "username"
-#   gitlab = "username"
-#   linkedin = "soeirosantos"
   twitter = "soeiro_santos"
   github = "soeirosantos"
 
-# Custom social links
-# [[Params.widgets.social.custom]]
-#   title = "Youtube"
-#   url = "https://youtube.com/user/username"
-#   icon = "youtube.svg" # Optional. Path relative to "layouts/partials"
-
-# [[Params.widgets.social.custom]]
-#   title = "My Home Page"
-#   url = "http://example.com"
