@@ -48,7 +48,7 @@ enableGitInfo = true
   home = "right" # Configure layout for home page
   list = "left"  # Configure layout for list pages
   single = false # Configure layout for single pages
-  widgets = ["ddg-search", "recent", "social"] # other widgets: categories, taglist
+  widgets = ["ddg-search", "social", "recent"] # other widgets: categories, taglist
 
 [Params.widgets.social]
   twitter = "soeiro_santos"

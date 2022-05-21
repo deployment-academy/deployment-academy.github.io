@@ -6,8 +6,8 @@ menu: main
 sidebar: "right"
 widgets:
   - "ddg-search"
-  - "recent"
   - "social"
+  - "recent"
 ---
 Deployment is a tech blog focused on Software Engineering and DevSecOps.
 
