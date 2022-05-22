@@ -46,11 +46,15 @@ enableGitInfo = true
 
 [Params.sidebar]
   home = "right" # Configure layout for home page
-  list = "left"  # Configure layout for list pages
+  list = "right"  # Configure layout for list pages
   single = false # Configure layout for single pages
-  widgets = ["ddg-search", "social", "recent"] # other widgets: categories, taglist
+  widgets = ["ddg-search", "social", "recent", "taglist"] # other widgets: categories, taglist
 
 [Params.widgets.social]
   twitter = "soeiro_santos"
   github = "soeirosantos"
 
+[Params.widgets]
+  recent_num = 5 # Set the number of articles in the "Recent articles" widget
+  categories_counter = false # Enable counter for each category in "Categories" widget
+  tags_counter = false # Enable counter for each tag in "Tags" widget

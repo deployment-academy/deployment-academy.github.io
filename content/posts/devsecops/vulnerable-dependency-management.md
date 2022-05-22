@@ -4,11 +4,6 @@ description: "Security considerations about dependency management."
 date: 2021-08-22T12:52:20-04:00
 lastmod: 2021-08-25T12:56:20-04:00
 draft: false
-sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
 tags:
   - "devsecops"
   - "application security"
@@ -84,4 +79,4 @@ Most of your application is composed of third-party open-source libraries. Takin
 
 Have comments or feedback? Feel free to share in the thread below:
 
-{{< tweet 1431023458734034944 >}}
+{{< tweet user="soeiro_santos" id="1431023458734034944" >}}

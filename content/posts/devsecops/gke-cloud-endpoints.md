@@ -4,11 +4,6 @@ description: "Google Cloud Endpoints in GKE walkthrough"
 date: 2021-03-08
 lastmod: 2021-08-23
 draft: false
-sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
 tags:
   - "devsecops"
   - "kubernetes"
