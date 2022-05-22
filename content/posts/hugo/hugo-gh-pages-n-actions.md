@@ -4,11 +4,6 @@ description: "In this tutorial, we are going to get a static website up and runn
 date: 2021-08-15T22:55:44-04:00
 lastmod: 2021-08-16
 draft: false
-sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
 tags:
   - hugo
 ---

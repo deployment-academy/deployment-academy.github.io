@@ -4,11 +4,6 @@ description: "In this tutorial, we are going to play with the Google Kubernetes 
 date: 2021-09-18T13:48:06-04:00
 lastmod: 2021-09-18T13:48:06-04:00
 draft: false
-sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
 tags:
   - "devsecops"
   - "kubernetes"

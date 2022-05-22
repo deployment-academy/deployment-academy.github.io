@@ -4,11 +4,6 @@ description: "Workload Identity is the recommended way to access Google Cloud AP
 date: 2020-06-15
 lastmod: 2020-06-15
 draft: false
-sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
 tags:
   - "devsecops"
   - "kubernetes"

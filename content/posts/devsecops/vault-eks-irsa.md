@@ -4,11 +4,6 @@ description: "Configure and explore the HashiCorp Vault AWS Auth method with Ama
 date: 2021-05-23
 lastmod: 2021-08-22
 draft: false
-sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
 tags:
   - "devsecops"
   - "kubernetes"

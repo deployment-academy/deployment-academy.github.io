@@ -4,11 +4,6 @@ description: "In this tutorial, we will review the Regula policy engine and see 
 date: 2021-10-16T23:37:41-04:00
 lastmod: 2021-10-17T23:37:41-04:00
 draft: false
-sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
 tags:
   - "devsecops"
   - "kubernetes"

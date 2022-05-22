@@ -4,11 +4,6 @@ description: "In this tutorial, we will deploy Cilium to an Amazon EKS cluster a
 date: 2021-09-26T14:15:28-04:00
 lastmod: 2021-09-26T14:15:28-04:00
 draft: false
-sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
 tags:
   - "devsecops"
   - "kubernetes"
