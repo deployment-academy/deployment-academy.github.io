@@ -174,4 +174,6 @@ This model has also been used as a baseline to evaluate tools, methods, assess r
 
 This overall approach has been used and continuously improved in the real world for a couple of years now. The current form is heavily influenced by the container threat model presented by [Liz Rice](https://twitter.com/lizrice) in [Container Security: Fundamental Technology Concepts that Protect Containerized Applications 1st Edition](https://www.amazon.com/Container-Security-Fundamental-Containerized-Applications/dp/1492056707).
 
-If you have any questions or comments feel free to reach out.
+If you have any questions or comments feel free to reach out in the Twitter thread below or directly.
+
+{{< tweet user="soeiro_santos" id="1536109625665363969" >}}
