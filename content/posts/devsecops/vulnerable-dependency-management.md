@@ -1,5 +1,5 @@
 ---
-title: "Vulnerable Dependency Management: The Invisible Enemy"
+title: "Vulnerable Dependency Management, a developer's perspective"
 description: "Security considerations about dependency management."
 date: 2021-08-22T12:52:20-04:00
 lastmod: 2021-08-25T12:56:20-04:00
