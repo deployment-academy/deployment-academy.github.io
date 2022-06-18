@@ -12,7 +12,7 @@ tags:
   - "supply chain"
 ---
 
-In this post, I want to share the approach I have been using to scope and decide what to do when defending a Kubernetes environment. The approach presented defines ten high-level security concerns and is used with other frameworks and benchmarks to contextualize and guide the security efforts.
+> **TL;DR** - In this post, I want to share the approach I have been using to scope and decide what to do when defending a Kubernetes environment. The approach presented defines ten high-level security concerns and is used with other frameworks and benchmarks to contextualize and guide the security efforts. For each security concern, I present an informal and opinionated description based on my experience.
 
 <!--more-->
 
