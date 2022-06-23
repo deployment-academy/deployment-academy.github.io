@@ -1,7 +1,7 @@
 baseurl = "https://deployment.properties"
 title = "Deployment"
 languageCode = "en-us"
-paginate = "5" # Number of posts per page
+paginate = "10" # Number of posts per page
 theme = "mainroad"
 disqusShortname = "" # Enable Disqus comments by entering your Disqus shortname
 googleAnalytics = "G-0BJEGTESYY" # Enable Google Analytics by entering your tracking id
@@ -14,8 +14,8 @@ enableGitInfo = true
   avatar = ""
 
 [Params]
-  description = "A tech blog focused on software engineering and devsecops" # Site description. Used in meta description
-  copyright = "Deployment - A tech blog focused on Software Engineering and DevSecOps" # Footer copyright holder, otherwise will use site title
+  description = "A tech blog focused on devsecops" # Site description. Used in meta description
+  copyright = "Deployment - A tech blog focused on DevSecOps" # Footer copyright holder, otherwise will use site title
   opengraph = true # Enable OpenGraph if true
   schema = true # Enable Schema
   twitter_cards = true # Enable Twitter Cards if true
@@ -42,7 +42,7 @@ enableGitInfo = true
 [Params.logo]
 #   image = "img/placeholder.png" # Logo image. Path relative to "static"
   title = "Deployment"
-  subtitle = "A tech blog focused on Software Engineering and DevSecOps" # Logo subtitle
+  subtitle = "A tech blog focused on DevSecOps" # Logo subtitle
 
 [Params.sidebar]
   home = "right" # Configure layout for home page
