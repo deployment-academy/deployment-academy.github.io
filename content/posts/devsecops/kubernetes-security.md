@@ -1,6 +1,6 @@
 ---
 title: "A Kubernetes-centered security approach from the trenches"
-description: "In this post, I want to share the approach I have been using to scope and decide what to do when defending a Kubernetes environment. The approach presented defines ten high-level security concerns and is used with other frameworks and benchmarks to contextualize and guide the security efforts."
+description: "In this post, I want to share the approach I have been using to scope and make decisions when defending a Kubernetes environment. The approach presented here defines ten high-level security concerns and is used with other frameworks and benchmarks to contextualize and guide the security efforts."
 date: 2022-06-11T13:16:56-04:00
 lastmod: 2022-06-11T13:16:56-04:00
 draft: false
@@ -12,7 +12,7 @@ tags:
   - "supply chain"
 ---
 
-In this post, I want to share the approach I have been using to scope and decide what to do when defending a Kubernetes environment. The approach presented defines ten high-level security concerns and is used with other frameworks and benchmarks to contextualize and guide the security efforts. For each security concern, I present an informal and opinionated description based on my experience.
+In this post, I want to share the approach I have been using to scope and make decisions when defending a Kubernetes environment. The approach presented here defines ten high-level security concerns and is used with other frameworks and benchmarks to contextualize and guide the security efforts. For each security concern, I present an informal and opinionated description based on my experience.
 
 <!--more-->
 
