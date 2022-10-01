@@ -368,3 +368,8 @@ gcloud compute routers nats delete "$CLUSTER_NAME"-nat --router="$CLUSTER_NAME"-
 gcloud compute routers delete "$CLUSTER_NAME"-router --region="$GCP_REGION" --project "$GCP_PROJECT_ID"
 gcloud iam service-accounts delete "${CLUSTER_NAME}-sa@${GCP_PROJECT_ID}.iam.gserviceaccount.com" --project "$GCP_PROJECT_ID"
 ```
+
+If you have any questions or comments feel free to reach out in the Twitter thread below or directly.
+
+{{< tweet user="soeiro_santos" id="1576269542590148611" >}}
+
