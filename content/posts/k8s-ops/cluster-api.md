@@ -223,6 +223,8 @@ clusterctl generate cluster "$CLUSTER_NAME" \
 
 Inspect the YAML file created. This YAML contains the specification for the GCP infrastructure that will be created. You apply this to the Management Cluster and the CAPI and CAPG controllers deployed to it will take care of the infrastructure provisioning.
 
+The best reference for these APIs are the Go docs for [CAPI](https://pkg.go.dev/sigs.k8s.io/cluster-api@v1.2.2/api/v1beta1) and [CAPG](https://pkg.go.dev/sigs.k8s.io/cluster-api-provider-gcp@v1.2.0/api/v1beta1). You can also use `kube explain` to obtain information for these kinds.
+
 In a production environment, you'll adjust and version control this file with all of your specific requirements.
 
 Apply it.
