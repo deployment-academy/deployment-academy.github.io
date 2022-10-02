@@ -44,7 +44,6 @@ For this tutorial, you need to create or select a Google Cloud Project and ensur
 - [ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) (v2.13.4)
 - [helm](https://helm.sh/docs/intro/install/) (v3.10.0)
 
-
 ## Preparing the GCP project
 
 In the terminal export the following variables:
@@ -131,8 +130,6 @@ make build-gce-ubuntu-2004
 In this tutorial, we use the default Kubernetes version defined in the configuration cloned from the repository at the time of this writing (v1.23.10). To change the Kubernetes version or customize other build parameters check the [customization section](https://github.com/kubernetes-sigs/image-builder/blob/master/docs/book/src/capi/capi.md#customization) of the Image Builer CAPI documentation.
 {{< /notice >}}
 
- 
-
 **This step takes several minutes. You can probably move forward with other steps until before the `kubectl apply` that starts the creation of the cluster.**
 
 Retrieve the image name and set the image ID variable.
@@ -155,13 +152,14 @@ cd -
 
 {{< notice type="tip" id="ssh-ansible" title="SSH errors during the Ansible execution" >}}
 I'm on Ubuntu 22.04 and had to add these lines to my SSH config for the Ansible script connect with the remote server.
-```
+
+```shell
 cat ~/.ssh/config
 HostKeyAlgorithms +ssh-rsa
 PubkeyAcceptedKeyTypes +ssh-rsa
 ```
-{{< /notice >}}
 
+{{< /notice >}}
 
 ## Spin up the Management Cluster
 
@@ -174,7 +172,6 @@ KUBERNETES_VERSION=$(jq -r .kubernetes_semver image-builder/images/capi/packer/c
 ```
 
 We will use `kind` to create a Management Cluster locally. This is only for development and experimentation. In production, you should use an actual production-ready Kubernetes cluster.
-
 
 Create the local cluster.
 
@@ -190,16 +187,17 @@ export GCP_B64ENCODED_CREDENTIALS=$(base64 key.json | tr -d '\n')
 clusterctl init --infrastructure gcp
 ```
 
-Inspect the Management Cluster and check the CAPI controllers that have been created.
+Inspect the Management Cluster and check the CAPI and CAPG controllers that have been created.
 
 {{< notice type="warning" id="capi-bootstrap-creds" title="CAPI Manager Bootstrap Credentials" >}}
 Note that the service account key has been stored in the `capg-manager-bootstrap-credentials` kube secret in the namespace `capg-system`. This is a really high-privileged static credential to have stored in the cluster. In a production environment, this is something that you definetely want to keep track of and secure properly.
+
 ```shell
 kubectl get secrets capg-manager-bootstrap-credentials \
   -n capg-system -o json | jq -r '.data."credentials.json"' | base64 -d
 ```
-{{< /notice >}}
 
+{{< /notice >}}
 
 ## Create the Workload Cluster
 
@@ -223,12 +221,11 @@ clusterctl generate cluster "$CLUSTER_NAME" \
   > "$CLUSTER_NAME".yaml
 ```
 
-Inspect the YAML file created. This YAML contains the specification for the GCP infrastructure that will be created. You apply this to the Management Cluster and the CAPI controllers deployed to it will take care of the infrastructure provisioning.
+Inspect the YAML file created. This YAML contains the specification for the GCP infrastructure that will be created. You apply this to the Management Cluster and the CAPI and CAPG controllers deployed to it will take care of the infrastructure provisioning.
 
 In a production environment, you'll adjust and version control this file with all of your specific requirements.
 
 Apply it.
-
 
 ```shell
 kubectl apply -f "$CLUSTER_NAME".yaml 
@@ -237,7 +234,7 @@ kubectl apply -f "$CLUSTER_NAME".yaml
 
 It will create the resources:
 
-```
+```text
 cluster.cluster.x-k8s.io
 gcpcluster.infrastructure.cluster.x-k8s.io
 kubeadmcontrolplane.controlplane.cluster.x-k8s.io
@@ -268,7 +265,7 @@ gcloud compute instances list  --filter="tags.items=$CLUSTER_NAME" --project "$G
 gcloud compute firewall-rules list --project "$GCP_PROJECT"
 ```
 
-Checking the CAPI controllers logs is probably your best bet if you need to debug problems.
+Checking the CAPI and CAPG controllers logs is probably your best bet if you need to debug problems.
 
 It will take a couple minutes. Wait until the all the 6 nodes are up and running.
 
@@ -347,22 +344,27 @@ This LoadBalancer service creates a Network Load Balancer in GCP and is good for
 ## Clean up
 
 Pointing you kubeconfig to the workload cluster.
+
 ```shell
 kubectl delete svc nginx-service
 ```
+
 (it will remove the load balancer and the firewall rules)
 
 Pointing you kubeconfig to the management cluster.
+
 ```shell
 kubectl delete cluster "$CLUSTER_NAME"
 ```
 
 Remove the management cluster.
+
 ```shell
 kind delete cluster --name management-cluster
 ```
 
 Remove the GCP objects that we created.
+
 ```shell
 gcloud compute routers nats delete "$CLUSTER_NAME"-nat --router="$CLUSTER_NAME"-router --router-region="$GCP_REGION" --project "$GCP_PROJECT_ID"
 gcloud compute routers delete "$CLUSTER_NAME"-router --region="$GCP_REGION" --project "$GCP_PROJECT_ID"
@@ -372,4 +374,3 @@ gcloud iam service-accounts delete "${CLUSTER_NAME}-sa@${GCP_PROJECT_ID}.iam.gse
 If you have any questions or comments feel free to reach out in the Twitter thread below or directly.
 
 {{< tweet user="soeiro_santos" id="1576269542590148611" >}}
-
