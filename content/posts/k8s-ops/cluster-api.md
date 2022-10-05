@@ -16,9 +16,9 @@ tags:
 
 We all know the benefits of using managed Kubernetes services like GKE, EKS, AKS, etc. Given the complexity of managing the cluster infrastructure and its core components (control plane, auto-scaling, monitoring, networking, storage, etc.), using a managed Kubernetes service is generally the first choice when running workloads in production.
 
-However, in some situations, provisioning and managing the Kubernetes cluster from scratch might be necessary. Specific product features, security & compliance, costs, vendor independency, etc. are some factors that usually justify the decision to run Kubernetes by yourself. Of course, many challenges come with managing a Kubernetes cluster. I want to keep this discussion out of the scope of this tutorial since it requires special attention.
+However, in some situations, provisioning and managing the Kubernetes cluster from scratch might be necessary. Specific product features, security & compliance, costs, vendor independency, etc. are some factors that usually justify the decision of running Kubernetes by yourself. Of course, many challenges come with managing a Kubernetes cluster and the discussion around which route - self-managed vs. managed - to take is far from simple. I want to keep this discussion out of the scope of this tutorial since it would require special attention.
 
-Nowadays, when considering provision and managing a Kubernetes cluster, the tool of choice is [Cluster API](https://cluster-api.sigs.k8s.io/). From the docs:
+Currently, the tool of choice when considering provisioning and managing a Kubernetes cluster is [Cluster API](https://cluster-api.sigs.k8s.io/). From the docs:
 
 > _Cluster API is a Kubernetes sub-project focused on providing declarative APIs and tooling to simplify provisioning, upgrading, and operating multiple Kubernetes clusters._
 >
@@ -28,7 +28,7 @@ Nowadays, when considering provision and managing a Kubernetes cluster, the tool
 
 Cluster API supports a comprehensive [list of providers](https://cluster-api.sigs.k8s.io/reference/providers.html) covering the main public Cloud providers and other popular platforms.
 
-This tutorial will use the Cluster API to provision a cluster in GCP and install Cilium as the network solution. It follows the same idea as the [Cluster API quick start guide](https://cluster-api.sigs.k8s.io/user/quick-start.html) for GCP with more complete and detailed steps.
+This tutorial will use the Cluster API to provision a cluster in GCP and install Cilium as the network solution. It follows the same idea as the [Cluster API Quick Start Guide](https://cluster-api.sigs.k8s.io/user/quick-start.html) for GCP with more complete and detailed steps.
 
 Before we start, note that Cluster API introduces important [concepts](https://cluster-api.sigs.k8s.io/user/concepts.html) that I'll use here with minimal explanation. So, I recommend reading the concepts and other relevant parts of the documentation. It's not a requirement to follow along, tho.
 
