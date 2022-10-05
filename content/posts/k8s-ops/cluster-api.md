@@ -49,7 +49,7 @@ For this tutorial, you need to create or select a Google Cloud Project and ensur
 In the terminal export the following variables:
 
 ```shell
-export GCP_PROJECT_ID=cluster-api-363616
+export GCP_PROJECT_ID=project-id
 export GCP_REGION=us-east1
 export GCP_NETWORK_NAME=default
 export CLUSTER_NAME=starks
@@ -150,7 +150,7 @@ Return to the original directory (where the `key.json` file is stored).
 cd -
 ```
 
-{{< notice type="tip" id="ssh-ansible" title="SSH errors during the Ansible execution" >}}
+{{< notice type="warning" id="ssh-ansible" title="Tip: SSH errors during the Ansible execution" >}}
 I'm on Ubuntu 22.04 and had to add these lines to my SSH config for the Ansible script connect with the remote server.
 
 ```shell
