@@ -48,13 +48,28 @@ enableGitInfo = true
   home = "right" # Configure layout for home page
   list = "right"  # Configure layout for list pages
   single = false # Configure layout for single pages
-  widgets = ["ddg-search", "social", "recent", "taglist"] # other widgets: categories, taglist
+  widgets = ["ddg-search", "social", "recent"] # other widgets: categories, taglist
 
 [Params.widgets.social]
-  twitter = "soeiro_santos"
+  twitter = "soeirosantos_"
   github = "soeirosantos"
 
 [Params.widgets]
   recent_num = 5 # Set the number of articles in the "Recent articles" widget
   categories_counter = false # Enable counter for each category in "Categories" widget
   tags_counter = false # Enable counter for each tag in "Tags" widget
+
+[menu]
+[[menu.main]]
+  identifier = 'about'
+  name = 'about'
+  url = '/about/'
+  weight = -110
+[[menu.main]]
+  name = 'Kubernetes Security'
+  url = '/posts/devsecops/kubernetes-security/'
+  weight = -100
+[[menu.main]]
+  name = 'tags'
+  url = '/tags/'
+  weight = -90

@@ -176,4 +176,4 @@ This overall approach has been used and continuously improved in the real world 
 
 If you have any questions or comments feel free to reach out in the Twitter thread below or directly.
 
-{{< tweet user="soeiro_santos" id="1536109625665363969" >}}
+{{< tweet user="soeirosantos_" id="1536109625665363969" >}}
