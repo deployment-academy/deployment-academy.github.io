@@ -375,4 +375,4 @@ gcloud iam service-accounts delete "${CLUSTER_NAME}-sa@${GCP_PROJECT_ID}.iam.gse
 
 If you have any questions or comments feel free to reach out in the Twitter thread below or directly.
 
-{{< tweet user="soeiro_santos" id="1576269542590148611" >}}
+{{< tweet user="soeirosantos_" id="1576269542590148611" >}}

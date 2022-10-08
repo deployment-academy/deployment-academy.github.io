@@ -79,4 +79,4 @@ Most of your application is composed of third-party open-source libraries. Takin
 
 Have comments or feedback? Feel free to share in the thread below:
 
-{{< tweet user="soeiro_santos" id="1431023458734034944" >}}
+{{< tweet user="soeirosantos_" id="1431023458734034944" >}}
