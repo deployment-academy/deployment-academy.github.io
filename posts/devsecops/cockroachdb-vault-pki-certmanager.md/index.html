@@ -1,0 +1,516 @@
+<!doctype html><html class=no-js lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>CockroachDB with Vault PKI and cert-manager - Deployment</title><script>(function(e,t){e[t]=e[t].replace("no-js","js")})(document.documentElement,"className")</script><meta name=description content="In this tutorial we are going to spin up a CockroachDB secure cluster running in Kubernetes with certificates managed by HashiCorp Vault and issued by cert-manager."><meta property="og:title" content="CockroachDB with Vault PKI and cert-manager"><meta property="og:description" content="In this tutorial we are going to spin up a CockroachDB secure cluster running in Kubernetes with certificates managed by HashiCorp Vault and issued by cert-manager."><meta property="og:type" content="article"><meta property="og:url" content="https://deployment.properties/posts/devsecops/cockroachdb-vault-pki-certmanager.md/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-11-25T12:14:53-05:00"><meta property="article:modified_time" content="2022-11-25T23:31:37-05:00"><meta itemprop=name content="CockroachDB with Vault PKI and cert-manager"><meta itemprop=description content="In this tutorial we are going to spin up a CockroachDB secure cluster running in Kubernetes with certificates managed by HashiCorp Vault and issued by cert-manager."><meta itemprop=datePublished content="2022-11-25T12:14:53-05:00"><meta itemprop=dateModified content="2022-11-25T23:31:37-05:00"><meta itemprop=wordCount content="3304"><meta itemprop=keywords content="devsecops,vault,certificate management,pki,cockroachdb,kubernetes,cert-manager,"><meta name=twitter:card content="summary"><meta name=twitter:title content="CockroachDB with Vault PKI and cert-manager"><meta name=twitter:description content="In this tutorial we are going to spin up a CockroachDB secure cluster running in Kubernetes with certificates managed by HashiCorp Vault and issued by cert-manager."><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=dns-prefetch href=//fonts.googleapis.com><link rel=dns-prefetch href=//fonts.gstatic.com><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/custom.css><link rel="shortcut icon" href=/favicon.ico><script async src="https://www.googletagmanager.com/gtag/js?id=G-0BJEGTESYY"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-0BJEGTESYY",{anonymize_ip:!1})}</script></head><body class=body><div class="container container--outer"><header class=header><div class="container header__container"><div class=logo><a class=logo__link href=/ title=Deployment rel=home><div class="logo__item logo__text"><div class=logo__title>Deployment</div><div class=logo__tagline>A tech blog focused on DevSecOps</div></div></a></div><nav class=menu><button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>Menu</span></button><ul class=menu__list><li class=menu__item><a class=menu__link href=/about/><span class=menu__text>about</span></a></li><li class=menu__item><a class=menu__link href=/posts/devsecops/kubernetes-security/><span class=menu__text>Kubernetes Security</span></a></li><li class=menu__item><a class=menu__link href=/tags/><span class=menu__text>tags</span></a></li></ul></nav></div></header><div class="wrapper flex"><div class=primary><main class=main role=main><article class=post><header class=post__header><h1 class=post__title>CockroachDB with Vault PKI and cert-manager</h1><div class="post__meta meta"><div class="meta__item-author meta__item"><svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2.0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class=meta__text>Romulo Santos</span></div><div class="meta__item-datetime meta__item"><svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2022-11-25T12:14:53-05:00>2022-11-25</time>
+<time class=meta__text datetime=2022-11-25T23:31:37-05:00>(Last Modified: 2022-11-25)</time></div></div></header><div class="post__toc toc"><div class=toc__title>Page content</div><div class=toc__menu><nav id=TableOfContents><ul><li><a href=#prerequesites>Prerequesites</a></li><li><a href=#create-a-local-kubernetes-cluster>Create a local Kubernetes cluster</a></li><li><a href=#cockroachdb-cluster>CockroachDB Cluster</a><ul><li><a href=#create-the-certificates>Create the Certificates</a></li><li><a href=#deploy-cockroachdb>Deploy CockroachDB</a></li><li><a href=#checkpoint>Checkpoint</a></li></ul></li><li><a href=#hashicorp-vault-pki>HashiCorp Vault PKI</a><ul><li><a href=#deploy-vault>Deploy Vault</a></li><li><a href=#configure-vault-pki>Configure Vault PKI</a></li><li><a href=#create-the-certificates-1>Create the Certificates</a></li><li><a href=#checkpoint-1>Checkpoint</a></li></ul></li><li><a href=#automatically-issuing--renewing-certificates>Automatically Issuing / Renewing Certificates</a><ul><li><a href=#install-cert-manager>Install cert-manager</a></li><li><a href=#configure-the-issuer-access-to-vault>Configure the Issuer access to Vault</a></li><li><a href=#deploy-the-certificate-manager-configuration>Deploy the Certificate Manager Configuration</a></li><li><a href=#final-checkpoint>Final Checkpoint</a></li></ul></li><li><a href=#bonus-challenge>Bonus Challenge</a></li><li><a href=#other-relevant-links>Other relevant links</a></li></ul></nav></div></div><div class="content post__content clearfix"><p>Recently, I have been experimenting with putting together a CockroachDB cluster using Vault PKI and cert-manager, and I
+thought I&rsquo;d take some time to organize my notes and share it here. This is a long tutorial because I&rsquo;ll drop here all
+the experimentation process, but I hope the separation of the sections can help anyone who lands here looking for
+specific insights in some parts of the setup.</p><p>In this tutorial, we are going to spin up a CockroachDB secure cluster running in Kubernetes with certificates managed by
+HashiCorp Vault and issued by cert-manager. Before we get to the final state, we are going to evolve the installation
+step by step to understand how each component is contributing to the setup and what we are gaining.</p><p>We&rsquo;ll focus on the execution, assuming you are minimally familiar with these components. Links will be provided for
+additional context when necessary.</p><p>This tutorial can be executed from your local machine, no cloud resources are necessary.</p><h2 id=prerequesites>Prerequesites</h2><p>Along this tutorial we&rsquo;ll use the following tools.</p><ul><li><a href=https://kubernetes.io/docs/tasks/tools/#kubectl>kubectl</a></li><li><a href=https://kind.sigs.k8s.io/docs/user/quick-start/#installation>kind</a></li><li><a href=https://www.cockroachlabs.com/docs/v22.1/install-cockroachdb-linux>cockroach CLI</a></li><li><a href=https://helm.sh/docs/intro/install/>helm</a></li><li><a href=https://developer.hashicorp.com/vault/docs/install>vault CLI</a></li></ul><h2 id=create-a-local-kubernetes-cluster>Create a local Kubernetes cluster</h2><p>We&rsquo;ll start creating a Kubernetes local cluster with Kind with the following profile:</p><ul><li>one control plane node,</li><li>three worker nodes dedicated to CockroachDB and</li><li>one general-purpose worker node for other pods.</li></ul><p>This is completely optional for the main goal of this tutorial, but it&rsquo;s a scenario particularly interesting for a
+CockroachDB deployment. <strong>Feel free to skip it and use your preferred way to set up Kubernetes locally.</strong></p><p>Create a file with the following Kind configuration.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>cat <span style=color:#e6db74>&lt;&lt;EOF &gt;./kind-config.yaml
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>kind: Cluster
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>apiVersion: kind.x-k8s.io/v1alpha4
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>name: roaches
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>nodes:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - role: control-plane
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - role: worker
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    kubeadmConfigPatches:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>      - |
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        kind: JoinConfiguration
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        nodeRegistration:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          kubeletExtraArgs:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            node-labels: &#34;role=roach&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          taints:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            - key: &#34;dedicated&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              value: &#34;roach&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              effect: &#34;NoSchedule&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - role: worker
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    kubeadmConfigPatches:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>      - |
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        kind: JoinConfiguration
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        nodeRegistration:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          kubeletExtraArgs:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            node-labels: &#34;role=roach&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          taints:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            - key: &#34;dedicated&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              value: &#34;roach&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              effect: &#34;NoSchedule&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - role: worker
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    kubeadmConfigPatches:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>      - |
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        kind: JoinConfiguration
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        nodeRegistration:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          kubeletExtraArgs:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            node-labels: &#34;role=roach&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          taints:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            - key: &#34;dedicated&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              value: &#34;roach&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              effect: &#34;NoSchedule&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - role: worker
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    kubeadmConfigPatches:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>      - |
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        kind: JoinConfiguration
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        nodeRegistration:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          kubeletExtraArgs:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            node-labels: &#34;role=general&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EOF</span>
+</span></span></code></pre></div><p>We are using the <code>role=roach</code> node label and the <code>dedicated=roach</code> taint to prepare the
+nodes for the CockroachDB pods scheduling. See <a href=https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/>Taints and Tolerations</a>
+for more details.</p><p>Create the Kubernetes cluster.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kind create cluster --config kind-config.yaml <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --image kindest/node:v1.23.13@sha256:ef453bb7c79f0e3caba88d2067d4196f427794086a7d0df8df4f019d5e336b61
+</span></span></code></pre></div><p>Reference for the <a href=https://kind.sigs.k8s.io/docs/user/configuration/>Kind configuration</a>,
+<a href=https://github.com/kubernetes-sigs/kind/releases>kind images</a>
+and for the
+<a href=https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/#kubeadm-k8s-io-v1beta3-JoinConfiguration>kubeadm JoinConfiguration config</a>.</p><h2 id=cockroachdb-cluster>CockroachDB Cluster</h2><p>In this section we are going to create a CockroachDB cluster with certificates issued by the <code>cockroach cert</code> command
+(<a href=https://www.cockroachlabs.com/docs/stable/cockroach-cert.html>see reference</a>).
+The approach followed here is described in the <a href="https://www.cockroachlabs.com/docs/stable/orchestrate-a-local-cluster-with-kubernetes.html?filters=manual">CockroachDB docs</a>
+with a few changes.</p><p>In a CockroachDB cluster, each node must be able to initiate HTTP requests to any of the others. In a normal operating
+mode, these requests are TLS encrypted with mutual authentication, requiring that each node present its own certificate,
+signed by the same CA. Check the
+<a href=https://www.cockroachlabs.com/docs/v22.1/security-reference/transport-layer-security#pki-in-cockroachdb>PKI in CockroachDB</a>
+documentation for more details.</p><h3 id=create-the-certificates>Create the Certificates</h3><p>Before we launch the cluster we need to create the certificates.</p><p>Create the CA certificate and key pair.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>mkdir -p certs ca-key
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>cockroach cert create-ca <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --certs-dir<span style=color:#f92672>=</span>certs <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --ca-key<span style=color:#f92672>=</span>ca-key/ca.key
+</span></span></code></pre></div><p>Create the certificate and key pair for the nodes. We are adding the domain names for the internal Kubernetes
+communication. In a real scenario, you should add any other name that your cluster is expected to be reached.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>cockroach cert create-node <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    localhost 127.0.0.1 <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    cockroachdb-public <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    cockroachdb-public.default.svc.cluster.local <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    <span style=color:#ae81ff>\*</span>.cockroachdb <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    <span style=color:#ae81ff>\*</span>.cockroachdb.default.svc.cluster.local <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    --certs-dir<span style=color:#f92672>=</span>certs <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    --ca-key<span style=color:#f92672>=</span>ca-key/ca.key
+</span></span></code></pre></div><p>Create the client certificate and key for the
+<a href=https://www.cockroachlabs.com/docs/stable/security-reference/authorization.html#root-user>root user</a>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>cockroach cert create-client <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  root <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --certs-dir<span style=color:#f92672>=</span>certs <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --ca-key<span style=color:#f92672>=</span>ca-key/ca.key
+</span></span></code></pre></div><p>We can check the certificate created with OpenSSL.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>openssl x509 -in certs/node.crt<span style=color:#e6db74>&#34; -text | less
+</span></span></span></code></pre></div><p>Note some defaults applied by cert command like the CN and validity. Check the list of subject alternative names provided. You can
+also take a look at the client and CA certificates.</p><p>To mount these certificates into the Kubernetes pods we will create Kubernetes secrets out for the <code>certs</code> folder
+containing the node certificate and private key pair, root user certificate and private key pair, and the CA certificate.
+The name of this secret matches what is expected in the StatefulSet that we will download next.</p><p>Create the kubernetes secret.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl create secret <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  generic cockroachdb.node <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --from-file<span style=color:#f92672>=</span>certs
+</span></span></code></pre></div><h3 id=deploy-cockroachdb>Deploy CockroachDB</h3><p>This is a manual simplified deployment on a local Kubernetes cluster. Check
+the <a href=https://www.cockroachlabs.com/docs/stable/kubernetes-overview.html>documentation</a> for more info about how to
+deploy CockroachDB to Kubernetes.</p><p>Download the CockroachDB StatefulSet manifest.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>mkdir cluster
+</span></span><span style=display:flex><span>curl -o cluster/cockroachdb-statefulset.yaml <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  https://raw.githubusercontent.com/cockroachdb/cockroach/master/cloud/kubernetes/bring-your-own-certs/cockroachdb-statefulset.yaml
+</span></span></code></pre></div><p>For the main goal of this tutorial we could just apply this manifest, but we will make some adjustments to reduce the
+resources requests and limits and to ensure that the CockroachDB pods get scheduled to the dedicated nodes. We&rsquo;ll use
+<a href=https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/>kustomize</a> for this. <strong>This customization is
+optional, so feel free to skip these editions - you can make edits directly in the YAML file if you want.</strong></p><p>Create the following customization file.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>cat <span style=color:#e6db74>&lt;&lt;EOF &gt;cluster/kustomization.yaml
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>resources:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>- cockroachdb-statefulset.yaml
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>patchesStrategicMerge:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>- |-
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  apiVersion: apps/v1
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  kind: StatefulSet
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  metadata:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    name: cockroachdb
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  spec:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    template:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>      spec:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        containers:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          - name: cockroachdb
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            resources:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              requests:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                cpu: &#34;300m&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                memory: &#34;1Gi&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              limits:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                cpu: &#34;300m&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                memory: &#34;1Gi&#34; 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        nodeSelector:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          role: roach
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        tolerations:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        - key: &#34;dedicated&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          operator: &#34;Equal&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          value: &#34;roach&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          effect: &#34;NoSchedule&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EOF</span>
+</span></span></code></pre></div><p>Check the customization.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl kustomize cluster
+</span></span></code></pre></div><p>Apply it.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl apply -k cluster
+</span></span></code></pre></div><p>Check that the pods are running but no containers are ready until we initialize the CockroachDB cluster.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl get po -o wide
+</span></span><span style=display:flex><span>NAME            READY   STATUS    RESTARTS   AGE     IP           NODE              NOMINATED NODE   READINESS GATES
+</span></span><span style=display:flex><span>cockroachdb-0   0/1     Running   <span style=color:#ae81ff>0</span>          2m39s   10.244.3.4   roaches-worker2   &lt;none&gt;           &lt;none&gt;
+</span></span><span style=display:flex><span>cockroachdb-1   0/1     Running   <span style=color:#ae81ff>0</span>          2m39s   10.244.4.4   roaches-worker    &lt;none&gt;           &lt;none&gt;
+</span></span><span style=display:flex><span>cockroachdb-2   0/1     Running   <span style=color:#ae81ff>0</span>          2m39s   10.244.1.3   roaches-worker3   &lt;none&gt;           &lt;none&gt;
+</span></span></code></pre></div><p>Also note that the pods have been scheduled for the selected nodes (if you followed the customization above).</p><p>Initialize the cluster.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl exec -it cockroachdb-0 <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -- /cockroach/cockroach init <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --certs-dir<span style=color:#f92672>=</span>/cockroach/cockroach-certs
+</span></span></code></pre></div><p>Now if you check the pods again you should expect to see they are ready.
+The cluster is operational so let&rsquo;s connect a client and check.</p><p>Before we deploy the client, create a Kubernetes secret with only the root client certificate and key to be mounted
+into the client container.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl create secret <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  generic cockroachdb.client.root <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --from-file<span style=color:#f92672>=</span>certs/client.root.key <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --from-file<span style=color:#f92672>=</span>certs/client.root.crt <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --from-file<span style=color:#f92672>=</span>certs/ca.crt
+</span></span></code></pre></div><p>Deploy the client pod.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>mkdir client
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>curl -o client/cockroachdb-client.yaml <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  https://raw.githubusercontent.com/cockroachdb/cockroach/master/cloud/kubernetes/bring-your-own-certs/client.yaml
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>kubectl create <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -f client/cockroachdb-client.yaml
+</span></span></code></pre></div><p>Connect to it.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl exec -it cockroachdb-client-secure <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -- ./cockroach sql <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --certs-dir<span style=color:#f92672>=</span>/cockroach-certs <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --host<span style=color:#f92672>=</span>cockroachdb-public
+</span></span></code></pre></div><p>Alternatively, you can use the <code>url</code> argument providing the connection string (it&rsquo;s easier to visualize what&rsquo;s going on
+and validate some assumptions).</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl exec -it cockroachdb-client-secure <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -- ./cockroach sql <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --url<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;postgres://root@cockroachdb-public:26257/?sslmode=verify-full&amp;sslcert=/cockroach-certs/client.root.crt&amp;sslkey=/cockroach-certs/client.root.key&amp;sslrootcert=/cockroach-certs/ca.crt&#34;</span>
+</span></span></code></pre></div><p>In the CockroachDB terminal use the following commands to try it out:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>CREATE DATABASE bank;
+</span></span><span style=display:flex><span>CREATE TABLE bank.accounts <span style=color:#f92672>(</span>id INT PRIMARY KEY, balance DECIMAL<span style=color:#f92672>)</span>;
+</span></span><span style=display:flex><span>INSERT INTO bank.accounts VALUES <span style=color:#f92672>(</span>1, 1000.50<span style=color:#f92672>)</span>;
+</span></span><span style=display:flex><span>SELECT * FROM bank.accounts;
+</span></span></code></pre></div><style type=text/css>.notice{padding:18px;line-height:24px;margin-bottom:24px;border-radius:4px;color:#444;background:#e7f2fa;text-align:left}.notice p:last-child{margin-bottom:0}.notice-title{margin:-18px -18px 12px;padding:4px 18px;border-radius:4px 4px 0 0;font-weight:700;color:#fff;background:#6ab0de;text-align:left}.notice.warning .notice-title{background:rgba(217,83,79,.9)}.notice.warning{background:#fae2e2}.notice.info .notice-title{background:#f0b37e}.notice.info{background:#fff2db}.notice.note .notice-title{background:#6ab0de}.notice.note{background:#e7f2fa}.notice.tip .notice-title{background:rgba(92,184,92,.8)}.notice.tip{background:#e6f9e6}.icon-notice{display:inline-flex;align-self:center;margin-right:8px}.icon-notice img,.icon-notice svg{height:1em;width:1em;fill:currentColor}.icon-notice img,.icon-notice.baseline svg{top:.125em;position:relative}</style><div><svg width="0" height="0" display="none" xmlns="http://www.w3.org/2000/svg"><symbol id="tip-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379.0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628.0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628.0l-22.627 22.627c-6.248 6.248-6.248 16.379.0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"/></symbol><symbol id="note-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405.0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346 7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373.0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884.0-12.356 5.78-11.981 12.654z"/></symbol><symbol id="warning-notice" viewBox="0 0 576 512" preserveAspectRatio="xMidYMid meet"><path d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937.0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154.0l239.94 416.028zM288 354c-25.405.0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346 7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373.0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884.0-12.356 5.78-11.981 12.654z"/></symbol><symbol id="info-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196.0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627.0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627.0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627.0 12 5.373 12 12v1e2h12c6.627.0 12 5.373 12 12v24z"/></symbol></svg></div><div class="notice warning" id=too-many-files><p class="first notice-title"><span class="icon-notice baseline"><svg><use href="#warning-notice"/></svg></span>Too many open files error</p><p>If you are on Linux and bump into the error <code>Failed to create inotify object: Too many open files</code>. Increase the
+following values:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>sudo sysctl fs.inotify.max_user_watches<span style=color:#f92672>=</span><span style=color:#ae81ff>1048576</span>
+</span></span><span style=display:flex><span>sudo sysctl fs.inotify.max_user_instances<span style=color:#f92672>=</span><span style=color:#ae81ff>8192</span>
+</span></span></code></pre></div></div><h3 id=checkpoint>Checkpoint</h3><p>What we have done so far:</p><ul><li>Created a local Kubernetes cluster</li><li>Issued CA, node, and client certificates and key pairs for the CockroachDB cluster</li><li>Created the Kubernetes secrets with the certificate and key pairs</li><li>Deployed the CockroachDB cluster</li></ul><p>The security of our CockroachDB cluster relies on these certificates. If any certificate key pair (CA, nodes or root
+client) gets compromised a threat actor will have access to data or the ability to disrupt operations.
+From time to time, we&rsquo;ll have to rotate these certificates before they expire or when they get compromised.</p><h2 id=hashicorp-vault-pki>HashiCorp Vault PKI</h2><p>The next step is to replace the certificate generation with the Vault PKI. There are a couple of reasons you might want to
+do that. One of the main reasons is that you can use the Vault access control to grant access to the CA via Vault PKI
+roles allowing node and client operators to issue certificates in a self-service fashion while ensuring the principle of
+least privilege (no one needs direct access to the CA key or is allowed to generate certificates for clusters they are
+not authorized). The Vault PKI will also offer a smooth path to automating the entire process.</p><h3 id=deploy-vault>Deploy Vault</h3><p>Let&rsquo;s start installing and configuring Vault.</p><p>Add the HashiCorp Helm repository.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>helm repo add hashicorp https://helm.releases.hashicorp.com
+</span></span></code></pre></div><p>Install Vault.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>helm install vault hashicorp/vault --set <span style=color:#e6db74>&#34;injector.enabled=false&#34;</span>
+</span></span></code></pre></div><p>Check that the pod is running but no the container is not ready.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl get po -l app.kubernetes.io/name<span style=color:#f92672>=</span>vault -o wide
+</span></span></code></pre></div><p>Initialize.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl exec vault-0 -- vault operator init -key-shares<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span> -key-threshold<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -format<span style=color:#f92672>=</span>json &gt; init-keys.json
+</span></span></code></pre></div><p>Unseal.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>VAULT_UNSEAL_KEY<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>cat init-keys.json | jq -r <span style=color:#e6db74>&#34;.unseal_keys_b64[]&#34;</span><span style=color:#66d9ef>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>kubectl exec vault-0 -- vault operator unseal $VAULT_UNSEAL_KEY
+</span></span></code></pre></div><p>We are going to run the Vault commands from our machine pointing to the Vault instance running on Kubernetes.
+For that, we&rsquo;ll use the <code>kubectl port-forward</code> command.</p><p>Note that the approach described here is for simplicity and demonstrations only. For a complete view of how to deploy and
+access Vault on Kubernetes check the
+<a href=https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-reference-architecture>HashiCorp Vault Kubernetes Reference Architecture</a>.</p><p>Open a different terminal and execute.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl port-forward vault-0 8200:8200
+</span></span></code></pre></div><p>Keep it running.</p><p>Now, go back to the previous terminal session and export the following variables.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>export VAULT_ADDR<span style=color:#f92672>=</span>http://127.0.0.1:8200
+</span></span><span style=display:flex><span>export VAULT_TOKEN<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>cat init-keys.json | jq -r <span style=color:#e6db74>&#34;.root_token&#34;</span><span style=color:#66d9ef>)</span> 
+</span></span></code></pre></div><p>Check your access to Vault.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault secrets list
+</span></span></code></pre></div><p>You should see the list of default secret mounts.</p><h3 id=configure-vault-pki>Configure Vault PKI</h3><p>Now let&rsquo;s jump into what really matters: the PKI configuration and issuing of the CockroachDB certificates.</p><p>Let&rsquo;s enable and configure the PKI backend.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault secrets enable -path<span style=color:#f92672>=</span>roach/pki pki
+</span></span></code></pre></div><p>Note that we enable a backend that identifies the CockroachDB purpose by its path. That’s a questionable decision.
+I don’t get into too much detail about how to organize the PKI backends.
+But this setup will be enough to ensure access segregation at the level we want using Vault policies in this tutorial.</p><p>Let&rsquo;s tune the backend to set the max TTL for certificates to 1 year instead of the default 30 days.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault secrets tune -max-lease-ttl<span style=color:#f92672>=</span>8760h roach/pki
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># you can check the tune config with</span>
+</span></span><span style=display:flex><span>vault read sys/mounts/roach/pki/tune
+</span></span></code></pre></div><p>Let&rsquo;s generate a self-signed root CA.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault write roach/pki/root/generate/internal ttl<span style=color:#f92672>=</span>8760h
+</span></span></code></pre></div><p>This is probably a very naive approach to mount the PKI backend and generate the root CA. Refer to the
+<a href=https://developer.hashicorp.com/vault/tutorials/secrets-management/pki-engine>Vault PKI documentation</a> for more
+details about how to set up a CA and manage the PKI backend.</p><p>Configure the PKI secrets engine certificate issuing and certificate revocation list (CRL) endpoints.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault write roach/pki/config/urls <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    issuing_certificates<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;http://vault-internal.default.svc.cluster.local:8200/v1/roach/pki/ca&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    crl_distribution_points<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;http://vault-internal.default.svc.cluster.local:8200/v1/roach/pki/crl&#34;</span>
+</span></span></code></pre></div><p>The next step is to configure the Vault PKI node and client roles.</p><p>Let&rsquo;s start with the node role.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault write <span style=color:#e6db74>&#34;roach/pki/roles/cockroachdb_nodes&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    allow_wildcard_certificates<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    client_flag<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    server_flag<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    require_cn<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    cn_validations<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;disabled&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    enforce_hostnames<span style=color:#f92672>=</span>false <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    allow_localhost<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    ttl<span style=color:#f92672>=</span>48h <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    max_ttl<span style=color:#f92672>=</span>8760h <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    allowed_domains<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;cockroachdb-public,cockroachdb-public.default.svc.cluster.local,*.cockroachdb,*.cockroachdb.default.svc.cluster.local&#34;</span>
+</span></span></code></pre></div><p>The client role.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault write roach/pki/roles/cockroachdb_client <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    allow_bare_domains<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    allow_wildcard_certificates<span style=color:#f92672>=</span>false <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    client_flag<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    server_flag<span style=color:#f92672>=</span>false <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    require_cn<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    cn_validations<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;disabled&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    enforce_hostnames<span style=color:#f92672>=</span>false <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    allow_ip_sans<span style=color:#f92672>=</span>false <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    allow_localhost<span style=color:#f92672>=</span>false <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    ttl<span style=color:#f92672>=</span>48h <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    max_ttl<span style=color:#f92672>=</span>8760h <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    allowed_domains<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;cockroachdb-public,cockroachdb-public.default.svc.cluster.local&#34;</span>
+</span></span></code></pre></div><h3 id=create-the-certificates-1>Create the Certificates</h3><p>Let&rsquo;s proceed and generate the certificates.</p><p>Create a different directory to store the raw Vault output and the certificates and generate the nodes certificate.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>mkdir -p certs/vault/json
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault write roach/pki/issue/cockroachdb_nodes <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    common_name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;node&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    alt_names<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;localhost,cockroachdb-public,cockroachdb-public.default.svc.cluster.local,*.cockroachdb,*.cockroachdb.default.svc.cluster.local&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    exclude_cn_from_sans<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    ttl<span style=color:#f92672>=</span>24h <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    -format<span style=color:#f92672>=</span>json &gt; certs/vault/json/node.json
+</span></span></code></pre></div><p>Extract the CA, certificate, and key for the nodes from the Vault json.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>jq -r .data.issuing_ca certs/vault/json/node.json &gt; certs/vault/ca.crt
+</span></span><span style=display:flex><span>jq -r .data.certificate certs/vault/json/node.json &gt; certs/vault/node.crt
+</span></span><span style=display:flex><span>jq -r .data.private_key certs/vault/json/node.json &gt; certs/vault/node.key
+</span></span></code></pre></div><p>Generate the root client certificate.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault write roach/pki/issue/cockroachdb_client <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    common_name<span style=color:#f92672>=</span>root <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    exclude_cn_from_sans<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    alt_names<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;cockroachdb-public,cockroachdb-public.default.svc.cluster.local&#34;</span> <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    -format<span style=color:#f92672>=</span>json &gt; certs/vault/json/client.root.json
+</span></span></code></pre></div><p>Extract the certificate and key for the root client from the Vault json.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>jq -r .data.certificate certs/vault/json/client.root.json &gt; certs/vault/client.root.crt
+</span></span><span style=display:flex><span>jq -r .data.private_key certs/vault/json/client.root.json &gt; certs/vault/client.root.key
+</span></span></code></pre></div><p>Let&rsquo;s clean up our CockroachDB installation so we can start from scratch and ensure a clean test.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl delete sts cockroachdb
+</span></span><span style=display:flex><span>kubectl delete pvc -l app<span style=color:#f92672>=</span>cockroachdb
+</span></span><span style=display:flex><span>kubectl delete secrets cockroachdb.node
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>kubectl delete po cockroachdb-client-secure
+</span></span><span style=display:flex><span>kubectl delete secrets cockroachdb.client.root
+</span></span></code></pre></div><p>Now follow the same steps we followed previously to deploy CockroachDB and test but create the Kubernetes secrets out
+of the Vault certificates this time.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl create secret <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  generic cockroachdb.node <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --from-file<span style=color:#f92672>=</span>certs/vault
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>kubectl apply -k cluster
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>kubectl exec -it cockroachdb-0 <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -- /cockroach/cockroach init <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --certs-dir<span style=color:#f92672>=</span>/cockroach/cockroach-certs
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>kubectl create secret <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  generic cockroachdb.client.root <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --from-file<span style=color:#f92672>=</span>certs/vault/client.root.key <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --from-file<span style=color:#f92672>=</span>certs/vault/client.root.crt <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --from-file<span style=color:#f92672>=</span>certs/vault/ca.crt
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>kubectl create <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -f client/cockroachdb-client.yaml
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>kubectl exec -it cockroachdb-client-secure <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -- ./cockroach sql <span style=color:#ae81ff>\ </span>         
+</span></span><span style=display:flex><span>  --certs-dir<span style=color:#f92672>=</span>/cockroach-certs <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --host<span style=color:#f92672>=</span>cockroachdb-public
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>CREATE DATABASE bank;
+</span></span><span style=display:flex><span>CREATE TABLE bank.accounts <span style=color:#f92672>(</span>id INT PRIMARY KEY, balance DECIMAL<span style=color:#f92672>)</span>;
+</span></span><span style=display:flex><span>INSERT INTO bank.accounts VALUES <span style=color:#f92672>(</span>1, 1000.50<span style=color:#f92672>)</span>;
+</span></span><span style=display:flex><span>SELECT * FROM bank.accounts;
+</span></span></code></pre></div><h3 id=checkpoint-1>Checkpoint</h3><p>So far, we basically replaced the <code>cockroachdb cert</code> command with Vault. As mentioned before, it has some benefits, like
+delegating certificate management to your already existing secrets management solution and making it easier to control
+access to the CA via PKI roles restricting who can issue certificates (we didn&rsquo;t create any special policies yet).</p><p>Now we are going to add cert-manager to the setup and automate the flow end to end.</p><h2 id=automatically-issuing--renewing-certificates>Automatically Issuing / Renewing Certificates</h2><h3 id=install-cert-manager>Install cert-manager</h3><p>Following the same approach we used for CockroachDB and Vault we will use a simplified installation method. Check the
+<a href=https://cert-manager.io/docs/installation/>installation documentation</a> for more details.</p><p>Install cert-manager.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml
+</span></span></code></pre></div><h3 id=configure-the-issuer-access-to-vault>Configure the Issuer access to Vault</h3><p>cert-manager needs access to the same Vault PKI roles endpoints we used to issue the certificates. For that, we will
+use the Vault Kubernetes Auth method with policies granting access to the issuer.</p><p>Enable the auth backend.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault auth enable kubernetes
+</span></span></code></pre></div><p>Retrieve the service address of the kube-apiserver.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubernetes_port_443_tcp_addr<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>kubectl exec vault-0 -- sh -c <span style=color:#e6db74>&#39;echo -n $KUBERNETES_PORT_443_TCP_ADDR&#39;</span><span style=color:#66d9ef>)</span>
+</span></span></code></pre></div><p>Configure the backend.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault write auth/kubernetes/config <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    kubernetes_host<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;https://</span>$kubernetes_port_443_tcp_addr<span style=color:#e6db74>:443&#34;</span>
+</span></span></code></pre></div><p>For more details on configuring the <a href=https://developer.hashicorp.com/vault/docs/auth/kubernetes>Kubernetes Auth Method</a>,
+check the Vault documentation.</p><p>So far, these steps are just preparation. Now we are going to configure the Vault policy and Kubernetes roles that allow
+the cert-manager issuer to access the Vault PKI roles.</p><p>Note that we are going to use the same cert-manager issuer to issue the nodes and the root client certificates. For
+other clients, you will likely want to create more specific Vault policies and a different cert-manager issuer with more
+restricted privileges.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault policy write cockroachdb-issuer - <span style=color:#e6db74>&lt;&lt;EOF
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>path &#34;roach/pki/sign/cockroachdb_nodes&#34; { 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    capabilities = [&#34;create&#34;, &#34;update&#34;] 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>}
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>path &#34;roach/pki/issue/cockroachdb_nodes&#34; { 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    capabilities = [&#34;create&#34;]
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>}
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>path &#34;roach/pki/sign/cockroachdb_client&#34; { 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    capabilities = [&#34;create&#34;, &#34;update&#34;]
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>}
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>path &#34;roach/pki/issue/cockroachdb_client&#34; {
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    capabilities = [&#34;create&#34;]
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>}
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EOF</span>
+</span></span></code></pre></div><p>Create a Kubernetes service account to identify our cert-manager issuer.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl create serviceaccount cockroachdb-issuer
+</span></span></code></pre></div><p>Create the Vault Kubernetes role.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>vault write auth/kubernetes/role/cockroachdb-issuer <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  bound_service_account_names<span style=color:#f92672>=</span>cockroachdb-issuer <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  bound_service_account_namespaces<span style=color:#f92672>=</span>default <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  policies<span style=color:#f92672>=</span>cockroachdb-issuer <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  ttl<span style=color:#f92672>=</span>20m
+</span></span></code></pre></div><p>Ok, now we are going to configure the cert-manager Issuer object. The issuer needs the name of a service account token
+associated with the service account that we configured for the Kubernetes role. We can use the default service account
+token automatically generated (for k8s &lt;v1.23) but instead we will create our own token, which despite being generally a
+good practice is necessary for k8s >v1.24.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl apply -f - <span style=color:#e6db74>&lt;&lt;EOF
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>apiVersion: v1
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>kind: Secret
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>type: kubernetes.io/service-account-token
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>metadata:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  name: cockroachdb-issuer-token
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  annotations:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    kubernetes.io/service-account.name: cockroachdb-issuer
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EOF</span>
+</span></span></code></pre></div><h3 id=deploy-the-certificate-manager-configuration>Deploy the Certificate Manager Configuration</h3><p>Now let&rsquo;s proceed with the actual cert-manager configuration. Create the issuer for the node certificate.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl apply -f - <span style=color:#e6db74>&lt;&lt;EOF
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>apiVersion: cert-manager.io/v1
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>kind: Issuer
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>metadata:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  name: cockroachdb-nodes-issuer
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>spec:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  vault:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    server: http://vault-internal.default.svc.cluster.local:8200
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    path: roach/pki/sign/cockroachdb_nodes
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    auth:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>      kubernetes:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        mountPath: /v1/auth/kubernetes
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        role: cockroachdb-issuer
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        secretRef:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          name: cockroachdb-issuer-token
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          key: token
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EOF</span>
+</span></span></code></pre></div><p>Check the issuer - it should report ready.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl get issuer cockroachdb-nodes-issuer
+</span></span></code></pre></div><p>Create the cert-manager Certificate using the secret name we have been using for nodes certificates.
+Delete the previous secret first <code>kubectl delete secrets cockroachdb.node</code>. If we don&rsquo;t delete the existing secret, the
+Certificate object will append the new secret data to the existing secret.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl apply -f - <span style=color:#e6db74>&lt;&lt;EOF
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>apiVersion: cert-manager.io/v1
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>kind: Certificate
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>metadata:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  name: cockroachdb.node
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  namespace: default
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>spec:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  secretName: cockroachdb.node
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  issuerRef:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    name: cockroachdb-nodes-issuer
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  commonName: node
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  dnsNames:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - localhost
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - cockroachdb-public
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - cockroachdb-public.default.svc.cluster.local
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - &#34;*.cockroachdb&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - &#34;*.cockroachdb.default.svc.cluster.local&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EOF</span>
+</span></span></code></pre></div><p>Create the client issuer.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl apply -f - <span style=color:#e6db74>&lt;&lt;EOF
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>apiVersion: cert-manager.io/v1
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>kind: Issuer
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>metadata:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  name: cockroachdb-client-root-issuer
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>spec:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  vault:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    server: http://vault-internal.default.svc.cluster.local:8200
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    path: roach/pki/sign/cockroachdb_client
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    auth:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>      kubernetes:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        mountPath: /v1/auth/kubernetes
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        role: cockroachdb-issuer
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        secretRef:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          name: cockroachdb-issuer-token
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          key: token
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EOF</span>
+</span></span></code></pre></div><p>Check the issuer - it should report ready.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl get issuer cockroachdb-client-root-issuer
+</span></span></code></pre></div><p>In the same way, create the cert-manager Certificate object using the secret name we have been using for the root client
+certificate. Delete the previous secret first <code>kubectl delete secrets cockroachdb.client.root</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl apply -f - <span style=color:#e6db74>&lt;&lt;EOF
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>apiVersion: cert-manager.io/v1
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>kind: Certificate
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>metadata:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  name: cockroachdb.client.root
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  namespace: default
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>spec:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  secretName: cockroachdb.client.root
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  issuerRef:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    name: cockroachdb-client-root-issuer
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  commonName: root
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  dnsNames:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - cockroachdb-public
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  - cockroachdb-public.default.svc.cluster.local
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EOF</span>
+</span></span></code></pre></div><p>Let&rsquo;s clean up, so we can perform a test creating everything from scratch.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl delete sts cockroachdb
+</span></span><span style=display:flex><span>kubectl delete pvc -l app<span style=color:#f92672>=</span>cockroachdb
+</span></span><span style=display:flex><span>kubectl delete po cockroachdb-client-secure
+</span></span></code></pre></div><p>Now we have to make some adjustments in our CockroachDB StatefulSet. Remember that we mounted both nodes and root client
+certificates into the CockroachDB container from the same secret. Now the certificates are entirely separated into two
+secrets. We need to change the StatefulSet to use a projected volume. And we also need to adjust the name of the files in
+the file system - besides being duplicated in the different secrets, CockroachDB expects the files to be prefixed with
+specific terms, or we are going to get this error
+<code>bad filename ‹/cockroach/cockroach-certs/tls.crt›: unknown prefix ‹"tls"›</code>.</p><p>Adjust our StatefulSet customization.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>cat <span style=color:#e6db74>&lt;&lt;EOF &gt;cluster/kustomization.yaml
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>resources:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>- cockroachdb-statefulset.yaml
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>patchesStrategicMerge:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>- |-
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  apiVersion: apps/v1
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  kind: StatefulSet
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  metadata:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    name: cockroachdb
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  spec:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    template:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>      spec: 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        containers:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        - name: cockroachdb
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          resources:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            requests:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              cpu: &#34;300m&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              memory: &#34;1Gi&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            limits:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              cpu: &#34;300m&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              memory: &#34;1Gi&#34; 
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        nodeSelector:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          role: roach
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        tolerations:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        - key: &#34;dedicated&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          operator: &#34;Equal&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          value: &#34;roach&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          effect: &#34;NoSchedule&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        volumes:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        - name: certs
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          projected:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            defaultMode: 256
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            sources:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            - secret:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                name: cockroachdb.node
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                items:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                - key: ca.crt
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                  path: ca.crt
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                - key: tls.crt
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                  path: node.crt
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                - key: tls.key
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                  path: node.key
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            - secret:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                name: cockroachdb.client.root
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                items:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                - key: tls.crt
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                  path: client.root.crt
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                - key: tls.key
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                  path: client.root.key
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          secret:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            $patch: delete
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            defaultMode: 256
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            secretName: cockroachdb.node
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EOF</span>
+</span></span></code></pre></div><p>Apply, check and initialize.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl apply -k cluster
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>kubectl exec -it cockroachdb-0 <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -- /cockroach/cockroach init <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --certs-dir<span style=color:#f92672>=</span>/cockroach/cockroach-certs
+</span></span></code></pre></div><p>Now we also need to adjust the client pod we have been using. Add the following customization
+to adjust the crt and key names.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>cat <span style=color:#e6db74>&lt;&lt;EOF &gt;client/kustomization.yaml
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>resources:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>- cockroachdb-client.yaml
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>patchesStrategicMerge:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>- |-
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  apiVersion: v1
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  kind: Pod
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  metadata:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    name: cockroachdb-client-secure
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>  spec:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    volumes:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    - name: client-certs
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>      secret:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        secretName: cockroachdb.client.root
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        items:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        - key: ca.crt
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          path: ca.crt
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        - key: tls.crt
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          path: client.root.crt
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        - key: tls.key
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>          path: client.root.key
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        defaultMode: 256
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>EOF</span>
+</span></span></code></pre></div><p>Apply, connect and check.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl apply -k client
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>kubectl exec -it cockroachdb-client-secure <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  -- ./cockroach sql <span style=color:#ae81ff>\ </span>         
+</span></span><span style=display:flex><span>  --certs-dir<span style=color:#f92672>=</span>/cockroach-certs <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  --host<span style=color:#f92672>=</span>cockroachdb-public
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>CREATE DATABASE bank;
+</span></span><span style=display:flex><span>CREATE TABLE bank.accounts <span style=color:#f92672>(</span>id INT PRIMARY KEY, balance DECIMAL<span style=color:#f92672>)</span>;
+</span></span><span style=display:flex><span>INSERT INTO bank.accounts VALUES <span style=color:#f92672>(</span>1, 1000.50<span style=color:#f92672>)</span>;
+</span></span><span style=display:flex><span>SELECT * FROM bank.accounts;
+</span></span></code></pre></div><h3 id=final-checkpoint>Final Checkpoint</h3><p>Ok, now we don&rsquo;t need to ever bother again about issuing and distributing certificates again
+for CockroachDB. However, note that CockroachDB doesn&rsquo;t automatically reload certificates. To reload the certificates
+you need to perform a rolling restart of the cluster&rsquo;s pods. Another alternative that I haven&rsquo;t tried but sounds
+feasible is to add a sidecar container that will send a SIGHUP signal to the cockroach process running in the
+container. From the <a href=https://www.cockroachlabs.com/docs/stable/create-security-certificates-custom-ca.html>docs</a>:</p><blockquote><p>In a cluster deployed using the Kubernetes Operator, there is no way to send a SIGHUP signal to the individual
+cockroach process on each cluster node. Instead, perform a rolling restart of the cluster&rsquo;s pods.</p></blockquote><p>Check the
+<a href=https://www.cockroachlabs.com/docs/stable/rotate-certificates.html>Rotate Security Certificates documentation</a>
+for more info.</p><h2 id=bonus-challenge>Bonus Challenge</h2><p>Suppose you want to add a client application to access the CockroachDB cluster; add an issuer that issues/renews
+certificates for this application.</p><ul><li>Add a client user to CockroachDB and grant read access.</li><li>Create a Vault policy that allows access to the client PKI role but locks access to this specific user (identified by the CN).</li><li>Create a Vault Kubernetes role associated with this policy and the application identity (k8s SA).</li><li>Create a cert-manager Issuer and Certificate for the application.</li><li>Launch a test container consuming this certificate and verify the setup.</li></ul><h2 id=other-relevant-links>Other relevant links</h2><p>Besides the links shared along the text, these are some other relevant links for reference:</p><ul><li><a href=https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-cert-manager>https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-cert-manager</a></li><li><a href="https://www.cockroachlabs.com/docs/stable/orchestrate-a-local-cluster-with-kubernetes.html?filters=manual">https://www.cockroachlabs.com/docs/stable/orchestrate-a-local-cluster-with-kubernetes.html?filters=manual</a></li><li><a href=https://www.cockroachlabs.com/docs/stable/manage-certs-vault.html>https://www.cockroachlabs.com/docs/stable/manage-certs-vault.html</a></li></ul></div><footer class=post__footer><div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg><ul class=tags__list><li class=tags__item><a class="tags__link btn" href=/tags/devsecops/ rel=tag>devsecops</a></li><li class=tags__item><a class="tags__link btn" href=/tags/vault/ rel=tag>vault</a></li><li class=tags__item><a class="tags__link btn" href=/tags/certificate-management/ rel=tag>certificate management</a></li><li class=tags__item><a class="tags__link btn" href=/tags/pki/ rel=tag>pki</a></li><li class=tags__item><a class="tags__link btn" href=/tags/cockroachdb/ rel=tag>cockroachdb</a></li><li class=tags__item><a class="tags__link btn" href=/tags/kubernetes/ rel=tag>kubernetes</a></li><li class=tags__item><a class="tags__link btn" href=/tags/cert-manager/ rel=tag>cert-manager</a></li></ul></div></footer></article></main></div></div><footer class=footer><div class="container footer__container flex"><div class=footer__copyright>&copy; 2022 Deployment - A tech blog focused on DevSecOps.
+<span class=footer__copyright-credits>Generated with <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> and <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> theme.</span></div></div></footer></div><script async defer src=/js/menu.js></script>
+<script src=/js/custom.js></script></body></html>
