@@ -964,3 +964,7 @@ Besides the links shared along the text, these are some other relevant links for
 - https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-cert-manager
 - https://www.cockroachlabs.com/docs/stable/orchestrate-a-local-cluster-with-kubernetes.html?filters=manual
 - https://www.cockroachlabs.com/docs/stable/manage-certs-vault.html
+
+If you have any questions or comments feel free to reach out in the Twitter thread below or directly.
+
+{{< tweet user="soeirosantos_" id="1596507954513068034" >}}
