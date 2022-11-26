@@ -1,5 +1,5 @@
 ---
-title: "CockroachDB with Vault PKI and cert-manager"
+title: "CockroachDB with HashiCorp Vault PKI and cert-manager"
 description: "In this tutorial we are going to spin up a CockroachDB secure cluster running in Kubernetes with certificates managed by HashiCorp Vault and issued by cert-manager."
 date: 2022-11-25T12:14:53-05:00
 lastmod: 2022-11-25T12:14:53-05:00
@@ -14,11 +14,6 @@ tags:
   - "kubernetes"
   - "cert-manager"
 ---
-
-Recently, I have been experimenting with putting together a CockroachDB cluster using Vault PKI and cert-manager, and I
-thought I'd take some time to organize my notes and share it here. This is a long tutorial because I'll drop here all
-the experimentation process, but I hope the separation of the sections can help anyone who lands here looking for
-specific insights in some parts of the setup. 
 
 In this tutorial, we are going to spin up a CockroachDB secure cluster running in Kubernetes with certificates managed by
 HashiCorp Vault and issued by cert-manager. Before we get to the final state, we are going to evolve the installation
@@ -174,7 +169,7 @@ cockroach cert create-client \
 We can check the certificate created with OpenSSL.
 
 ```shell
-openssl x509 -in certs/node.crt" -text | less
+openssl x509 -in certs/node.crt -text | less
 ```
 
 Note some defaults applied by cert command like the CN and validity. Check the list of subject alternative names provided. You can
