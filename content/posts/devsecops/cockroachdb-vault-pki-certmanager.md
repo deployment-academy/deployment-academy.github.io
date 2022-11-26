@@ -451,8 +451,8 @@ vault write roach/pki/root/generate/internal ttl=8760h
 
 Note that we enable a backend that identifies the CockroachDB purpose by its path and configure a single
 root CA for it. That’s a simplified and questionable decision. I won't get into too much detail about how
-to organize the PKI backends.
-For production you should consider the best approach considering your needs. For this setup and tutorial,
+to organize the PKI backends here.
+For production, you should consider the best approach considering your needs. For this setup and tutorial,
 this config will be enough to ensure access segregation at the level we want using Vault policies.
 
 Refer to the [Vault PKI documentation](https://developer.hashicorp.com/vault/tutorials/secrets-management/pki-engine)
