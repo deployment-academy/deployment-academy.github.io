@@ -31,7 +31,7 @@ This tutorial can be executed from your local machine, no cloud resources are ne
 
 <!--more-->
 
-## Prerequesites
+## Prerequisites
 
 Along this tutorial we'll use the following tools.
 
@@ -41,7 +41,7 @@ Along this tutorial we'll use the following tools.
 - [helm](https://helm.sh/docs/intro/install/)
 - [vault CLI](https://developer.hashicorp.com/vault/docs/install)
 
-## Create a local Kubernetes cluster
+## Create a Local Kubernetes Cluster
 
 We'll start creating a Kubernetes local cluster with Kind with the following profile:
 
@@ -616,7 +616,7 @@ Install cert-manager.
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml
 ```
 
-### Configure the Issuer access to Vault
+### Configure the Issuer Access to Vault
 
 cert-manager needs access to the same Vault PKI roles endpoints we used to issue the certificates. For that, we will
 use the Vault Kubernetes Auth method with policies granting access to the issuer.
@@ -961,7 +961,7 @@ certificates for this application.
 - Create a cert-manager Issuer and Certificate for the application.
 - Launch a test container consuming this certificate and verify the setup.
 
-## Other relevant links
+## Other Relevant Links
 
 Besides the links shared along the text, these are some other relevant links for reference:
 
