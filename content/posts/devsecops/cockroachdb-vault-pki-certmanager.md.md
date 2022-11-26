@@ -955,8 +955,16 @@ for more info.
 Suppose you want to add a client application to access the CockroachDB cluster; add an issuer that issues/renews
 certificates for this application.
 
-- Create a Vault policy that allows access to the client PKI role but locks access to a specific CN.
+- Add a client user to CockroachDB and grant read access.
+- Create a Vault policy that allows access to the client PKI role but locks access to this specific user (identified by the CN).
 - Create a Vault Kubernetes role associated with this policy and the application identity (k8s SA).
-- Create a cert-manager Issuer for the application.
-- Create the cert-manager certificate for the application.
-- Launch a test container consuming the k8s secret created by this certificate and verify the setup.
+- Create a cert-manager Issuer and Certificate for the application.
+- Launch a test container consuming this certificate and verify the setup.
+
+## Other relevant links
+
+Besides the links shared along the text, these are some other relevant links for reference:
+
+- https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-cert-manager
+- https://www.cockroachlabs.com/docs/stable/orchestrate-a-local-cluster-with-kubernetes.html?filters=manual
+- https://www.cockroachlabs.com/docs/stable/manage-certs-vault.html
