@@ -434,10 +434,6 @@ Let's enable and configure the PKI backend.
 vault secrets enable -path=roach/pki pki
 ```
 
-Note that we enable a backend that identifies the CockroachDB purpose by its path. That’s a questionable decision.
-I don’t get into too much detail about how to organize the PKI backends. 
-But this setup will be enough to ensure access segregation at the level we want using Vault policies in this tutorial.
-
 Let's tune the backend to set the max TTL for certificates to 1 year instead of the default 30 days.
 
 ```shell
@@ -453,9 +449,14 @@ Let's generate a self-signed root CA.
 vault write roach/pki/root/generate/internal ttl=8760h
 ```
 
-This is probably a very naive approach to mount the PKI backend and generate the root CA. Refer to the
-[Vault PKI documentation](https://developer.hashicorp.com/vault/tutorials/secrets-management/pki-engine) for more
-details about how to set up a CA and manage the PKI backend.
+Note that we enable a backend that identifies the CockroachDB purpose by its path and configure a single
+root CA for it. That’s a simplified and questionable decision. I won't get into too much detail about how
+to organize the PKI backends.
+For production you should consider the best approach considering your needs. For this setup and tutorial,
+this config will be enough to ensure access segregation at the level we want using Vault policies.
+
+Refer to the [Vault PKI documentation](https://developer.hashicorp.com/vault/tutorials/secrets-management/pki-engine)
+for more details about how to set up a CA and manage the PKI backends.
 
 Configure the PKI secrets engine certificate issuing and certificate revocation list (CRL) endpoints.
 
