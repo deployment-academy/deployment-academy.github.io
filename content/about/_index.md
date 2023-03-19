@@ -8,13 +8,13 @@ widgets:
   - "social"
   - "recent"
 ---
-Deployment is a tech blog focused on DevSecOps. Not just the discipline nowadays called DevSecOps but the actual intersection between Security, Software Development, and Operations.
+Deployment is a blog focused on software development, security and operations.
 
-You should expect to see here content related to things I'm currently working on or researching to solve real problems. You may also find foundational and introductory-level content, which I have been hoping to find more time to share.
+I'll share here things I'm currently working on or researching to solve real problems. You may also find foundational and introductory-level content, which I have been hoping to find more time to share.
 
 ### Author
 
-My name is Romulo Santos. I'm a software engineer with experience in enterprise software development and distributed systems. More recently, I have been working with platform teams trying to find out a way to streamline the product engineering flow, while being more interested in the security problems.
+My name is Romulo Santos. I'm a software engineer with experience in enterprise software development and distributed systems, currently focused on security engineering.
 
 ### Contact
 
