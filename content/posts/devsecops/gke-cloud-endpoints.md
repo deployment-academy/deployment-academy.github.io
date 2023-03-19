@@ -202,9 +202,9 @@ gcloud compute firewall-rules create fw-allow-health-check-and-proxy \
 
 Resources that helped me during this experiment:
 
-https://cloud.google.com/endpoints/docs/openapi/get-started-kubernetes-engine
-https://cloud.google.com/endpoints/docs/openapi/specify-proxy-startup-options
-https://cloud.google.com/endpoints/docs/openapi/configure-endpoints
-https://cloud.google.com/kubernetes-engine/docs/concepts/ingress-xlb#https_tls_between_load_balancer_and_your_application
-https://cloud.google.com/kubernetes-engine/docs/concepts/container-native-load-balancing
-https://cloud.google.com/kubernetes-engine/docs/how-to/container-native-load-balancing#troubleshooting
+- https://cloud.google.com/endpoints/docs/openapi/get-started-kubernetes-engine
+- https://cloud.google.com/endpoints/docs/openapi/specify-proxy-startup-options
+- https://cloud.google.com/endpoints/docs/openapi/configure-endpoints
+- https://cloud.google.com/kubernetes-engine/docs/concepts/ingress-xlb#https_tls_between_load_balancer_and_your_application
+- https://cloud.google.com/kubernetes-engine/docs/concepts/container-native-load-balancing
+- https://cloud.google.com/kubernetes-engine/docs/how-to/container-native-load-balancing#troubleshooting
