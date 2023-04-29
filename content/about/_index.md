@@ -13,7 +13,7 @@ Deployment is a blog focused on software development, security, and operations. 
 
 ### About Me
 
-I'm a software engineer with experience in enterprise software development and distributed systems, currently focused on security engineering. You can get in touch on [Twitter](https://twitter.com/soeirosantos_) or [GitHub](https://github.com/soeirosantos)
+I'm a software engineer with experience in enterprise software development and distributed systems, currently focused on security engineering. You can get in touch on [Twitter](https://twitter.com/soeirosantos_) or [GitHub](https://github.com/soeirosantos).
 
 ### Other Stuff
 
