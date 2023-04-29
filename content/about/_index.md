@@ -11,7 +11,7 @@ widgets:
 
 Deployment is a blog focused on software development, security, and operations. Here, I share my findings to tackle real-life software development problems. The content is often comprised of notes taken during [spikes](https://en.wikipedia.org/wiki/Spike_(software_development)) or [PoCs](https://en.wikipedia.org/wiki/Proof_of_concept), but occasionally, I share my experience and opinions on selected topics.
 
-### About me
+### About Me
 
 I'm a software engineer with experience in enterprise software development and distributed systems, currently focused on security engineering. You can get in touch on [Twitter](https://twitter.com/soeirosantos_) or [GitHub](https://github.com/soeirosantos)
 
