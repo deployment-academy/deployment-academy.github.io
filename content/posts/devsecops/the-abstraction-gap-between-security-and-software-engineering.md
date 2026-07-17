@@ -9,7 +9,7 @@ tags:
   - "opinion"
   - "cybersecurity"
 ---
-The other day, I was talking with some former teammates from my software engineering days who are now at different companies, and the conversation turned to their relationships with their security teams. A familiar theme quickly emerged around the disconnect between security recommendations and the realities of their day-to-day engineering work. Sometimes it feels like we have come a long way as an industry, but many security teams still operate at a considerable distance from the engineers building and maintaining the systems they are trying to protect.
+The other day, I was talking with some former teammates who now work as software engineers at different companies, and the conversation turned to their relationships with their security teams. A familiar theme quickly emerged around the disconnect between security recommendations and the realities of their day-to-day engineering work. Sometimes it feels like we have come a long way as an industry, but many security teams still operate at a considerable distance from the engineers building and maintaining the systems they are trying to protect.
 
 <!--more-->
 
