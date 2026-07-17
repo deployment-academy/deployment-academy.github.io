@@ -66,6 +66,11 @@ enableGitInfo = true
   url = '/about/'
   weight = -110
 [[menu.main]]
+  identifier = 'posts'
+  name = 'posts'
+  url = '/'
+  weight = -100
+[[menu.main]]
   name = 'tags'
   url = '/tags/'
   weight = -90

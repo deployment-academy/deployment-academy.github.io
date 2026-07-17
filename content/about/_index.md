@@ -9,7 +9,9 @@ widgets:
   - "recent"
 ---
 
-Deployment is a blog focused on software development, security, and operations. The main goal of this blog is to share things I'm working on or researching to solve real problems.
+Deployment is a blog focused on software development, security, and operations. The main goal of this blog is to share things I'm working on or researching to solve real problems. 
+
+After a couple of years away from the blog, I’ve recently started exploring a different kind of writing, sharing broader ideas and reflections alongside the usual technical content. Let’s see how it goes.
 
 ### About Me
 
