@@ -1,0 +1,26 @@
+---
+title: "The Abstraction Gap Between Security and Software Engineering"
+description: "Security and software engineering often lose trust in each other because they work at different levels of abstraction. When security presents principles without accounting for the realities of the systems they apply to, engineers may begin to dismiss valid risks as theoretical or bureaucratic."
+date: 2026-07-16T21:30:00-04:00
+lastmod: 2026-07-16T21:30:00-04:00
+draft: false
+tags:
+  - "devsecops"
+  - "opinion"
+  - "cybersecurity"
+---
+The other day, I was talking with some former software engineer teammates who are now at different companies, and the conversation turned to their relationships with their security teams. A familiar theme quickly emerged around the disconnect between security recommendations and the realities of their day-to-day engineering work. Sometimes it feels like we have come a long way as an industry, but many security teams still operate at a considerable distance from the engineers building and maintaining the systems they are trying to protect.
+
+<!--more-->
+
+While navigating between these two worlds, this is something I experience firsthand. Security and software engineering often lose trust in each other because they work at different levels of abstraction. When security presents principles without accounting for the realities of the systems they apply to, engineers may begin to dismiss valid risks as theoretical or bureaucratic. We often speak about making engineers more security-aware and security-savvy, but we should also consider how well security teams understand the complexity of modern software systems.
+
+Security commonly describes software through frameworks, control families, maturity models, vulnerability classes, and threat taxonomies. NIST, MITRE, and OWASP provide useful ways to organize risk, establish a common language, and define what a secure environment should look like. But they necessarily operate above the level of any particular system. A framework may identify the need for stronger access control, secure design, or better detection capabilities without explaining how those outcomes fit into a specific architecture, codebase, deployment model, or operating environment. The abstraction is not the problem; it is the reason these frameworks can be applied broadly. The problem begins when abstract guidance is treated as though it were already an engineering solution.
+
+Engineering starts where that abstraction ends. Before acting on a security concern, engineers need to understand the exact risk, the credible threat model, the affected components, and the conditions required for exploitation. They must then weigh that risk against implementation complexity, production stability, technical debt, customer impact, and other competing priorities. A finding that is severe in isolation may be less urgent in a system with limited exposure or strong compensating controls. A seemingly simple remediation may require architectural changes whose operational risk is greater than the immediate security benefit. None of this makes the security concern invalid. It means that addressing it responsibly requires more than assigning a severity and recommending a control.
+
+When this context is missing, security guidance can lose credibility. Engineers may receive findings that are technically correct but poorly scoped, weakly prioritized, or disconnected from how the system actually works. Over time, they may begin to treat security as a source of generic requirements and external approvals rather than as an engineering partner. That skepticism can then extend beyond weak recommendations to legitimate and urgent risks. Security responds with more controls, more escalation, and more process, while engineering becomes increasingly defensive. What began as a difference in abstraction becomes a breakdown in trust.
+
+In my experience, security teams are better positioned to navigate this gap when they develop strong engineering fluency. People with software engineering backgrounds can be particularly valuable—not merely because they can read code, understand infrastructure, or propose a fix, but because they recognize the work hidden between identifying a risk and safely changing a production system. They are often better prepared to understand valid implementation constraints and distinguish genuine complexity from avoidance.
+
+That background is not a complete solution, nor should every security professional be expected to become, or have previously been, a software engineer. Some organizations hire engineers into security teams, while others build strong partnerships with the engineering teams already in place. The specific model matters less than recognizing the gap and ensuring that security recommendations are informed by the systems, constraints, and tradeoffs involved in implementing them.
