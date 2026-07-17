@@ -66,10 +66,6 @@ enableGitInfo = true
   url = '/about/'
   weight = -110
 [[menu.main]]
-  name = 'Kubernetes Security'
-  url = '/posts/devsecops/kubernetes-security/'
-  weight = -100
-[[menu.main]]
   name = 'tags'
   url = '/tags/'
   weight = -90
