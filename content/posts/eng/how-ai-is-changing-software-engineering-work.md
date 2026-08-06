@@ -3,7 +3,7 @@ title: "How AI Is Changing Software Engineering Work"
 description: "As AI makes more software work practical to delegate, technical foundations, verification, and operational ownership become more important."
 date: 2026-08-06T02:04:12Z
 lastmod: 2026-08-06T02:04:12Z
-draft: true
+draft: false
 sidebar: "right"
 widgets:
   - "ddg-search"
