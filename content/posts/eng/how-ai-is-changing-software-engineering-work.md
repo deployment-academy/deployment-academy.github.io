@@ -10,8 +10,8 @@ widgets:
   - "recent"
   - "social"
 tags:
-  - artificial intelligence
-  - software engineering
+  - "artificial intelligence"
+  - "software engineering"
   - "opinion"
 ---
 
