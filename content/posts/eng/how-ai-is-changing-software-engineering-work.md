@@ -1,6 +1,6 @@
 ---
-title: "How AI is Changing Software Engineering Work"
-description: "AI amplifies the engineering system around it. Teams with strong platforms, fast feedback, reliable tests, and disciplined review can convert generation speed into useful delivery. Teams without them become faster at producing work their systems are not prepared to absorb. Some organizations will move faster not simply because they adopt better models, but because their systems are easier to understand, test, observe, and change safely. Generated code makes complexity easy to create and expensive to carry."
+title: "How AI Is Changing Software Engineering Work"
+description: "As AI makes more software work practical to delegate, technical foundations, verification, and operational ownership become more important."
 date: 2026-08-06T02:04:12Z
 lastmod: 2026-08-06T02:04:12Z
 draft: true
@@ -10,6 +10,9 @@ widgets:
   - "recent"
   - "social"
 tags:
+  - artificial intelligence
+  - software engineering
+  - "opinion"
 ---
 
 Over the past few years, we have watched AI move from completing lines of code to taking on work we might once have handed to another engineer. Coding agents can inspect a repository, propose an implementation, modify several files, write tests, and return something that looks remarkably close to finished. What has not become equally easy is deciding whether that work belongs in a production system.
@@ -27,7 +30,7 @@ In July 2025, [METR published a randomized controlled trial](https://arxiv.org/a
 
 Sixteen people is a small sample, the confidence interval was wide, and expert engineers working in familiar repositories are close to the worst case for AI assistance. When [METR revisited the experiment](https://metr.org/blog/2026-02-24-uplift-update/), a returning subset leaned toward a speedup, but with too much uncertainty for a clean conclusion. The original result is therefore best read as a snapshot of early-2025 tooling in a narrow setting, not as a general estimate of AI’s effect on software productivity.
 
-What remains useful is the distance between measured and perceived productivity: roughly forty percentage points, in the direction of feeling faster. METR’s data suggests that time saved on writing was consumed by prompting, reading, checking, and repairing. The work moved from *making* the code to *establishing that it was fit to run*. That second activity has no keystroke count and may produce no visible artifact. It is often invisible to dashboards that celebrate code volume or time-to-merge.
+What remains useful is the distance between measured and perceived productivity: roughly forty percentage points, with perceived productivity running well ahead of measured productivity. METR’s results suggests that time saved on writing was consumed by prompting, reading, checking, and repairing. The work moved from *making* the code to *establishing that it was fit to run*. That second activity has no keystroke count and may produce no visible artifact. It is often invisible to dashboards that celebrate code volume or time-to-merge.
 
 What practitioners and organizations may be mispricing is assurance.
 
@@ -49,7 +52,7 @@ Earlier tools often retired categories of inspection. Generative AI increases th
 
 ## Where the work is moving
 
-The clearest evidence that engineering work is moving toward assurance appears inside the workflow itself. AI increases the flow of code into repositories, but review, integration, security validation, and operational confidence do not scale at the same rate. The pressure moves downstream.
+The clearest evidence that engineering work is moving toward assurance appears inside the workflow itself. AI increases the volume of code entering repositories, but review, integration, security validation, and operational confidence do not scale at the same rate. The pressure moves downstream.
 
 This isn't a new argument; others are describing the same pattern. [Google Cloud's Office of the CTO](https://cloud.google.com/transform/when-ai-writes-the-code-who-reviews-it-cto-google-cloud) places the constraint at review and integration, while [TypeDB](https://typedb.com/blog/the-new-economics-of-code-verification-is-the-new-bottleneck) calls verification the limiting step.
 
@@ -59,7 +62,7 @@ The quality data points in the same direction. [GitClear](https://www.gitclear.c
 
 Of course, these are vendor-published sources, and their precise numbers deserve scrutiny. But they converge on a pattern I am witnessing firsthand: output arrives faster, while review, validation, integration, and system-level judgment remain stubbornly human.
 
-An important observation is that defects may not simply increase; their distribution also appears to be moving from shallow to deep. While AI is good at eliminating errors that a linter, type system, or competent reviewer catches quickly, it can introduce errors that require someone to understand the system’s trust model, state transitions, operational assumptions, and blast radius—defects that may look reasonable during review and announce themselves only after deployment.
+An important observation is that defects may not simply increase; their distribution also appears to be moving from shallow to deep. While AI can eliminate errors that a linter, type system, or competent reviewer would catch quickly, it can also introduce errors that require someone to understand the system’s trust model, state transitions, operational assumptions, and blast radius—defects that may look reasonable during review and announce themselves only after deployment.
 
 [DORA's 2025 research](https://dora.dev/research/2025/dora-report/) complicates any simple anti-AI reading. It found AI adoption associated with better throughput and product performance, but also with increased delivery instability. Its broader conclusion—that AI amplifies an organization's existing strengths and weaknesses—is more useful than any single effect size.
 
@@ -71,17 +74,17 @@ Generated code makes complexity easy to create and expensive to carry.
 
 ## What this changes for software engineers
 
-The evidence does not show that AI is about to replace software teams, but these tools are no longer merely better autocomplete. The direction to prepare for is supervised delegation becoming ordinary. Engineers will not stop coding, but manual implementation may become a smaller part of what distinguishes them. One engineer may supervise more work and become responsible for a wider surface.
+The evidence does not show that AI is about to replace software teams, but these tools are no longer merely better autocomplete. The direction worth preparing for is one in which supervised delegation becomes ordinary. Engineers will not stop coding, but manual implementation may become a smaller part of what distinguishes them. One engineer may supervise more work and become responsible for a wider surface.
 
-The part of the profession I expect to remain most valuable is the engineer who holds enough technical and business context to take responsibility for a production system: what it should do, how it fits the architecture, and what happens when it is live—its reliability, security, performance, data integrity, operability, and the pager.
+The role I expect to remain most valuable is that of the engineer who holds enough technical and business context to take responsibility for a production system: what it should do, how it fits the architecture, and what happens when it is live—its reliability, security, performance, data integrity, operability, and the pager.
 
 “Write the endpoint” is a task. “Be answerable for whether the endpoint should exist, whether it leaks data, whether its retries amplify an outage, and whether it survives Election Day” is accountability. The tasks can change substantially while the need remains for someone who understands the context and is answerable for the outcome.
 
 The future engineer may write less of the code while needing to understand more of the system.
 
-That points to several areas where engineers should focus their attention.
+That points to several areas that deserve engineers’ attention.
 
-- **Technical foundations and first-principles reasoning.** This is the area many assume engineers already have covered, and in my experience that assumption is often wrong. Networking, operating systems, databases, concurrency, distributed systems, identity, and failure mechanics provide the mental models needed to evaluate generated work. The lower layers do not disappear because our tools make them easier to ignore.
+- **Technical foundations and first-principles reasoning.** This is the area many assume engineers already have covered, and in my experience that assumption is often wrong. Networking, operating systems, databases, concurrency, distributed systems, identity, and failure modes provide the mental models needed to evaluate generated work. The lower layers do not disappear because our tools make them easier to ignore.
 
 - **Specification and system design.** Clear requirements, constraints, invariants, failure behavior, and explicit non-goals become more valuable when implementation can be delegated. As “can we build it?” becomes less constraining, “should this exist?” and “is this the simplest safe form?” matter more.
 
@@ -99,7 +102,7 @@ AI is not making software engineering disappear. It is changing the scarce part 
 
 AI will not produce the same gains everywhere. Teams that can test, observe, review, and change software safely will move faster. Teams that cannot may simply accumulate complexity and technical debt faster.
 
-The timing may prove wrong. Model progress may slow, accelerate beyond what I expect, or be accompanied by forms of automated verification that reduce assurance costs. But the practical response changes little: strong foundations, precise specification, disciplined verification, security judgment, and operational maturity remain valuable whether AI completes thirty minutes of work or three days.
+The timing of this shift may unfold differently. Model progress may slow, accelerate beyond what I expect, or be accompanied by forms of automated verification that reduce assurance costs. But the practical response changes little: strong foundations, precise specification, disciplined verification, security judgment, and operational maturity remain valuable whether AI completes thirty minutes of work or three days.
 
 I do not know exactly where this settles, and I do not think anyone does. Based on what we can observe today, this is the direction I would prepare for.
 
@@ -115,7 +118,6 @@ Evidence is grouped by class. Vendor telemetry is directional because each compa
 ### Industry research with disclosed methodology
 
 - DORA / Google Cloud - [*2025 State of AI-Assisted Software Development*](https://dora.dev/research/2025/dora-report/).
-- Veracode - [*2025 GenAI Code Security Report*](https://www.veracode.com/blog/genai-code-security-report/) and [*Spring 2026 GenAI Code Security Update*](https://www.veracode.com/blog/spring-2026-genai-code-security/).
 
 ### Vendor telemetry - directional only
 
@@ -123,6 +125,8 @@ Evidence is grouped by class. Vendor telemetry is directional because each compa
 - LinearB - [*8 Million Pull Requests Reveal Where Engineering Productivity Breaks Down*](https://linearb.io/blog/8-million-prs-engineering-productivity), based on its 2026 engineering benchmarks.
 - GitClear - [*AI Copilot Code Quality: 2025 Look Back at 12 Months of Data*](https://www.gitclear.com/ai_assistant_code_quality_2025_research), analysing 211 million changed lines from 2020 through 2024.
 - Apiiro - [*4x Velocity, 10x Vulnerabilities: AI Coding Assistants Are Shipping More Risks*](https://apiiro.com/blog/4x-velocity-10x-vulnerabilities-ai-coding-assistants-are-shipping-more-risks/), based on large-enterprise repository data.
+- Veracode - [*2025 GenAI Code Security Report*](https://www.veracode.com/blog/genai-code-security-report/) and [*Spring 2026 GenAI Code Security Update*](https://www.veracode.com/blog/spring-2026-genai-code-security/).
+
 
 ### Commentary and practitioner accounts
 
