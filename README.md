@@ -4,6 +4,9 @@ Source code for [deployment.properties](https://deployment.properties).
 
 ## Local Development
 
+You will need [Docker](https://docs.docker.com/get-docker/) to run this locally 
+following these instructions.
+
 1. Clone this repository
 
     ```shell
@@ -12,19 +15,22 @@ Source code for [deployment.properties](https://deployment.properties).
     git submodule update --init --force # update themes
     ```
 
-1. [Install Hugo](https://gohugo.io/getting-started/installing/)
 1. Add a new post
 
     ```shell
-    hugo new posts/name-your-post.md
+    docker compose run --rm hugo hugo new posts/name-your-post.md
     ```
 
 1. Edit your post using your favorite editor
 1. Run it locally to preview your changes
 
     ```shell
-    hugo server
+    docker compose up
     ```
+
+    The site is served at [http://localhost:1313](http://localhost:1313) with
+    live reload, and drafts and future-dated posts are included in the preview.
+    Stop it with `Ctrl+C`.
 
 ## Publishing
 

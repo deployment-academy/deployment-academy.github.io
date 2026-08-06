@@ -1,0 +1,11 @@
+services:
+  # Live-reloading dev server: http://localhost:1313
+  hugo:
+    image: hugomods/hugo:git-0.118.2
+    working_dir: /src
+    volumes:
+      - .:/src
+    ports:
+      - "1313:1313"
+    command: hugo server --bind 0.0.0.0 --baseURL http://localhost:1313 --appendPort=false --buildDrafts --buildFuture
+
