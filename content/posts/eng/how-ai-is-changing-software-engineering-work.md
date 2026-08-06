@@ -110,28 +110,14 @@ I do not know exactly where this settles, and I do not think anyone does. Based 
 
 ## References
 
-Evidence is grouped by class. Vendor telemetry is directional because each company sells tooling that becomes more valuable if the assurance problem is real. The convergence across sources is more important than any individual figure.
-
-### Independent research
-
 - Becker, J., Rush, N., Barnes, E., and Rein, D. - [*Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity*](https://arxiv.org/abs/2507.09089). METR, July 2025.
 - METR - [*We Are Changing Our Developer Productivity Experiment Design*](https://metr.org/blog/2026-02-24-uplift-update/). February 2026.
-
-### Industry research with disclosed methodology
-
 - DORA / Google Cloud - [*2025 State of AI-Assisted Software Development*](https://dora.dev/research/2025/dora-report/).
-
-### Vendor telemetry - directional only
-
 - Faros AI - [*The Acceleration Whiplash*](https://www.faros.ai/research/ai-acceleration-whiplash), based on two years of telemetry from roughly 22,000 developers across more than 4,000 teams.
 - LinearB - [*8 Million Pull Requests Reveal Where Engineering Productivity Breaks Down*](https://linearb.io/blog/8-million-prs-engineering-productivity), based on its 2026 engineering benchmarks.
 - GitClear - [*AI Copilot Code Quality: 2025 Look Back at 12 Months of Data*](https://www.gitclear.com/ai_assistant_code_quality_2025_research), analysing 211 million changed lines from 2020 through 2024.
 - Apiiro - [*4x Velocity, 10x Vulnerabilities: AI Coding Assistants Are Shipping More Risks*](https://apiiro.com/blog/4x-velocity-10x-vulnerabilities-ai-coding-assistants-are-shipping-more-risks/), based on large-enterprise repository data.
 - Veracode - [*2025 GenAI Code Security Report*](https://www.veracode.com/blog/genai-code-security-report/) and [*Spring 2026 GenAI Code Security Update*](https://www.veracode.com/blog/spring-2026-genai-code-security/).
-
-
-### Commentary and practitioner accounts
-
 - Boonstra, L. - [*When AI writes the code, who reviews it?*](https://cloud.google.com/transform/when-ai-writes-the-code-who-reviews-it-cto-google-cloud). Google Cloud, 2026.
 - Hananda, G. - [*The new economics of code: verification is the new bottleneck*](https://typedb.com/blog/the-new-economics-of-code-verification-is-the-new-bottleneck). TypeDB, 2026.
 - Bolinsky, A. - [*AI is the New Compiler*](https://abolinsky.io/blog/ai-compiler/).
