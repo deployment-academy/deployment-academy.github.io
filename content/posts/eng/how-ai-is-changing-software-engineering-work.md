@@ -62,11 +62,11 @@ The quality data points in the same direction. [GitClear](https://www.gitclear.c
 
 Of course, these are vendor-published sources, and their precise numbers deserve scrutiny. But they converge on a pattern I am witnessing firsthand: output arrives faster, while review, validation, integration, and system-level judgment remain human.
 
-An important observation is that defects may not simply increase; their distribution also appears to be moving from shallow to deep. While AI can reduce errors that a linter, type system, or competent reviewer would catch quickly, it can also introduce errors that require someone to understand the system’s trust model, state transitions, operational assumptions, and blast radius—defects that may look reasonable during review and announce themselves only after deployment.
+An important observation is that defects may not simply increase; there are early signs their distribution is moving from shallow to deep. While AI can reduce errors that a linter, type system, or competent reviewer would catch quickly, it can also introduce errors that require someone to understand the system’s trust model, state transitions, operational assumptions, and blast radius — defects that may look reasonable during review and announce themselves only after deployment. This is what you'd expect from how these models work: they are trained to produce locally plausible code, so their failures tend to be locally plausible too — which is precisely the class of defect that shallow review is worst at catching. 
 
 As AI adoption increases the volume of code requiring review, a common industry response is to use AI to verify AI-generated work. This can substantially expand the capacity to inspect and test changes. But the generator and reviewer may share the same incomplete context or mistaken assumptions. While AI can scale the search for defects, it does not, by itself, establish that a change is ready for production. It should remain an additional layer of evidence rather than a substitute for deterministic controls, system understanding, and accountable judgment.
 
-At the organizational level, [DORA’s 2025 research](https://dora.dev/research/2025/dora-report/) found AI adoption associated with better throughput and product performance, but also with increased delivery instability. Its broader conclusion—that AI amplifies an organization’s existing strengths and weaknesses—is more useful than any single effect size.
+At the organizational level, [DORA’s 2025 research](https://dora.dev/research/2025/dora-report/) found AI adoption associated with better throughput and product performance, but also with increased delivery instability. Its broader conclusion — that AI amplifies an organization’s existing strengths and weaknesses — is more useful than any single effect size.
 
 AI amplifies the engineering system around it. Teams with strong platforms, fast feedback, reliable tests, and disciplined review can convert generation speed into useful delivery. Teams without them become faster at producing work their systems are not prepared to absorb.
 
@@ -78,7 +78,7 @@ Generated code makes complexity easy to create and expensive to carry.
 
 The evidence does not show that AI is about to replace software teams, but these tools are no longer merely better autocomplete. The direction worth preparing for is one in which supervised delegation becomes ordinary. Engineers will not stop coding, but manual implementation may become a smaller part of what distinguishes them. One engineer may supervise more work and become responsible for a wider surface.
 
-The role I expect to remain most valuable is that of the engineer who holds enough technical and business context to take responsibility for a production system: what it should do, how it fits the architecture, and what happens when it is live—its reliability, security, performance, data integrity, operability, and the pager.
+The role I expect to remain most valuable is that of the engineer who holds enough technical and business context to take responsibility for a production system: what it should do, how it fits the architecture, and what happens when it is live — its reliability, security, performance, data integrity, operability, and the pager.
 
 “Write the endpoint” is a task. “Be answerable for whether the endpoint should exist, whether it leaks data, whether its retries amplify an outage, and whether it survives Election Day” is accountability. The tasks can change substantially while the need remains for someone who understands the context and is answerable for the outcome.
 
@@ -90,7 +90,7 @@ That points to several areas that deserve engineers’ attention.
 
 - **Specification and system design.** Clear requirements, constraints, invariants, failure behavior, and explicit non-goals become more valuable when implementation can be delegated. As “can we build it?” becomes less constraining, “should this exist?” and “is this the simplest safe form?” matter more.
 
-- **Verification, security, and failure-mode judgment.** Engineers need to reconstruct intent, reason about adversarial and degraded conditions, and treat “it looks right” as the beginning of review rather than the end. Deterministic controls—tests, types, schemas, static analysis, tightly scoped permissions, and reliable rollback—remain essential. AI review can provide another signal, but it does not turn probabilistic output into verified fact.
+- **Verification, security, and failure-mode judgment.** Engineers need to reconstruct intent, reason about adversarial and degraded conditions, and treat “it looks right” as the beginning of review rather than the end. Deterministic controls — tests, types, schemas, static analysis, tightly scoped permissions, and reliable rollback — remain essential. AI review can provide another signal, but it does not turn probabilistic output into verified fact.
 
 - **Calibrated delegation.** The question is not whether to use AI, but how much control to delegate, what evidence to require back, and when verification costs exceed generation benefits. Engineers need to recognize where models are useful and where local context, business rules, security concerns, or blast radius require tighter supervision.
 
