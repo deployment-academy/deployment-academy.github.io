@@ -1,6 +1,6 @@
 ---
 title: "How AI Is Changing Software Engineering Work"
-description: "As AI makes more software work practical to delegate, technical foundations, verification, and operational ownership become more important."
+description: "AI amplifies the engineering system around it. Teams with strong platforms, fast feedback, reliable tests, and disciplined review can convert generation speed into useful delivery. Teams without them become faster at producing work their systems are not prepared to absorb."
 date: 2026-08-05
 lastmod: 2026-08-06T02:04:12Z
 draft: false
