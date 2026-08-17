@@ -3,7 +3,7 @@ title: "Autonomous Agentic Coding With Deterministic Verification Using Claude C
 description: "An experiment in giving a coding agent real autonomy, bounded by checks it cannot skip. The result was a 7,300-line concurrent Go service built in about two and a half hours of active time, with one human decision point along the way."
 date: 2026-08-16
 lastmod: 2026-08-16
-draft: true
+draft: false
 sidebar: "right"
 widgets:
   - "ddg-search"
