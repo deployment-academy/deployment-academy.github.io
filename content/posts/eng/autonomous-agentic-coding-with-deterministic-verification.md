@@ -1,9 +1,9 @@
 ---
 title: "Autonomous Agentic Coding With Deterministic Verification Using Claude Code"
-description: "This post describes an experiment in which Claude Code is used to build a nontrivial system without human assistance."
+description: "An experiment in giving a coding agent real autonomy, bounded by a check it cannot skip: a hook that refuses to let a task close until the test suite passes. The result was a 7,300-line concurrent Go service built in about two and a half hours of active time, with one human decision point along the way."
 date: 2026-08-16
 lastmod: 2026-08-16
-draft: false
+draft: true
 sidebar: "right"
 widgets:
   - "ddg-search"
@@ -16,13 +16,13 @@ tags:
 
 After I wrote [How AI Is Changing Software Engineering Work](https://deployment.properties/posts/eng/how-ai-is-changing-software-engineering-work/), I kept returning to one part of the argument: whether deterministic verification steps would help increase trust in AI-generated output. When I considered which languages and platforms would favor that, Go and Rust came to mind first. While other languages can, of course, also offer good verification controls, Go and Rust came to mind as good candidates because both ship standardized toolchains with strong support for automated, deterministic verification. Tests, formatting, vetting, and compilation can all be expressed as repeatable commands with clear pass/fail outcomes — exactly the kind of signal an agent can be held to.
 
+<!--more-->
+
 Between the two, Rust offers stronger compile-time guarantees through its type system, ownership model, and borrow checker, which can prevent entire classes of memory-safety and concurrency errors before the code runs. That rigor comes at a cost in verbosity and compile latency, both of which matter more than usual when an agent is iterating through a generate–compile–verify cycle.
 
 I decided to run it as an experiment, starting with Go. As I worked through the setup, another requirement became clear. If I wanted to make a stronger case that deterministic verification can increase trust in AI-generated code, I needed to let the agent operate as autonomously as possible. Every change I made to the code along the way would be my contribution to the result, and it would get harder to tell whether the verification was helping.
 
 That created another problem. Giving the agent more autonomy also meant giving it more opportunities to consume time, tokens, and budget without producing useful progress. I needed an execution harness that would give the agent enough freedom to work independently while still giving me control over its boundaries and visibility into what it was doing.
-
-<!--more-->
 
 ## The machinery
 
@@ -66,7 +66,7 @@ Tasks run sequentially by default. Parallel execution is available where the pla
 
 This is where the premise from the beginning of the post becomes a mechanism. A task is complete when its acceptance criteria are satisfied and the complete unit-test suite passes — both, not either.
 
-The important part is that the second half is not an instruction. Telling an agent to run the tests before it finishes is a request, and a request can be skipped, misremembered, or reported optimistically. Instead, the check is wired into the moment of completion itself: a [blocking hook](https://github.com/soeirosantos/taskforge/blob/main/.claude/hooks/verify-unit-tests.sh) runs the suite when the agent tries to close a task, and can refuse. The agent cannot opt out of it, cannot substitute its own account of the result, and cannot close the task by asserting it is done — which replaces a claim with a check. The gate script itself lives in the repository the agent can write to, so "cannot" is a property to be verified rather than assumed.
+The important part is that the second half is not an instruction. Telling an agent to run the tests before it finishes is a request, and a request can be skipped, misremembered, or reported optimistically. Instead, the check is wired into the moment of completion itself: a [blocking hook](https://github.com/soeirosantos/taskforge/blob/main/.claude/hooks/verify-unit-tests.sh) runs the suite when the agent tries to close a task, and can refuse. The agent cannot opt out of it, cannot substitute its own account of the result, and cannot close the task by asserting it is done — which replaces a claim with a check. The gate script itself lives in the repository the agent can write to, so "cannot" is a property to be verified rather than assumed: after the run I checked that the script was byte-identical to the one on `main`, and that the only file differing under `.claude/` was the per-branch test command.
 
 It fails closed. A missing test command, a suite that cannot run, a suite that exceeds its timeout, a command that isn't found — all of them refuse completion rather than waving it through, on the principle that a verification step passing while broken is worse than no verification step at all. The mirror image of that risk is a suite that exits successfully while running no tests, which would technically satisfy the gate; that case is detected and recorded separately so it can't quietly count as a pass.
 
@@ -178,7 +178,7 @@ The parts I'd point at as non-trivial are the concurrency guarantees: jobs trans
 | Tool uses | 413 |
 | Subagent tokens | 972,842 |
 | Dispatches per task (mean) | 1.56 |
-| Tasks completed in one dispatch | 5 of 9 |
+| Tasks completed in one dispatch | 6 of 9 |
 | Opus invocations | 3 (2 escalations, 1 planned dispatch) |
 | Human escalations | 1 |
 | Tests weakened, skipped, or deleted | **0** |
@@ -187,7 +187,7 @@ The gap between wall clock and active time is almost entirely me waiting for sub
 
 One caveat on the table above: orchestrator usage isn't in it. Those figures come from the subagent records, which the orchestrator can see, and it cannot see its own consumption — so 972,842 tokens covers workers only, and the real total is considerably higher.
 
-The telemetry stack is where that gap gets filled, and the split it shows is the most surprising number in the run. Total API-equivalent cost was **$4.21** across **3.09 million tokens** — and the orchestrator accounts for $2.97 of the $4.21, roughly three times all fifteen worker dispatches combined. That is the direct price of making the orchestrator re-run verification itself after every task instead of trusting a worker's report. Prompt caching is what keeps the absolute number small: 85 % of those tokens were cache reads and only 0.3 % were fresh input. Both totals are floors rather than exact figures — the collector's counters reset between windows, so the sums understate — and this ran on a subscription, so $4.21 is an API-equivalent price rather than anything I was billed.
+The telemetry stack is where that gap gets filled, and the split it shows is the most surprising number in the run. Total API-equivalent cost was **$4.21** across **3.09 million tokens** — and the orchestrator accounts for $2.97 of the $4.21, around 70 % of the run and roughly two and a half times all fourteen worker dispatches combined. That is the direct price of making the orchestrator re-run verification itself after every task instead of trusting a worker's report. Prompt caching is what keeps the absolute number small: 85 % of those tokens were cache reads and only 0.3 % were fresh input. Both totals are floors rather than exact figures — the collector's counters reset between windows, so the sums understate — and this ran on a subscription, so $4.21 is an API-equivalent price rather than anything I was billed.
 
 Against that, I estimated what the same deliverable would take a solo mid-to-senior Go developer working from the same specification and holding the same quality bar: **42–67 focused engineering hours**, or 5–8.5 working days. That puts the ratio somewhere around 16× to 26×.
 
@@ -199,7 +199,7 @@ The [full statistics](https://github.com/soeirosantos/taskforge/blob/experiment/
 
 Everything so far is the harness grading its own homework. The tests were written by the same process that wrote the code, and a passing suite is exactly the evidence I've spent this post arguing is necessary but not sufficient. So after the run finished, I put the code through analysis tools that had no part in producing it — `golangci-lint`, `gosec`, `gocyclo`, coverage, and the race detector.
 
-Across 7,305 lines, they returned nine findings.
+Across 7,305 lines, they returned nine distinct findings.
 
 | Check | Result |
 |---|---|
