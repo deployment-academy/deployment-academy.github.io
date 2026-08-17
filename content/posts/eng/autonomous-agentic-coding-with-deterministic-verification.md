@@ -1,6 +1,6 @@
 ---
 title: "Autonomous Agentic Coding With Deterministic Verification Using Claude Code"
-description: "An experiment in giving a coding agent real autonomy, bounded by checks it cannot skip. The result was a 7,300-line concurrent Go service built in about two and a half hours of active time, with one human decision point along the way."
+description: "An experiment in giving a coding agent real autonomy, bounded by checks it cannot skip. The result was a race-tested concurrent Go service — atomic state transitions, mid-flight cancellation, crash recovery — built in about two and a half hours of active time, with one human decision point along the way."
 date: 2026-08-16
 lastmod: 2026-08-16
 draft: false
@@ -191,7 +191,7 @@ The telemetry stack is where that gap gets filled, and the split it shows is the
 
 Against that, I estimated what the same deliverable would take a solo mid-to-senior Go developer working from the same specification and holding the same quality bar: **42–67 focused engineering hours**, or 5–8.5 working days. That puts the ratio somewhere around 16× to 26×.
 
-That number needs handling with care, so here is the version I'll actually defend. It is *not* "the agent is 20× a developer." The specification was exceptionally detailed and writing it was real work counted on neither side. A human stayed in the loop, approving the plan and making the turn-budget call. The run needed one human escalation and a mid-run configuration change to get past T1, and without them it would have stalled. The narrower claim is the one worth making: **a specified, race-tested, 7,300-line Go service with 135 passing tests and no unresolved requirements was produced in about two and a half hours of active time, with one human decision point during the run.**
+That number needs handling with care, so here is the version I'll actually defend. It is *not* "the agent is 20× a developer." The specification was exceptionally detailed and writing it was real work counted on neither side. A human stayed in the loop, approving the plan and making the turn-budget call. The run needed one human escalation and a mid-run configuration change to get past T1, and without them it would have stalled. The narrower claim is the one worth making: **a Go service with atomic state transitions under contention, mid-flight cancellation, crash recovery, and 135 passing tests — including forced-race tests — was produced in about two and a half hours of active time, with no unresolved requirements and one human decision point during the run.**
 
 The [full statistics](https://github.com/soeirosantos/taskforge/blob/experiment/go-job-processing-service/experiment/STATS.md) label every number as measured, derived, or estimated, and state what couldn't be measured.
 
@@ -232,13 +232,13 @@ Which brings me to what I take from this. Given a solid specification, determini
 
 This started as a thought exercise about how a language and its toolchain could favor building code with AI through deterministic verification. Building the machinery to support that premise turned out to be most of the work on my end, and it sharpened the question along the way into something simpler and more demanding: can I get something genuinely solid built this way?
 
-The answer, within limits worth stating, is yes. It's one run, of one specification, in one language, with one model provider — not a benchmark. Within those limits: given a solid specification, verification wired into the moment of completion rather than requested politely, and bounded escalation with a human at the end of the ladder, an agent produced a 7,300-line concurrent service in about two and a half hours of active time, with one human decision point during the run. It stands up to tools that had no hand in writing it. Not proven correct — checked, independently, and the checks are reproducible.
+The answer, within limits worth stating, is yes. It's one run, of one specification, in one language, with one model provider — not a benchmark. Within those limits: given a solid specification, verification wired into the moment of completion rather than requested politely, and bounded escalation with a human at the end of the ladder, an agent produced a concurrent service — atomic state transitions, mid-flight cancellation, crash recovery, all of it race-tested — in about two and a half hours of active time, with one human decision point during the run. It stands up to tools that had no hand in writing it. Not proven correct — checked, independently, and the checks are reproducible.
 
 The parts that fell short are the ones I find most useful. The one real defect static analysis found was a missing server timeout the specification never asked for. The closest call in the run was T6, where a green test suite would have concealed two entirely untested handlers, and what caught it was a policy the orchestrator followed against its own better judgment. Neither is the agent wandering off. Both are gaps in what I specified and how I bounded the work — a far more tractable problem than the one I expected to be writing about, and one that puts the burden back where engineers can actually do something about it.
 
 That's what I'd carry into real work. The gate never certified anything; refusing was the only power it had. What made the output trustworthy was the combination — a specification precise enough to be checkable, a check that couldn't be skipped or talked around, and a hard stop with a human at the end of it. Take any one of those away and I'd be back to reading every line with the suspicion I started with.
 
-Everything is in [the repository](https://github.com/soeirosantos/taskforge) — the code, the commit history, the plan, the execution notes, the escalation record, the statistics, and the quality analysis. I've tried to state throughout which numbers are measured and which are judgment.
+Everything is in [the repository](https://github.com/soeirosantos/taskforge/tree/experiment/go-job-processing-service) — the code, the commit history, the plan, the execution notes, the escalation record, the statistics, and the quality analysis. I've tried to state throughout which numbers are measured and which are judgment.
 
 ## A note on the Rust execution
 
