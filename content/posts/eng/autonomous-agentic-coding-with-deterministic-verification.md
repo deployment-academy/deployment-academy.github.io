@@ -99,8 +99,6 @@ The [telemetry stack is in the repository](https://github.com/soeirosantos/taskf
 If you use Claude Code regularly, you will have noticed that a good part of what I described above overlaps with what the tool already does. It has planning modes, it dispatches subagents, it runs work in parallel, and it tracks tasks on its own. I did not need to specify most of that to get an agent to build something.
 
 I made it explicit anyway, for a reason specific to running an experiment rather than shipping work. Built-in behavior is a moving target: it improves, it changes between versions, and it is not mine to pin. Writing the decomposition, the boundaries, and the escalation rules down as documents in the repository gave me predictable control over how the work was broken up and executed, run after run.
-
-The completion gate is the part with no built-in equivalent, and it's the reason the rest exists in the form it does. Refusing to let a task close is a policy decision, not a capability — no tool ships an opinion about what *done* means in your repository. Once that refusal is the center of the design, the surrounding pieces have to be explicit enough to hang it on.
 {{< /notice >}}
 
 ## Initial tests
