@@ -4,8 +4,7 @@ Source code for [deployment.properties](https://deployment.properties).
 
 ## Local Development
 
-You will need [Docker](https://docs.docker.com/get-docker/) to run this locally 
-following these instructions.
+You will need [Docker](https://docs.docker.com/get-docker/) or something equivalent to run this locally following these instructions (I've been using https://orbstack.dev/ for this) .
 
 1. Clone this repository
 
