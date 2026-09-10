@@ -9,8 +9,9 @@ widgets:
   - "ddg-search"
   - "recent"
   - "social"
+categories:
+  - "Key Concepts"
 tags:
-  - "key concepts"
   - "networking"
   - "linux"
   - "routing"
