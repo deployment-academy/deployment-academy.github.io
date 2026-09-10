@@ -3,7 +3,7 @@ title: "Linux Networking Refresh: Routing"
 description: "A hands-on refresh on Linux routing. We create two isolated networks and three VMs with Lima, assign addresses by hand, and work through each failure — no route, no forwarding, no return route — until traffic flows between the two networks through a router."
 date: 2026-09-09
 lastmod: 2026-09-09
-draft: true
+draft: false
 sidebar: "right"
 widgets:
   - "ddg-search"
