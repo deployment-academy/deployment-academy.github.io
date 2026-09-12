@@ -650,7 +650,7 @@ None of this survives a reboot, and that's deliberate — it kept the moving par
 
 Which is the real payoff here. Run `ip link show` on any machine with Docker installed and you'll find `docker0` — a bridge, exactly like our `br-ns`, with an address on the container network. Start a container and a veth pair appears, one end inside the container's network namespace, the other attached to `docker0`. Outbound traffic gets a MASQUERADE rule in `POSTROUTING` for the container subnet. Publish a port with `-p 8080:8080` and you get a DNAT rule in `PREROUTING` pointing at the container's address, plus a companion rule in `OUTPUT` so it works from the host too. Every single piece we built by hand in this tutorial is there, generated automatically, and `iptables -t nat -L -n -v` on a Docker host will show you rules you can now read line by line.
 
-To tear everything down, inside the VM:
+To tear everything down, **inside the VM** (`limactl shell nshost`):
 
 ```bash
 sudo ip netns del ns0
@@ -667,7 +667,7 @@ sudo rm -rf /etc/netns/ns1
 
 Deleting a namespace takes its interfaces with it, and deleting the bridge takes the bridge-side veth ends with it, so there's nothing left over. To delete an iptables rule you give `-D` with the exact same specification you used for `-A`.
 
-And then the VM and the network:
+And then, from the host, the VM and the network:
 
 ```bash
 limactl stop nshost
