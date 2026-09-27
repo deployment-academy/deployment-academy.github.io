@@ -3,7 +3,7 @@ title: "Linux Networking Refresh: DNS"
 description: "A hands-on refresh on DNS. Starting from the plainest fact — a machine is reachable by its address — we work up through /etc/hosts, nsswitch.conf, and resolv.conf, stand up real servers with dnsmasq and CoreDNS, walk the recursive hierarchy with dig +trace, tour the record types you actually debug, and then break things on purpose to work them out with the tools."
 date: 2026-09-27
 lastmod: 2026-09-27
-draft: false
+draft: true
 sidebar: "right"
 widgets:
   - "ddg-search"
