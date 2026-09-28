@@ -1,6 +1,6 @@
 ---
 title: "Linux Networking Refresh: Routing"
-description: "A hands-on refresh on Linux routing. In this tutorial, we create two isolated networks and three VMs with Lima, assign addresses by hand, and work through each failure — no route, no forwarding, no return route — until traffic flows between the two networks through a router."
+description: "A hands-on refresh on Linux routing. In this tutorial, we create two isolated networks and three VMs with Lima, assign addresses by hand, and work through each failure - no route, no forwarding, no return route - until traffic flows between the two networks through a router."
 date: 2026-09-09
 lastmod: 2026-09-09
 draft: true
@@ -19,7 +19,7 @@ tags:
   - "tcpdump"
 ---
 
-In this tutorial we are going to do a refresh on routing in Linux networking. To simulate an environment we will use Linux machines via [Lima](https://lima-vm.io/) and the `limactl` CLI. We will create two virtual machines on two different virtual networks and establish communication between them via a router — a third virtual machine.
+In this tutorial we are going to do a refresh on routing in Linux networking. To simulate an environment we will use Linux machines via [Lima](https://lima-vm.io/) and the `limactl` CLI. We will create two virtual machines on two different virtual networks and establish communication between them via a router - a third virtual machine.
 
 <!--more-->
 
@@ -49,7 +49,7 @@ You can check them with:
 limactl network list
 ```
 
-I'm omitting the output, but you should see some default networks (`bridge`, `shared`, etc.) and the ones we just created: `net1` and `net2`, listed with `MODE: user-v2` — these are software-defined networks.
+I'm omitting the output, but you should see some default networks (`bridge`, `shared`, etc.) and the ones we just created: `net1` and `net2`, listed with `MODE: user-v2` - these are software-defined networks.
 
 Launch the two VMs that we want to establish communication between:
 
@@ -151,7 +151,7 @@ sudo ip addr add 10.20.2.1/24 dev lima1
 ip -4 addr show
 ```
 
-Note that we're giving it `.1` on each network. That's just a widespread convention — routers are commonly placed at the first address of a subnet, though `.254` is also common, and any free address would work just as well. Nothing about being a router depends on the address itself. What makes this machine a router is that it has a leg in both networks and forwards traffic between them, and the only thing that matters about its addresses is that the routes we add later point at them.
+Note that we're giving it `.1` on each network. That's just a widespread convention - routers are commonly placed at the first address of a subnet, though `.254` is also common, and any free address would work just as well. Nothing about being a router depends on the address itself. What makes this machine a router is that it has a leg in both networks and forwards traffic between them, and the only thing that matters about its addresses is that the routes we add later point at them.
 
 ## Routing
 
@@ -173,7 +173,7 @@ ping -c2 10.20.2.10
 ping -c2 10.20.1.1
 ```
 
-When pinging `node2` you will get `connect: Network is unreachable`. Pinging the router's IP on `net1` will work because they are on the same network. Note that pinging the router on its `net2` IP (`10.20.2.1`) would fail right now too, and for exactly the same reason as `node2` — it's an address on `10.20.2.0/24`, and `node1` currently has no route to that subnet at all. It doesn't matter that the router is directly attached to `node1` on the other side; as far as `node1`'s routing table is concerned, that whole network doesn't exist yet.
+When pinging `node2` you will get `connect: Network is unreachable`. Pinging the router's IP on `net1` will work because they are on the same network. Note that pinging the router on its `net2` IP (`10.20.2.1`) would fail right now too, and for exactly the same reason as `node2` - it's an address on `10.20.2.0/24`, and `node1` currently has no route to that subnet at all. It doesn't matter that the router is directly attached to `node1` on the other side; as far as `node1`'s routing table is concerned, that whole network doesn't exist yet.
 
 Now let's add the routing configuration.
 
@@ -201,7 +201,7 @@ Try a similar test, but reaching the router's IP on `net2`:
 ping -c2 10.20.2.1
 ```
 
-This works, right? What's happening? Pinging `10.20.2.1` succeeds because that traffic is addressed **to** the router itself — it arrives on `eth0` and the router answers it locally, no forwarding involved. Reaching `node2` is different: the router has to accept a packet on `eth0` that's destined for a different machine and pass it out `lima1`. That's forwarding, and by default Linux won't do it — a host only handles traffic meant for itself unless you explicitly turn it into a router by setting `net.ipv4.ip_forward` to 1. Note that this is necessary but not sufficient. There's one more thing missing that we will see next.
+This works, right? What's happening? Pinging `10.20.2.1` succeeds because that traffic is addressed **to** the router itself - it arrives on `eth0` and the router answers it locally, no forwarding involved. Reaching `node2` is different: the router has to accept a packet on `eth0` that's destined for a different machine and pass it out `lima1`. That's forwarding, and by default Linux won't do it - a host only handles traffic meant for itself unless you explicitly turn it into a router by setting `net.ipv4.ip_forward` to 1. Note that this is necessary but not sufficient. There's one more thing missing that we will see next.
 
 So, on the `router`:
 
@@ -231,7 +231,7 @@ limactl shell router -- sudo tcpdump -i any -n icmp
 limactl shell node2 -- sudo tcpdump -i eth0 -n icmp
 ```
 
-Now ping `node2` from `node1` again. You should see the echo request flowing from `node1` to `node2` through the router — and on `node2`'s own capture, the request arriving. But no reply comes back out.
+Now ping `node2` from `node1` again. You should see the echo request flowing from `node1` to `node2` through the router - and on `node2`'s own capture, the request arriving. But no reply comes back out.
 
 So what does that tell us? The request is getting all the way there. `node2` is receiving it. The problem is on the way back, and it's `node2`'s problem. Before reading on, have a look at its routing table:
 
@@ -239,7 +239,7 @@ So what does that tell us? The request is getting all the way there. `node2` is 
 limactl shell node2 -- ip route show
 ```
 
-`node2` only knows about its own subnet. It has no route to `10.20.1.0/24`, so when it tries to answer `node1` it has nowhere to send the reply — the same situation `node1` was in at the very beginning, just in the opposite direction. Let's add that route now.
+`node2` only knows about its own subnet. It has no route to `10.20.1.0/24`, so when it tries to answer `node1` it has nowhere to send the reply - the same situation `node1` was in at the very beginning, just in the opposite direction. Let's add that route now.
 
 On `node2`:
 
@@ -257,13 +257,13 @@ Now if you go back to `node1` and test again, you'll see the connectivity is est
 
 Let's recap what we did. We created two isolated networks and three machines: `node1` on `net1`, `node2` on `net2`, and a `router` with one interface on each. We assigned addresses by hand, then worked through why connectivity failed at each stage:
 
-- **No route:** `node1` had no idea `10.20.2.0/24` existed — `Network is unreachable`. Adding `10.20.2.0/24 via 10.20.1.1` told it where to send those packets.
+- **No route:** `node1` had no idea `10.20.2.0/24` existed - `Network is unreachable`. Adding `10.20.2.0/24 via 10.20.1.1` told it where to send those packets.
 - **No forwarding:** the router received the packets but wouldn't pass them between its interfaces until `net.ipv4.ip_forward` was set to 1.
-- **No return route:** `node2` received the echo requests but had no route back to `10.20.1.0/24`, so the replies never made it home. `ping` couldn't tell us this on its own — it took `tcpdump` at an intermediate point to show that the requests were arriving fine and only the reply direction was broken.
+- **No return route:** `node2` received the echo requests but had no route back to `10.20.1.0/24`, so the replies never made it home. `ping` couldn't tell us this on its own - it took `tcpdump` at an intermediate point to show that the requests were arriving fine and only the reply direction was broken.
 
-As I mentioned before, none of this configuration survives a reboot — it was all done with `ip` commands against the live kernel state, which is exactly what makes it good for learning. In the real world you wouldn't configure this by hand.
+As I mentioned before, none of this configuration survives a reboot - it was all done with `ip` commands against the live kernel state, which is exactly what makes it good for learning. In the real world you wouldn't configure this by hand.
 
-On Ubuntu (used here), addresses and routes are declared in netplan YAML under `/etc/netplan/`, which persists them across reboots; `net.ipv4.ip_forward` would go in `/etc/sysctl.d/` instead. Other distros use different tooling (NetworkManager on RHEL-family systems, for example), but the underlying kernel state is the same — that's what we've been manipulating directly with `ip`.
+On Ubuntu (used here), addresses and routes are declared in netplan YAML under `/etc/netplan/`, which persists them across reboots; `net.ipv4.ip_forward` would go in `/etc/sysctl.d/` instead. Other distros use different tooling (NetworkManager on RHEL-family systems, for example), but the underlying kernel state is the same - that's what we've been manipulating directly with `ip`.
 
 In the next part we'll apply the same ideas to network namespaces and container networking.
 
