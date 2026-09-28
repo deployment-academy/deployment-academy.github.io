@@ -1,6 +1,6 @@
 ---
 title: "Linux Networking Refresh: Routing"
-description: "A hands-on refresh on Linux routing. We create two isolated networks and three VMs with Lima, assign addresses by hand, and work through each failure — no route, no forwarding, no return route — until traffic flows between the two networks through a router."
+description: "A hands-on refresh on Linux routing. In this tutorial, we create two isolated networks and three VMs with Lima, assign addresses by hand, and work through each failure — no route, no forwarding, no return route — until traffic flows between the two networks through a router."
 date: 2026-09-09
 lastmod: 2026-09-09
 draft: true
@@ -19,9 +19,7 @@ tags:
   - "tcpdump"
 ---
 
-In this tutorial we are going to do a refresh on routing in Linux networking. To simulate an environment we will use Linux machines via [Lima](https://lima-vm.io/) and the `limactl` CLI. We will create two virtual machines on two different virtual networks and establish communication between them via a router — a third virtual machine that we will also create.
-
-This is the first part of a series. Here we get routing working between real (virtual) machines; a follow-up will build on the same concepts with network namespaces and container networking.
+In this tutorial we are going to do a refresh on routing in Linux networking. To simulate an environment we will use Linux machines via [Lima](https://lima-vm.io/) and the `limactl` CLI. We will create two virtual machines on two different virtual networks and establish communication between them via a router — a third virtual machine.
 
 <!--more-->
 
@@ -36,7 +34,7 @@ limactl version 2.2.0
 
 ## Router Topology with Linux Machines
 
-Note that our goal here is not to dive into Lima but to use it as supporting infrastructure for the networking concepts. For this reason, I will give most of the commands without much explanation, unless they add to our main goal here. To learn more about Lima, check its [documentation](https://lima-vm.io/docs/) or the `limactl` help.
+Note that our goal here is not to dive into Lima but to use it as supporting infrastructure for the networking concepts. For this reason, I will give most of the commands without much explanation, unless they add to our main goal. To learn more about Lima, check its [documentation](https://lima-vm.io/docs/) or the `limactl` help.
 
 Create the two isolated networks:
 
@@ -88,13 +86,13 @@ limactl shell node2 -- ip -4 addr show
 limactl shell router -- ip -4 addr show
 ```
 
-You should see `node1` with a NIC called `eth0` on network `10.20.1.0/24`, `node2` also with a NIC `eth0` but on network `10.20.2.0/24`, and finally `router` with two NICs: `eth0` probably on `10.20.1.0/24` and `lima1` on `10.20.2.0/24`. All four NICs got IPs assigned to them, and that's coming from Lima's DHCP. Don't worry too much about the specific addresses that were handed out. We could work with them, but to practice and to have more control over the setup, we'll flush the existing IPs and reassign them. If we were working on a network that doesn't have a DHCP lease server, we would have to assign them manually anyway.
+You should see `node1` with a NIC called `eth0` on network `10.20.1.0/24`, `node2` also with a NIC `eth0` but on network `10.20.2.0/24`, and finally `router` with two NICs: `eth0` probably on `10.20.1.0/24` and `lima1` on `10.20.2.0/24` (`lima1` may look strange but it's how Lima names the second interface). All four NICs got IPs assigned to them, and that's coming from Lima's DHCP. Don't worry too much about the specific addresses that were handed out. We could work with them, but to practice and to have more control over the setup, we'll flush the existing IPs and reassign them. If we were working on a network that doesn't have a DHCP lease server, we would have to assign them manually anyway.
 
 ## Configuring IPs
 
 In this section we will use `ip addr` to flush the assigned IPs and assign new ones.
 
-Important to note that everything we do here is not persistent. It's a good way to understand the setup step by step conceptually, instead of me just throwing a bunch of YAML at you.
+Important to note that everything we do here is not persistent. It's a good way to understand the setup step by step conceptually.
 
 ```bash
 # ssh into node1
@@ -203,7 +201,7 @@ Try a similar test, but reaching the router's IP on `net2`:
 ping -c2 10.20.2.1
 ```
 
-This works, right? What's happening? Pinging `10.20.2.1` succeeds because that traffic is addressed **to** the router itself — it arrives on `eth0` and the router answers it locally, no forwarding involved. Reaching `node2` is different: the router has to accept a packet on `eth0` that's destined for a different machine and pass it out `lima1`. That's forwarding, and by default Linux won't do it — a host only handles traffic meant for itself unless you explicitly turn it into a router by setting `net.ipv4.ip_forward` to 1. Note that this is necessary but not sufficient. There's one more thing missing, and I want you to find it rather than take my word for it.
+This works, right? What's happening? Pinging `10.20.2.1` succeeds because that traffic is addressed **to** the router itself — it arrives on `eth0` and the router answers it locally, no forwarding involved. Reaching `node2` is different: the router has to accept a packet on `eth0` that's destined for a different machine and pass it out `lima1`. That's forwarding, and by default Linux won't do it — a host only handles traffic meant for itself unless you explicitly turn it into a router by setting `net.ipv4.ip_forward` to 1. Note that this is necessary but not sufficient. There's one more thing missing that we will see next.
 
 So, on the `router`:
 
@@ -224,7 +222,7 @@ limactl shell node1
 ping -c2 10.20.2.10
 ```
 
-Still doesn't work, right? And at this point `ping` has told us everything it can. It only knows "no reply came back", and that's the same output whether the request never reached `node2` at all or it arrived fine and the reply got lost on the way home. Those are very different problems with the same symptom, and no amount of pinging from `node1` will tell them apart. To separate them we have to stop asking the endpoints and go watch the traffic in the middle.
+Still doesn't work, right? And at this point `ping` has told us everything it can. It only knows "no reply came back", and that's the same output whether the request never reached `node2` at all or it arrived fine and the reply got lost on the way home. Those are very different problems with the same symptom. To separate them we have to stop asking the endpoints and go watch the traffic in the middle.
 
 So let's do that: open two additional sessions in your terminal and keep them visible (ideally, but not necessarily). Run the following commands, one in each of these new sessions. You will watch the traffic on `router` and `node2`.
 
