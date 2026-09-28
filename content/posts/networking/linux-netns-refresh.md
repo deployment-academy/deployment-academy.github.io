@@ -3,7 +3,7 @@ title: "Linux Networking Refresh: Network Namespaces"
 description: "A hands-on refresh on Linux network namespaces. Starting from two namespaces that can't even ping themselves, we connect them with a veth pair, replace it with a bridge, give the host a leg on that network, and work outward through routing, forwarding, NAT, and port forwarding - everything by hand with ip and iptables, ending at the rules Docker generates for you."
 date: 2026-09-12
 lastmod: 2026-09-12
-draft: true
+draft: false
 sidebar: "right"
 widgets:
   - "ddg-search"
