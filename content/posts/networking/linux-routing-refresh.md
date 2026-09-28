@@ -265,8 +265,6 @@ As I mentioned before, none of this configuration survives a reboot - it was all
 
 On Ubuntu (used here), addresses and routes are declared in netplan YAML under `/etc/netplan/`, which persists them across reboots; `net.ipv4.ip_forward` would go in `/etc/sysctl.d/` instead. Other distros use different tooling (NetworkManager on RHEL-family systems, for example), but the underlying kernel state is the same - that's what we've been manipulating directly with `ip`.
 
-In the next part we'll apply the same ideas to network namespaces and container networking.
-
 To tear everything down
 
 ```bash

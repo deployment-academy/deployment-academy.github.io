@@ -25,9 +25,9 @@ tags:
 
 In this tutorial we are going to do a refresh on Linux network namespaces. We will start with two namespaces that can't even ping themselves, connect them with a virtual cable, replace that cable with a bridge, give the host a leg on that bridge, and then work our way outward - routing, forwarding, NAT, route specificity, and finally port forwarding back in. Everything is done by hand with `ip` and `iptables` to exercise the concepts.
 
-To simulate an environment we will use a Linux machine via [Lima](https://lima-vm.io/) and the `limactl` CLI. Namespaces don't need a complicated topology - one VM is enough, because the whole point is that we're going to build a little network *inside* it.
-
 <!--more-->
+
+To simulate an environment we will use a Linux machine via [Lima](https://lima-vm.io/) and the `limactl` CLI. Namespaces don't need a complicated topology - one VM is enough, because the whole point is that we're going to build a little network *inside* it.
 
 To follow along, you should be able to use Lima from any OS you might be using. See the [installation guide](https://lima-vm.io/docs/installation/).
 
