@@ -23,7 +23,7 @@ tags:
   - "tcpdump"
 ---
 
-In this tutorial we are going to do a refresh on DNS. We will start from the plainest possible fact - a machine is reachable by its address - and work our way up through `/etc/hosts`, `nsswitch.conf`, `/etc/resolv.conf`, a real DNS server we run ourselves, the recursive hierarchy that answers queries for the rest of the internet, the record types you actually meet in the wild, and the tools you use when any of it goes wrong.
+Continuing the series of [Linux Networking](https://deployment.properties/tags/networking/), we are going to do a refresh on DNS. We will start from the plainest possible fact — a machine is reachable by its address — and work our way up through `/etc/hosts`, `nsswitch.conf`, `/etc/resolv.conf`, a real DNS server we run ourselves, the recursive hierarchy that answers queries for the rest of the internet, the record types you actually meet in the wild, and the tools you use when any of it goes wrong.
 
 <!--more-->
 
