@@ -23,7 +23,7 @@ tags:
   - "tcpdump"
 ---
 
-In this tutorial we are going to do a refresh on Linux network namespaces. We will start with two namespaces that can't even ping themselves, connect them with a virtual cable, replace that cable with a bridge, give the host a leg on that bridge, and then work our way outward - routing, forwarding, NAT, route specificity, and finally port forwarding back in. Everything is done by hand with `ip` and `iptables` to exercise the concepts.
+In a previous tutorial we talked about [network routing](https://deployment.properties/posts/networking/linux-routing-refresh/). Now we are going to discuss Linux network namespaces. We will start with two namespaces that can't even ping themselves, connect them with a virtual cable, replace that cable with a bridge, give the host a leg on that bridge, and then work our way outward - routing, forwarding, NAT, route specificity, and finally port forwarding back in. Everything is done by hand with `ip` and `iptables` to exercise the concepts.
 
 <!--more-->
 
@@ -58,7 +58,7 @@ Let's see what address `nshost` got:
 limactl shell nshost -- ip -4 addr show eth0
 ```
 
-Because of Limas DHCP IP assignment, there's a good chance `nshost` is using `10.40.1.1`. It might equally be `10.40.1.2` or something else in the range. Either is fine; we just need to know which. Throughout this tutorial I'll call that value **the host's eth0 address**, and I'll write it as `10.40.1.1` in the concrete examples - the value Lima handed out on my run - so the commands stay readable. If yours differs, substitute with the IP you got from the previous command when needed. The good news is that we only actually *need* it in one section (port forwarding), so it's not a landmine everywhere.
+Because of Lima's DHCP IP assignment, there's a good chance `nshost` is using `10.40.1.1`. It might equally be `10.40.1.2` or something else in the range. Either is fine; we just need to know which. Throughout this tutorial I'll call that value **the host's eth0 address**, and I'll write it as `10.40.1.1` in the concrete examples - the value Lima handed out on my run - so the commands stay readable. If yours differs, substitute with the IP you got from the previous command when needed. The good news is that we only actually *need* it in one section (port forwarding), so it's not a landmine everywhere.
 
 Now, two addresses that matter and are easy to mix up, so let's pin them down before we touch anything:
 
