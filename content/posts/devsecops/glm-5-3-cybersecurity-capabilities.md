@@ -1,5 +1,5 @@
 ---
-title: "Testing GLM-5.3's Cybersecurity Capabilities"
+title: "Evaluating GLM-5.3 Cybersecurity Capabilities"
 description: "A hands-on experiment with Z.ai's GLM-5.3, Claude Code, Kali Linux, OWASP Juice Shop, and a custom vulnerable target to evaluate autonomous cybersecurity reasoning."
 date: 2026-10-06T23:16:00-04:00
 lastmod: 2026-10-06T23:16:00-04:00
@@ -13,6 +13,18 @@ tags:
 Last week, [Anthropic published an interesting post](https://www.anthropic.com/research/glm-5-3-and-the-spread-of-advanced-cyber-capabilities) analyzing the cybersecurity capabilities of Z.ai’s open-weight GLM-5.3 model and comparing some of its exploit-development performance with Claude Mythos Preview. Anthropic’s testing found GLM-5.3 surprisingly close to Mythos Preview on some of the harder exploit-development benchmarks.
 
 A couple of weeks earlier, [NIST’s Center for AI Standards and Innovation (CAISI) had published its own assessment](https://www.nist.gov/news-events/news/2026/09/caisis-assessment-zais-glm-53-cyber-capabilities). CAISI reached a somewhat more conservative conclusion: it described GLM-5.3 as the most cyber-capable open-weight model released so far, while estimating that its overall cyber capability still trails the current U.S. frontier by roughly four months.
+
+<!--more-->
+
+{{< notice type="warning" id="disclaimer" title="Setting expectations" >}}
+Before you move forward, let's set some expectations.
+
+In this experiment, I wanted to test GLM-5.3's cybersecurity capabilities. For that, I wanted a reasonable target that was unpublished and previously unseen by the model. With that in mind, I built and used a multi-stage but intentionally simple target application. Thinking in retrospect, it came out simpler than what I originally wanted to demonstrate. Every individual step in the attack chain is based on fairly textbook OWASP or Linux privilege-escalation techniques.
+
+In a way, I don't think this experiment quite reached what I originally wanted to achieve. Even though the model performed well, nothing in the challenge itself required capabilities that I would consider unique to a model at this level. A less capable model may very well have been able to complete the same chain.
+
+Regardless, I thought it was worth sharing. If anything, the methodology and tooling may be useful to someone.
+{{< /notice >}}
 
 There is an important bit of context here. Anthropic has deliberately restricted access to some of the most capable cybersecurity functionality in its models. [Fable 5.1 and Mythos 5.1](https://www.anthropic.com/claude-fable-and-mythos-5-1), for example, are the same underlying model but are deployed with different safeguard and access regimes: Fable is generally available, while Mythos is available through trusted-access programs with safeguards intended to support professional cybersecurity and life-sciences work. Anthropic has been explicit that these restrictions are driven in part by the cybersecurity capabilities of the models.
 
@@ -60,4 +72,6 @@ There are several caveats to this experiment. Bookshop VWA is deliberately modes
 
 The only question the agent asked me during the assessment was to confirm the authorized scope, and my only manual intervention was operational: I had to recover the Kali VM after the fuzzing workload overwhelmed it. I did not provide hints about the vulnerabilities or the intended attack path.
 
-Next, I want to explore running GLM-5.3 on infrastructure I control directly and, of course, run it against a more elaborate application in a cloud environment with multiple components. Another thing that I'm looking forward to is checking how it performs against other models.
+As I mentioned in the beginning, this ended up being a way too simple challenge for GLM-5.3. What still made the experiment interesting to me was not the sophistication of any individual vulnerability, but whether the model could independently discover, connect, and execute the full attack chain.
+
+Next, I want to explore running GLM-5.3 on infrastructure I control directly and, of course, test it against a more elaborate application in a cloud environment with multiple components. I'm also looking forward to seeing how it performs against other models.
