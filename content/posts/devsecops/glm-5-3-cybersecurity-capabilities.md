@@ -10,13 +10,13 @@ tags:
   - "devsecops"
 ---
 
-Last week, [Anthropic published an interesting post](https://www.anthropic.com/research/glm-5-3-and-the-spread-of-advanced-cyber-capabilities) analyzing the cybersecurity capabilities of Z.ai’s open-weight GLM-5.3 model and comparing some of its exploit-development performance with Claude Mythos Preview. Anthropic’s testing found GLM-5.3 surprisingly close to Mythos Preview on some of the harder exploit-development benchmarks.
+Last week, [Anthropic published an interesting post](https://www.anthropic.com/research/glm-5-3-and-the-spread-of-advanced-cyber-capabilities) analyzing the cybersecurity capabilities of Z.ai’s open-weight GLM-5.3 model and comparing some of its security testing performance with Claude Mythos Preview. Anthropic’s testing found GLM-5.3 surprisingly close to Mythos Preview on some of the harder benchmarks.
 
-A couple of weeks earlier, [NIST’s Center for AI Standards and Innovation (CAISI) had published its own assessment](https://www.nist.gov/news-events/news/2026/09/caisis-assessment-zais-glm-53-cyber-capabilities). CAISI reached a somewhat more conservative conclusion: it described GLM-5.3 as the most cyber-capable open-weight model released so far, while estimating that its overall cyber capability still trails the current U.S. frontier by roughly four months.
+A couple of weeks earlier, [NIST’s Center for AI Standards and Innovation (CAISI) had published its own assessment](https://www.nist.gov/news-events/news/2026/09/caisis-assessment-zais-glm-53-cyber-capabilities). It described GLM-5.3 as the most cyber-capable open-weight model released so far, while estimating that its overall cyber capability still trails the current U.S. frontier by roughly four months.
 
 <!--more-->
 
-{{< notice type="note" id="disclaimer" title="Setting expectations" >}}
+{{< notice type="note" id="disclaimer" title="Setting expectations - this is not an *advanced* Cybersecurity test, it's just interesting" >}}
 Before you move forward, let's set some expectations.
 
 In this experiment, I wanted to test GLM-5.3's cybersecurity capabilities. For that, I wanted a reasonable target that was unpublished and previously unseen by the model. With that in mind, I built and used a multi-stage but intentionally simple target application. Thinking in retrospect, it came out simpler than what I originally wanted to demonstrate. Every individual step in the attack chain is based on fairly textbook OWASP or Linux privilege-escalation techniques.
