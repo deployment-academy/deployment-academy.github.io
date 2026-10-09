@@ -13,14 +13,13 @@ This is the style guide for the deployment.properties Hugo blog. It sets the voi
   date: 2026-09-27
   lastmod: 2026-09-27
   draft: true
-  sidebar: "right"
   tags:
   ---
   ```
   - Replace `description` with 1 to 3 plain-prose sentences summarizing the post's arc.
   - Fill `tags` with lowercase, specific technology or topic names (`"dns"`, `"lima"`, `"tcpdump"`), not vague themes.
   - Add a `categories` field only for the "Key Concepts" series or another named series; a category is a taxonomy distinct from `tags`, rendered next to the date. Do not invent categories casually, and omit the field entirely otherwise.
-  - Do not add a `widgets` field to a post; the sidebar widgets come from `config.toml`.
+  - Do not add `sidebar` or `widgets` fields to a post; posts render without a sidebar, and the widgets for other pages come from `config.toml`.
   - Add `highlight: true` only when asked to feature a post in the sidebar "Highlights" widget.
   - Do not change the front matter of existing posts unless asked.
 - `<!--more-->` marks the teaser cutoff. Place it after the opening paragraph or paragraphs, before the first `##` section.

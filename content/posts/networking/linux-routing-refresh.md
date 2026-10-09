@@ -4,7 +4,6 @@ description: "A hands-on refresh on Linux routing. In this tutorial, we create t
 date: 2026-09-09
 lastmod: 2026-09-09
 draft: false
-sidebar: "right"
 categories:
   - "Key Concepts"
 tags:

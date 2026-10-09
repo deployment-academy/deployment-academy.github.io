@@ -5,7 +5,6 @@ date: 2026-08-05
 lastmod: 2026-08-06T02:04:12Z
 draft: false
 highlight: true
-sidebar: "right"
 tags:
   - "artificial intelligence"
   - "software engineering"
