@@ -4,6 +4,7 @@ description: "A hands-on experiment with Z.ai's GLM-5.3, Claude Code, Kali Linux
 date: 2026-10-06T23:16:00-04:00
 lastmod: 2026-10-06T23:16:00-04:00
 draft: false
+highlight: true
 tags:
   - "artificial intelligence"
   - "cybersecurity"

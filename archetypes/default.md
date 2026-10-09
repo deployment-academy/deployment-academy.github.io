@@ -7,6 +7,7 @@ draft: true
 sidebar: "right"
 widgets:
   - "ddg-search"
+  - "highlights"
   - "recent"
   - "social"
 tags:
