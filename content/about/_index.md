@@ -4,6 +4,7 @@ date: 2021-08-13T15:06:47-04:00
 lastmod: 2021-08-15
 sidebar: "right"
 widgets:
+  - "search"
   - "highlights"
   - "recent"
   - "social"
