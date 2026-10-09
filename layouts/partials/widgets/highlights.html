@@ -1,0 +1,15 @@
+{{- $highlights := where (where .Site.RegularPages "Type" "in" .Site.Params.mainSections) "Params.highlight" true }}
+{{- $highlights_num := (.Site.Params.widgets.highlights_num | default 5) }}
+
+{{- if $highlights }}
+<div class="widget-highlights widget">
+	<h4 class="widget__title">{{ .Site.Params.widgets.highlights_title | default "Highlights" }}</h4>
+	<div class="widget__content">
+		<ul class="widget__list">
+			{{- range first $highlights_num $highlights.ByDate.Reverse }}
+			<li class="widget__item"><a class="widget__link" href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+			{{- end }}
+		</ul>
+	</div>
+</div>
+{{- end }}

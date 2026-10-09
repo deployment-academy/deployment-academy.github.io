@@ -4,6 +4,7 @@ description: "Security and software engineering often lose trust in each other b
 date: 2026-07-16T21:30:00-04:00
 lastmod: 2026-07-16T21:30:00-04:00
 draft: false
+highlight: true
 tags:
   - "devsecops"
   - "opinion"

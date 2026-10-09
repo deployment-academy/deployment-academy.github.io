@@ -4,11 +4,7 @@ description: "AI amplifies the engineering system around it. Teams with strong p
 date: 2026-08-05
 lastmod: 2026-08-06T02:04:12Z
 draft: false
-sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
+highlight: true
 tags:
   - "artificial intelligence"
   - "software engineering"

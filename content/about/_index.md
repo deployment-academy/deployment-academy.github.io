@@ -6,6 +6,7 @@ sidebar: "right"
 widgets:
   - "ddg-search"
   - "social"
+  - "highlights"
   - "recent"
 ---
 

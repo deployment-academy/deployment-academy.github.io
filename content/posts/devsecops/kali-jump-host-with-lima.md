@@ -4,11 +4,6 @@ description: "Set up a headless Kali Linux VM on an Apple Silicon Mac with Lima,
 date: 2026-10-08
 lastmod: 2026-10-08
 draft: false
-sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
 toc: true
 tags:
   - "lima"
