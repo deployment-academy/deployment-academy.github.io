@@ -5,10 +5,6 @@ date: 2026-09-09
 lastmod: 2026-09-09
 draft: false
 sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
 categories:
   - "Key Concepts"
 tags:

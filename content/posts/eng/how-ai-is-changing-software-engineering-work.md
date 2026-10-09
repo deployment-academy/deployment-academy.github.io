@@ -6,10 +6,6 @@ lastmod: 2026-08-06T02:04:12Z
 draft: false
 highlight: true
 sidebar: "right"
-widgets:
-  - "ddg-search"
-  - "recent"
-  - "social"
 tags:
   - "artificial intelligence"
   - "software engineering"
