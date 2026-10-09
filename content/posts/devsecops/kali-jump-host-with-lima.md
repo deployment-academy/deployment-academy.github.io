@@ -18,11 +18,11 @@ tags:
   - "mcp"
 ---
 
-While I was working on [Evaluating GLM-5.3 Cybersecurity Capabilities](https://deployment.properties/posts/devsecops/glm-5-3-cybersecurity-capabilities/), I found a useful way to run a local [Kali Linux](https://www.kali.org/) jump host with [Lima](https://lima-vm.io/). I mentioned the setup in a gist, but I thought it deserved its own post. When I'm on my laptop and want to work through a lab box or run a test, I prefer to keep security tools off the host.
+While I was working on [Evaluating GLM-5.3 Cybersecurity Capabilities](https://deployment.properties/posts/devsecops/glm-5-3-cybersecurity-capabilities/), I learned a helpful trick to run a local [Kali Linux](https://www.kali.org/) jump host with [Lima](https://lima-vm.io/). I mentioned the setup in a gist linked in that previous post, but I thought it would be cool to elaborate on the details in a separate post. If you are interested in this subject, you probably understand the motivation. It's a nice and quick way (once you have the template created) to get an ephemeral Kali box ready to use when you need security tools.
 
 <!--more-->
 
-Lima stands for Linux Machines. It creates Linux virtual machines and manages their configuration, startup, shell access, file sharing, and port forwarding. You still have a VM consuming CPU, memory, and disk; the appeal here is a headless environment, without heavier virtualization software.
+[Lima (Linux Machines)](https://lima-vm.io/) is an open-source command-line tool that launches lightweight Linux virtual machines and manages their configuration, startup, shell access, file sharing, and port forwarding. You still have a VM consuming CPU, memory, and disk; the appeal here is a headless environment, without heavier virtualization software.
 
 Use Kali as a local jump host: a Linux machine from which you connect to lab targets and run security tools. The configuration below targets an Apple Silicon Mac with an ARM64 guest.
 
@@ -47,7 +47,7 @@ qemu-img --version
 
 Both commands should print a version. Use Lima 2.0 or later for the template and the MCP integration at the end of the post.
 
-Before building the Kali template, create a demonstration VM from Lima's default template and run a command inside it:
+Before building the Kali template, create a demo VM from Lima's default template and run a command inside it:
 
 ```bash
 # on macOS
@@ -58,7 +58,7 @@ limactl shell demo uname -a
 
 The final command should report a Linux kernel. `limactl create` defines the instance, `limactl start` boots it, and `limactl shell` executes a command inside the guest.
 
-Open an interactive shell in the demonstration VM:
+Open an interactive shell in the demo VM:
 
 ```bash
 # on macOS
