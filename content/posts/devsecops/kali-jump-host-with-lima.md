@@ -3,7 +3,7 @@ title: "Running a Kali Linux Jump Host with Lima"
 description: "Set up a headless Kali Linux VM on an Apple Silicon Mac with Lima, run security tools from your terminal, and connect the VM to Claude Code through MCP."
 date: 2026-10-08
 lastmod: 2026-10-08
-draft: true
+draft: false
 sidebar: "right"
 widgets:
   - "ddg-search"
