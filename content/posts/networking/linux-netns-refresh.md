@@ -4,6 +4,7 @@ description: "A hands-on refresh on Linux network namespaces. Starting from two 
 date: 2026-09-12
 lastmod: 2026-09-12
 draft: false
+toc: true
 categories:
   - "Key Concepts"
 tags:

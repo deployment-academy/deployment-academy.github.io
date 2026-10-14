@@ -12,6 +12,8 @@ widgets:
 
 Deployment is a blog focused on software development, security, and operations. I started it to share things I've been working on or researching to solve real problems. While most posts still come from that kind of work, more recently I've also been writing about foundational topics in the [Key Concepts series](https://deployment.properties/categories/key-concepts/).
 
+My name is Romulo Santos, and I'm a software engineer with experience in enterprise software development and distributed systems, currently focused on security.
+
 ## Other content
 
 I also wrote the following tutorials for the Google Cloud Community website. That site is now retired, but the tutorials are archived on GitHub:

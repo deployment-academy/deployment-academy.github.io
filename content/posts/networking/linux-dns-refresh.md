@@ -4,6 +4,7 @@ description: "A hands-on refresh on DNS. Starting from the plainest fact - a mac
 date: 2026-09-27
 lastmod: 2026-09-27
 draft: false
+toc: true
 categories:
   - "Key Concepts"
 tags:

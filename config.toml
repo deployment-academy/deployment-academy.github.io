@@ -14,7 +14,7 @@ enableGitInfo = true
   avatar = ""
 
 [Params]
-  description = "Software Development, Security and Operations" # Site description. Used in meta description
+  description = "Practical experiments, technical tutorials, and engineering perspectives on building and securing software systems." # Site description. Used in meta description
   copyright = "Deployment - Software Development, Security and Operations" # Footer copyright holder, otherwise will use site title
   opengraph = true # Enable OpenGraph if true
   schema = true # Enable Schema
@@ -42,7 +42,7 @@ enableGitInfo = true
 [Params.logo]
 #   image = "img/placeholder.png" # Logo image. Path relative to "static"
   title = "Deployment"
-  subtitle = "Software Development, Security and Operations" # Logo subtitle
+  subtitle = "Software engineering, cybersecurity, and applied AI." # Logo subtitle
 
 [Params.sidebar]
   home = "right" # Configure layout for home page
