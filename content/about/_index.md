@@ -10,7 +10,7 @@ widgets:
   - "social"
 ---
 
-Deployment is a blog featuring practical experiments, technical tutorials, and engineering perspectives on building and securing software systems. I started it to share things I've been working on or researching to solve real problems. The [Key Concepts series](https://deployment.properties/categories/key-concepts/) also explores foundational topics.
+Deployment is a blog featuring practical experiments, technical tutorials, and engineering perspectives on building and securing software systems.
 
 My name is Romulo Santos, and I'm a software engineer with experience in enterprise software development and distributed systems, currently focused on security.
 
