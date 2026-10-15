@@ -1,5 +1,5 @@
 ---
-title: "Linux Networking Refresh: Routing"
+title: "Linux Routing Fundamentals: A Hands-On Lab"
 description: "A hands-on refresh on Linux routing. In this tutorial, we create two isolated networks and three VMs with Lima, assign addresses by hand, and work through each failure - no route, no forwarding, no return route - until traffic flows between the two networks through a router."
 date: 2026-09-09
 lastmod: 2026-09-09
