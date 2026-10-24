@@ -33,7 +33,7 @@ We should never underestimate what can be uncovered or assume something will rem
 
 ## Common reconnaissance techniques
 
-What many engineers overlook is that when we expose an application on the internet, the information it reveals can help someone discover more than the functionality we intended to make available. Its behavior may reveal undocumented paths or features, while its technologies, configuration details, and infrastructure characteristics—what we often call its fingerprint—may provide clues that lead to other systems associated with the organization. Even the content published on a website can reveal useful information, including details that could support social engineering.
+The paths and behaviors we've discussed are only part of what can be discovered, and it's easy for engineers to overlook how far that investigation can go. An application's technologies, configuration details, and infrastructure characteristics—what we often call its fingerprint—can provide clues about other systems and services associated with the organization. Even the content published on a website can reveal information useful for social engineering.
 
 Some common techniques for mapping an attack surface include:
 
