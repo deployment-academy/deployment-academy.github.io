@@ -1,6 +1,6 @@
 ---
 title: "When Your Software Is Open to the World"
-description: "An application's attack surface extends beyond visible features and documented endpoints. Publicly exposed information can also reveal additional infrastructure and services."
+description: "An application's attack surface extends beyond visible features and documented endpoints."
 date: 2026-10-21
 lastmod: 2026-10-21
 draft: false
@@ -9,6 +9,7 @@ categories:
 tags:
   - "application security"
   - "security mindset"
+  - "cybersecurity"
 ---
 
 When it comes to security, there are a lot of things I'd love to have known when I started my career as a software engineer. Now, as an engineer focused on cybersecurity, there are things I'd like my product engineering colleagues to know.
