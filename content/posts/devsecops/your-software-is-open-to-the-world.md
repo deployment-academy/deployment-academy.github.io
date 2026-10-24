@@ -13,27 +13,27 @@ tags:
 
 When it comes to security, there are a lot of things I'd love to have known when I started my career as a software engineer. Now, as an engineer focused on cybersecurity, there are things I'd like my product engineering colleagues to know.
 
-There are books, videos, and other resources out there that can teach you about vulnerabilities, what they are, and how they can be exploited. Others teach tools and methods for scanning code, finding vulnerabilities, and fixing them. Some of these resources, usually the good ones, bring more than just technical expertise. They help you develop a security mindset.
+There are books, videos, and other resources out there that can teach you about vulnerabilities, what they are, and how they can be exploited. Others teach tools and methods for scanning code, finding vulnerabilities, and fixing them. Some of these resources, usually the good ones, bring more than just technical expertise. They help develop an adversarial way of thinking, which is fundamental to understanding where weaknesses might exist, how attacks can happen, and how far they could go.
 
-This post is the first in a series where I want to share, from my experience, some habits and perspectives that can help software engineers develop a strong security mindset.
+This post is the first in a series where I want to share some habits and perspectives that can help software engineers develop a strong security mindset.
 
 <!--more-->
 
-## The attack surface goes beyond the design
+## The attack surface goes beyond the designed functionality
 
 When we build software, we naturally think about the functionality we intend to deliver: the pages users navigate, the requests our frontend makes, and the APIs and backend services. While we tend to focus on that intended functionality, once the software is on the internet, people (and nowadays automated agents) can interact with it without following the workflows we designed. Some will deliberately look for things we never intended to make available, things we thought were "hidden enough," and others we had no idea could be reachable.
 
-To understand the attack surface, we need to look beyond the design and consider which endpoints and URL paths respond, what HTTP methods they accept, and how request parameters, cookies, headers, and other inputs can affect their behavior.
+To understand what we mean by an application's attack surface, we need to look beyond the design and consider which endpoints and URL paths respond, what HTTP methods they accept, and how request parameters, cookies, headers, and other inputs can affect their behavior.
 
-For example, the backend might accept an attribute that isn't exposed anywhere in the UI, or process a parameter that the frontend never sends but could be inferred by someone inspecting the application. The same goes for paths that aren't linked from any page and redirect flows that may reveal otherwise unlinked endpoints or expose sensitive values in URLs. Someone using an HTTP client, an intercepting proxy, a script, or an AI agent can interact with those interfaces directly, without going through the application the way we expect a user to.
+For example, the backend might accept an attribute that isn't exposed anywhere in the UI, or process a parameter that the frontend never sends but could be inferred by someone inspecting the application. The same goes for paths that aren't linked from any page but redirect flows may reveal otherwise unlinked endpoints or expose sensitive values in URLs. An API endpoint might even enforce authorization for one HTTP method but not another. Someone using an HTTP client, an intercepting proxy, a script, or an AI agent can interact with those interfaces directly, without going through the application the way we expect a user to.
 
 Of course, being reachable doesn't mean something is necessarily vulnerable. It does mean that someone can inspect it, send unexpected requests, validate and stress edge cases, and look for weaknesses. The controls that protect an application have to work independently of what the UI or API documentation makes visible or what we assume people will discover.
 
-A motivated actor can sometimes understand an application's exposed behavior better than the engineers maintaining it, especially when it comes to legacy systems.
+We should never underestimate what can be uncovered or assume something will remain hidden just because it isn't advertised or documented. A motivated actor can sometimes understand an application's exposed behavior better than the engineers maintaining it, especially when it comes to legacy systems.
 
 ## Common reconnaissance techniques
 
-What many engineers overlook is that when we expose an endpoint on the internet, the information an application reveals can help someone discover infrastructure and services beyond the application itself. By examining its technologies, configuration details, and infrastructure characteristics—what we often call its fingerprint—someone may find clues that lead to other systems associated with the organization. Even the content published on a website can reveal useful information, including details that could support social engineering.
+What many engineers overlook is that when we expose an application on the internet, the information it reveals can help someone discover more than the functionality we intended to make available. Its behavior may reveal undocumented paths or features, while its technologies, configuration details, and infrastructure characteristics—what we often call its fingerprint—may provide clues that lead to other systems associated with the organization. Even the content published on a website can reveal useful information, including details that could support social engineering.
 
 Some common techniques for mapping an attack surface include:
 
