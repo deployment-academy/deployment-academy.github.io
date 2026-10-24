@@ -4,6 +4,8 @@ description: "An application's attack surface extends beyond visible features an
 date: 2026-10-21
 lastmod: 2026-10-21
 draft: false
+categories:
+  - "The Security Mindset"
 tags:
   - "application security"
   - "security mindset"
