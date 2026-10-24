@@ -1,6 +1,5 @@
 ---
 title: "When Your Software Is Open to the World"
-slug: "your-software-is-open-to-the-world"
 description: "An application's attack surface extends beyond visible features and documented endpoints. Publicly exposed information can also reveal additional infrastructure and services."
 date: 2026-10-21
 lastmod: 2026-10-21
