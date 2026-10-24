@@ -31,7 +31,7 @@ Of course, being reachable doesn't mean something is necessarily vulnerable. It 
 
 We should never underestimate what can be uncovered or assume something will remain hidden just because it isn't advertised or documented. A motivated actor can sometimes understand an application's exposed behavior better than the engineers maintaining it, especially when it comes to legacy systems.
 
-## Common reconnaissance techniques
+## How the broader attack surface is discovered
 
 The paths and behaviors we've discussed are only part of what can be discovered, and it's easy for engineers to overlook how far that investigation can go. An application's technologies, configuration details, and infrastructure characteristics—what we often call its fingerprint—can provide clues about other systems and services associated with the organization. Even the content published on a website can reveal information useful for social engineering.
 
