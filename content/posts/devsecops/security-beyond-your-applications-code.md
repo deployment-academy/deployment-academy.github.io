@@ -2,7 +2,7 @@
 title: "Part 3: Security Beyond Your Application's Code"
 description: "Repositories, CI/CD pipelines, container registries, cloud identities, and supporting services all influence the security of the application we put into production."
 date: 2026-10-25
-lastmod: 2026-10-24
+lastmod: 2026-10-25
 draft: false
 categories:
   - "Security Mindset for Software Engineers"
