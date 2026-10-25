@@ -1,5 +1,5 @@
 ---
-title: "When Your Software Is Open to the World"
+title: "Part 1: When Your Software Is Open to the World"
 description: "An application's attack surface extends beyond visible features and documented endpoints."
 date: 2026-10-21
 lastmod: 2026-10-21
