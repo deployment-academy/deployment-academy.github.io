@@ -5,7 +5,7 @@ date: 2026-10-21
 lastmod: 2026-10-21
 draft: false
 categories:
-  - "The Security Mindset"
+  - "Security Mindset for Software Engineers"
 tags:
   - "application security"
   - "security mindset"
