@@ -1,6 +1,6 @@
 ---
 title: "Security Mindset for Software Engineers Series"
-description: "Why I revisited an unfinished article from 2023 and turned it into a four-part series about the security mindset for software engineers."
+description: "Introducing the Security Mindset for Software Engineers series, where I share my perspective on the ideas I consider most important for engineers to keep in mind."
 date: 2026-10-26
 lastmod: 2026-10-26
 draft: false
