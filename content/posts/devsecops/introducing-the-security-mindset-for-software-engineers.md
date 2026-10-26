@@ -37,6 +37,4 @@ I hope you find them useful.
 
 ---
 
-**Security Mindset for Software Engineers — series navigation**
-
 [Next: Part 1 →](https://deployment.properties/posts/devsecops/when-your-software-is-open-to-the-world/)
