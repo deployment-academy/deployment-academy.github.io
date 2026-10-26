@@ -1,8 +1,8 @@
 ---
 title: "Security Mindset for Software Engineers Series"
 description: "Introducing the Security Mindset for Software Engineers series, where I share my perspective on the ideas I consider most important for engineers to keep in mind."
-date: 2026-10-26
-lastmod: 2026-10-26
+date: 2026-10-26T11:00:00-04:00
+lastmod: 2026-10-26T11:00:00-04:00
 draft: false
 categories:
   - "Security Mindset for Software Engineers"
