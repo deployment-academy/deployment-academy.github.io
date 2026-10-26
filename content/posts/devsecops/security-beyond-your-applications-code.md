@@ -73,4 +73,4 @@ Thinking about the system this way doesn't mean every developer has to administe
 
 ---
 
-[← Previous: Part 2](https://deployment.properties/posts/devsecops/a-vulnerability-is-often-just-the-beginning/) · [Series introduction](https://deployment.properties/posts/devsecops/introducing-the-security-mindset-for-software-engineers/) · [Next: Part 4 →](https://deployment.properties/posts/devsecops/security-doesnt-end-when-you-deploy/)
+[← Previous: Part 2](https://deployment.properties/posts/devsecops/a-vulnerability-is-often-just-the-beginning/) | [Series introduction](https://deployment.properties/posts/devsecops/introducing-the-security-mindset-for-software-engineers/) | [Next: Part 4 →](https://deployment.properties/posts/devsecops/security-doesnt-end-when-you-deploy/)
