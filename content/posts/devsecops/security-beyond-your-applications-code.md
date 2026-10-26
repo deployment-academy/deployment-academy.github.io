@@ -70,3 +70,9 @@ As engineers, we should understand how the components involved in delivering and
 Thinking about the system this way doesn't mean every developer has to administer every component. It means recognizing that application security depends on the entire path from source code to production and the services the application relies on once it gets there.
 
 > **AI assistance acknowledgment:** This post was written with AI support for paragraph construction, organization, and reviewing sentence clarity and arguments. The ideas, experiences described, perspective, and editorial decisions remain with the author.
+
+---
+
+**Security Mindset for Software Engineers — series navigation**
+
+[← Previous: Part 2](https://deployment.properties/posts/devsecops/a-vulnerability-is-often-just-the-beginning/) · [Series introduction](https://deployment.properties/posts/devsecops/introducing-the-security-mindset-for-software-engineers/) · [Next: Part 4 →](https://deployment.properties/posts/devsecops/security-doesnt-end-when-you-deploy/)
