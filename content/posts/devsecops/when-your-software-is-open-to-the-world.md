@@ -56,3 +56,7 @@ Finding a hostname or an IP address doesn't necessarily mean it belongs to the c
 As software engineers, we should look beyond the features we intentionally expose and consider what someone else can actually reach or learn from our systems. Undocumented paths, backend attributes, request metadata, and information disclosed through other public resources can all give an attacker more places to look for weaknesses.
 
 > **AI assistance acknowledgment:** This post was written with AI support for paragraph construction, organization, and reviewing sentence clarity and arguments. The ideas, experiences described, perspective, and editorial decisions remain with the author.
+
+---
+
+[← Introduction](https://deployment.properties/posts/devsecops/introducing-the-security-mindset-for-software-engineers/) | [Next: Part 2 →](https://deployment.properties/posts/devsecops/a-vulnerability-is-often-just-the-beginning/)
