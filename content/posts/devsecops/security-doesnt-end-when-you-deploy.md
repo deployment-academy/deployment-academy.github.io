@@ -84,3 +84,9 @@ Monitoring and incident response complete that picture. Security doesn't stop wh
 As software engineers, we make decisions throughout the development lifecycle that influence all of these outcomes. Developing a security mindset means making those decisions with a broader understanding of how our systems can be attacked, what the consequences might be, and how we can limit the damage.
 
 > **AI assistance acknowledgment:** This post was written with AI support for paragraph construction, organization, and reviewing sentence clarity and arguments. The ideas, experiences described, perspective, and editorial decisions remain with the author.
+
+---
+
+**Security Mindset for Software Engineers — series navigation**
+
+[← Previous: Part 3](https://deployment.properties/posts/devsecops/security-beyond-your-applications-code/) · [Series introduction](https://deployment.properties/posts/devsecops/introducing-the-security-mindset-for-software-engineers/)
