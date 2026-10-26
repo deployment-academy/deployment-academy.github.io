@@ -87,4 +87,4 @@ As software engineers, we make decisions throughout the development lifecycle th
 
 ---
 
-[← Previous: Part 3](https://deployment.properties/posts/devsecops/security-beyond-your-applications-code/) · [Series introduction](https://deployment.properties/posts/devsecops/introducing-the-security-mindset-for-software-engineers/)
+[← Previous: Part 3](https://deployment.properties/posts/devsecops/security-beyond-your-applications-code/) | [Series introduction](https://deployment.properties/posts/devsecops/introducing-the-security-mindset-for-software-engineers/)
