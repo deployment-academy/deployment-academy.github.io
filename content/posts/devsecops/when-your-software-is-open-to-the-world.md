@@ -59,6 +59,4 @@ As software engineers, we should look beyond the features we intentionally expos
 
 ---
 
-**Security Mindset for Software Engineers — series navigation**
-
 [← Introduction](https://deployment.properties/posts/devsecops/introducing-the-security-mindset-for-software-engineers/) · [Next: Part 2 →](https://deployment.properties/posts/devsecops/a-vulnerability-is-often-just-the-beginning/)
