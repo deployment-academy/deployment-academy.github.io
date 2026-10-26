@@ -1,8 +1,8 @@
 ---
 title: "Part 4: Security Doesn't End When You Deploy"
 description: "Why application logging, security observability, incident response, and recovery should be part of the way software engineers design and operate systems."
-date: 2026-10-26
-lastmod: 2026-10-26
+date: 2026-10-26T10:00:00-04:00
+lastmod: 2026-10-26T10:00:00-04:00
 draft: false
 categories:
   - "Security Mindset for Software Engineers"
