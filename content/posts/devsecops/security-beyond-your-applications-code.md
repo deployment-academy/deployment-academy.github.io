@@ -1,8 +1,8 @@
 ---
 title: "Part 3: Security Beyond Your Application's Code"
 description: "Repositories, CI/CD pipelines, container registries, cloud identities, and supporting services all influence the security of the application we put into production."
-date: 2026-10-25
-lastmod: 2026-10-25
+date: 2026-10-26
+lastmod: 2026-10-26
 draft: false
 categories:
   - "Security Mindset for Software Engineers"
@@ -53,7 +53,7 @@ But generating provenance or signing an artifact isn't sufficient by itself. The
 
 Once the application is running, we also rely on cloud services and infrastructure that may not be represented in its codebase. Storage buckets, databases, messaging systems, secret stores, load balancers, and identity services all have security configurations of their own.
 
-A storage bucket that unintentionally allows public reads can expose data even if the application has perfect authorization checks. Cloud platforms often provide safeguards against this—for example, [Amazon S3 Block Public Access](https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html)—but those controls still need to be understood and managed. Applications and APIs may also rely on external services for authentication and authorization. For example, [Google Cloud Identity-Aware Proxy (IAP)](https://docs.cloud.google.com/iap/docs/concepts-overview) can control access to protected applications, [Amazon Cognito](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-how-to-authenticate.html) can handle user authentication, and [Istio authorization policies](https://istio.io/latest/docs/concepts/security/) can control access between services. If these controls are misconfigured, aren't applied where expected, or can be bypassed through another route, an application or API may be exposed without any change to its code. These are some examples, but this type of issue can happen with different types of cloud configuration and services.
+A storage bucket that unintentionally allows public reads can expose data even if the application has perfect authorization checks. Cloud platforms often provide safeguards against this—for example, [Amazon S3 Block Public Access](https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html)—but those controls still need to be understood and managed. Applications and APIs may also rely on external services for authentication and authorization. For example, [Google Cloud Identity-Aware Proxy (IAP)](https://docs.cloud.google.com/iap/docs/concepts-overview), [Amazon Cognito](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-how-to-authenticate.html), and [Istio authorization policies](https://istio.io/latest/docs/concepts/security/) provide authentication and access control capabilities at different points in the architecture. If these protections are misconfigured, aren't enforced where expected, can be bypassed through another route, or fail open, an application or API may be exposed without any change to its code. Similar risks exist across other cloud services and configurations.
 
 These examples show how supporting services can introduce security issues independently of the application itself. One way to reduce these risks is to manage infrastructure and security configurations as code, keeping changes in version control and reviewing them through pull requests. Automated checks can help identify insecure configurations before deployment, while policy enforcement can prevent certain unsafe changes from being applied. We also need to verify the actual configuration of our environments, including changes that may occur outside the normal deployment process.
 
